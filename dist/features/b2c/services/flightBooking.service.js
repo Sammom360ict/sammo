@@ -249,11 +249,11 @@ class flightBookingService extends abstract_service_1.default {
     cancelFlightBooking(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const flightBookingModel = this.Model.flightBookingModel();
-            const { booking_id } = req.body;
+            const { booking_id } = req.params;
             let { id: user_id } = req.user;
             const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
                 user_id,
-                id: booking_id,
+                id: Number(booking_id),
                 status: 'pending',
             });
             if (!checkFlightBooking.length) {

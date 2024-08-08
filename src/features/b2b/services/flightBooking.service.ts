@@ -288,12 +288,13 @@ class flightBookingService extends AbstractServices {
   // cancel flight booking
   public async cancelFlightBooking(req: Request) {
     const flightBookingModel = this.Model.b2bFlightBookingModel();
-    const { booking_id } = req.body;
+    const { id: booking_id } = req.params;
     let { id: user_id, agency_id } = req.agency;
 
+    console.log("fine");
     const checkFlightBooking = await flightBookingModel.getSingleFlightBooking({
       user_id,
-      id: booking_id,
+      id: Number(booking_id),
       status: 'pending',
     });
 
