@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.orderSellEndPoint = exports.orderRetrieveEndPoint = exports.orderReshopEndPoint = exports.orderCreateEndPoint = exports.orderChangeEndPoint = exports.orderCancelEndPoint = exports.offerPriceEndPoint = exports.penaltyEndPoint = exports.fareRulesEndPoint = exports.airShoppingEndPoint = void 0;
+exports.airShoppingEndPoint = '/api/enterprise/AirShopping';
+exports.fareRulesEndPoint = '/api/enterprise/FareRules';
+exports.penaltyEndPoint = '/api/enterprise/MiniRule';
+exports.offerPriceEndPoint = '/api/enterprise/OfferPrice';
+exports.orderCancelEndPoint = '/api/enterprise/OrderCancel';
+exports.orderChangeEndPoint = '/api/enterprise/OrderChange';
+exports.orderCreateEndPoint = '/api/enterprise/OrderCreate';
+exports.orderReshopEndPoint = '/api/enterprise/OrderReshopPrice';
+exports.orderRetrieveEndPoint = '/api/enterprise/OrderRetrieve';
+exports.orderSellEndPoint = '/api/enterprise/OrderSell';

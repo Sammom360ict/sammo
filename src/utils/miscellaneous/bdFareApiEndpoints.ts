@@ -1,0 +1,10 @@
+export const airShoppingEndPoint = '/api/enterprise/AirShopping';
+export const fareRulesEndPoint = '/api/enterprise/FareRules';
+export const penaltyEndPoint = '/api/enterprise/MiniRule';
+export const offerPriceEndPoint = '/api/enterprise/OfferPrice';
+export const orderCancelEndPoint = '/api/enterprise/OrderCancel';
+export const orderChangeEndPoint = '/api/enterprise/OrderChange';
+export const orderCreateEndPoint = '/api/enterprise/OrderCreate';
+export const orderReshopEndPoint = '/api/enterprise/OrderReshopPrice';
+export const orderRetrieveEndPoint = '/api/enterprise/OrderRetrieve';
+export const orderSellEndPoint = '/api/enterprise/OrderSell';
