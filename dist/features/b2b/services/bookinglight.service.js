@@ -154,6 +154,8 @@ class BookingFlightService extends abstract_service_1.default {
                 throw new customError_1.default('Cannot revalidate flight with this flight id', 400);
             }
             const formattedResponse = yield this.ResFormatter.revalidate(response.groupedItineraryResponse, retrievedData.reqBody);
+            formattedResponse.ticket_last_date = formattedResponse.ticket_last_date ? formattedResponse.ticket_last_date : foundItem.ticket_last_date;
+            formattedResponse.ticket_last_time = formattedResponse.ticket_last_time ? formattedResponse.ticket_last_time : foundItem.ticket_last_time;
             return formattedResponse;
         });
     }

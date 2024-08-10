@@ -183,7 +183,10 @@ export default class BookingFlightService extends AbstractServices {
         }
 
         const retrieveResponse = retrievedData.response as {
-            results: { flight_id: string }[];
+            results: {
+                ticket_last_time: string;
+                ticket_last_date: string; flight_id: string 
+}[];
         };
 
         const foundItem = retrieveResponse.results.find(
@@ -216,6 +219,8 @@ export default class BookingFlightService extends AbstractServices {
             response.groupedItineraryResponse,
             retrievedData.reqBody
         );
+        formattedResponse.ticket_last_date = formattedResponse.ticket_last_date ? formattedResponse.ticket_last_date : foundItem.ticket_last_date;
+        formattedResponse.ticket_last_time = formattedResponse.ticket_last_time ? formattedResponse.ticket_last_time : foundItem.ticket_last_time;
 
         return formattedResponse;
     }
