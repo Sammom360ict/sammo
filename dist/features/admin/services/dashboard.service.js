@@ -22,12 +22,14 @@ class AdminDashboardService extends abstract_service_1.default {
             // const booking_model = this.Model.bookingRequestModel();
             // const booking_data = await booking_model.get({limit:"5", status:'Pending'})
             const flight_model = this.Model.flightBookingModel();
+            const b2b_flight_model = this.Model.b2bFlightBookingModel();
             const booking_data = yield flight_model.getAllFlightBooking({ limit: "5", skip: "0" });
+            const b2b_booking_data = yield b2b_flight_model.getAllFlightBooking({ limit: "5", skip: "0" });
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 message: this.ResMsg.HTTP_OK,
-                data: { booking_total: booking_total_data.total_booking, booking_data: booking_data.data, booking_graph: booking_total_data.booking_graph }
+                data: { booking_total: booking_total_data.total_booking, b2c_booking_data: booking_data.data, b2b_booking_data: b2b_booking_data.data, b2c_booking_graph: booking_total_data.booking_graph, b2b_booking_graph: booking_total_data.booking_graph_b2b }
             };
         });
     }

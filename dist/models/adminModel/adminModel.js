@@ -132,6 +132,15 @@ class AdminModel extends schema_1.default {
               COUNT(*) FILTER (WHERE status = 'paid') AS total_paid_but_not_issued
               `))
                 .first();
+            const total_booking_b2b = yield this.db('flight_booking')
+                .withSchema(this.BTOB_SCHEMA)
+                .select(this.db.raw(`
+              COUNT(*) AS total_b2b,
+              COUNT(*) FILTER (WHERE status = 'pending') AS b2b_total_pending,
+              COUNT(*) FILTER (WHERE status = 'cancelled') AS b2b_total_cancelled,
+              COUNT(*) FILTER (WHERE status = 'issued') AS b2b_total_issued
+              `))
+                .first();
             const currentYear = new Date().getFullYear();
             const booking_graph = yield this.db('flight_booking')
                 .withSchema(this.BOOKING_SCHEMA)
@@ -146,9 +155,23 @@ class AdminModel extends schema_1.default {
                 .whereRaw(`EXTRACT(YEAR FROM created_at) = ${currentYear}`)
                 .groupByRaw('TRIM(TO_CHAR(created_at, \'Month\'))')
                 .orderByRaw('MIN(created_at)');
+            const booking_graph_b2b = yield this.db('flight_booking')
+                .withSchema(this.BTOB_SCHEMA)
+                .select(this.db.raw(`
+          TRIM(TO_CHAR(created_at, 'Month')) AS month_name,
+          COUNT(*) AS total,
+          COUNT(*) FILTER (WHERE status = 'pending') AS total_pending,
+          COUNT(*) FILTER (WHERE status = 'cancelled') AS total_cancelled,
+          COUNT(*) FILTER (WHERE status = 'issued') AS total_issued,
+          COUNT(*) FILTER (WHERE status = 'paid') AS total_paid_but_not_issued
+      `))
+                .whereRaw(`EXTRACT(YEAR FROM created_at) = ${currentYear}`)
+                .groupByRaw('TRIM(TO_CHAR(created_at, \'Month\'))')
+                .orderByRaw('MIN(created_at)');
             return {
-                total_booking,
-                booking_graph
+                total_booking: Object.assign(Object.assign({}, total_booking), total_booking_b2b),
+                booking_graph,
+                booking_graph_b2b
             };
         });
     }
