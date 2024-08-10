@@ -21,9 +21,11 @@ class B2BDashboardService extends abstract_service_1.default {
             const { id } = req.agency;
             const model = this.Model.agencyModel();
             const data = yield model.agentDashboard(id);
+            const b2b_flight_model = this.Model.b2bFlightBookingModel();
+            const booking_data = yield b2b_flight_model.getAllFlightBooking({ limit: "5", skip: "0", user_id: id });
             return {
                 code: this.StatusCode.HTTP_OK,
-                data: data
+                data: Object.assign(Object.assign({}, data), { booking_data: booking_data.data })
             };
         });
     }
