@@ -338,4 +338,45 @@ export class AgencyModel extends Schema {
             .where({ agency_id })
             .andWhere({ id });
     }
+
+    //dashboard
+    public async agentDashboard(agent_id: number) {
+        const total_booking = await this.db('flight_booking')
+            .withSchema(this.BTOB_SCHEMA)
+            .select(this.db.raw(`
+                  COUNT(*) AS total,
+                  COUNT(*) FILTER (WHERE status = 'pending') AS total_pending,
+                  COUNT(*) FILTER (WHERE status = 'cancelled') AS total_cancelled,
+                  COUNT(*) FILTER (WHERE status = 'issued') AS total_issued
+                  `))
+            .first()
+            .where("created_by", agent_id);
+
+
+        const currentYear = new Date().getFullYear();
+
+        const booking_graph = await this.db('flight_booking')
+            .withSchema(this.BTOB_SCHEMA)
+            .select(this.db.raw(`
+              TRIM(TO_CHAR(created_at, 'Month')) AS month_name,
+              COUNT(*) AS total,
+              COUNT(*) FILTER (WHERE status = 'pending') AS total_pending,
+              COUNT(*) FILTER (WHERE status = 'cancelled') AS total_cancelled,
+              COUNT(*) FILTER (WHERE status = 'issued') AS total_issued
+          `))
+            .whereRaw(`EXTRACT(YEAR FROM created_at) = ${currentYear}`)
+            .andWhere('created_by', agent_id)
+            .groupByRaw('TRIM(TO_CHAR(created_at, \'Month\'))')
+            .orderByRaw('MIN(created_at)');
+
+
+
+
+
+        return {
+            total_booking,
+            booking_graph
+        }
+
+    }
 }

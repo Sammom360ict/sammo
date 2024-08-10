@@ -7,6 +7,7 @@ import flightBookingRouter from './routers/flightBooking.router';
 import ticketIssueRouter from './routers/ticketIssue.router';
 import { BtoBSubAgencyRouter } from './routers/subAgency.router';
 import { B2BVisaRouter } from './routers/bookingVisa.router';
+import { B2BDashboardRouter } from './routers/dashboard.router';
 
 class B2BRootRouter {
   public Router = Router();
@@ -16,8 +17,9 @@ class B2BRootRouter {
   private PaymentRouter = new BookingPaymentRouter();
   private FlightBookingRouter = new flightBookingRouter();
   private TicketRouter = new ticketIssueRouter();
-  private SubAgentRouter =  new BtoBSubAgencyRouter();
+  private SubAgentRouter = new BtoBSubAgencyRouter();
   private VisaRouter = new B2BVisaRouter();
+  private dashboardRouter = new B2BDashboardRouter();
 
   constructor() {
     this.callRouter();
@@ -54,6 +56,9 @@ class B2BRootRouter {
 
     //visa router
     this.Router.use('/visa-application', this.VisaRouter.router);
+
+    //dashboard router
+    this.Router.use('/dashboard', this.dashboardRouter.router);
   }
 }
 export default B2BRootRouter;

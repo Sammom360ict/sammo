@@ -12,7 +12,11 @@ export const origin: string[] = [
   'http://192.168.0.190:3000',
   'https://smartrip.app',
   'https://www.smartrip.app',
-  'http://192.168.0.190:5173'
+  'http://192.168.0.190:5173',
+  "https://b2b.traveltripbd.com",
+  "https://www.b2b.traveltripbd.com",
+  "https://admin.traveltripbd.com",
+  "https://www.admin.traveltripbd.com"
 ];
 
 // OTP types constants
