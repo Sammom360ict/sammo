@@ -341,6 +341,32 @@ export class AgencyModel extends Schema {
 
     //dashboard
     public async agentDashboard(agent_id: number) {
+        const currentDate = new Date();
+        const currentYear = new Date().getFullYear();
+
+        const daily_booking_amount = await this.db('flight_booking')
+            .withSchema(this.BTOB_SCHEMA)
+            .select(this.db.raw(`
+              SUM(CASE WHEN status = 'issued' THEN payable_amount ELSE 0 END) AS daily_issue_amount,
+              SUM(CASE WHEN status = 'reissued' THEN payable_amount ELSE 0 END) AS daily_reissue_amount,
+              SUM(CASE WHEN status = 'refund' THEN payable_amount ELSE 0 END) AS daily_refund_amount
+              `))
+            .where("created_by", agent_id)
+            .andWhereRaw("DATE(created_at) = ?", [currentDate])
+            .first();
+
+        const monthly_booking_amount = await this.db('flight_booking')
+            .withSchema(this.BTOB_SCHEMA)
+            .select(this.db.raw(`
+              SUM(CASE WHEN status = 'issued' THEN payable_amount ELSE 0 END) AS monthly_issue_amount,
+              SUM(CASE WHEN status = 'reissued' THEN payable_amount ELSE 0 END) AS monthly_reissue_amount,
+              SUM(CASE WHEN status = 'refund' THEN payable_amount ELSE 0 END) AS monthly_refund_amount
+              `))
+            .where("created_by", agent_id)
+            .andWhereRaw("DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")
+            .first();
+
+
         const total_booking = await this.db('flight_booking')
             .withSchema(this.BTOB_SCHEMA)
             .select(this.db.raw(`
@@ -352,8 +378,6 @@ export class AgencyModel extends Schema {
             .first()
             .where("created_by", agent_id);
 
-
-        const currentYear = new Date().getFullYear();
 
         const booking_graph = await this.db('flight_booking')
             .withSchema(this.BTOB_SCHEMA)
@@ -374,7 +398,7 @@ export class AgencyModel extends Schema {
 
 
         return {
-            total_booking,
+            total_booking:{...total_booking,...daily_booking_amount,...monthly_booking_amount},
             booking_graph
         }
 

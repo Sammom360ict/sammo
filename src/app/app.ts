@@ -21,6 +21,7 @@ class App {
     this.initMiddleware();
     this.initRouters();
     this.socket();
+    this.runCron();
     this.notFoundRouter();
     this.errorHandle();
   }

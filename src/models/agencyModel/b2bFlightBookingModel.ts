@@ -87,7 +87,6 @@ class B2BFlightBookingModel extends Schema {
                 }
             })
 
-        console.log({ data });
 
         return { data, total: parseInt(total[0].total as string) };
     }

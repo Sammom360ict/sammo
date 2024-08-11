@@ -69,7 +69,6 @@ class B2BFlightBookingModel extends schema_1.default {
                     });
                 }
             });
-            console.log({ data });
             return { data, total: parseInt(total[0].total) };
         });
     }

@@ -301,6 +301,28 @@ class AgencyModel extends schema_1.default {
     //dashboard
     agentDashboard(agent_id) {
         return __awaiter(this, void 0, void 0, function* () {
+            const currentDate = new Date();
+            const currentYear = new Date().getFullYear();
+            const daily_booking_amount = yield this.db('flight_booking')
+                .withSchema(this.BTOB_SCHEMA)
+                .select(this.db.raw(`
+              SUM(CASE WHEN status = 'issued' THEN payable_amount ELSE 0 END) AS daily_issue_amount,
+              SUM(CASE WHEN status = 'reissued' THEN payable_amount ELSE 0 END) AS daily_reissue_amount,
+              SUM(CASE WHEN status = 'refund' THEN payable_amount ELSE 0 END) AS daily_refund_amount
+              `))
+                .where("created_by", agent_id)
+                .andWhereRaw("DATE(created_at) = ?", [currentDate])
+                .first();
+            const monthly_booking_amount = yield this.db('flight_booking')
+                .withSchema(this.BTOB_SCHEMA)
+                .select(this.db.raw(`
+              SUM(CASE WHEN status = 'issued' THEN payable_amount ELSE 0 END) AS monthly_issue_amount,
+              SUM(CASE WHEN status = 'reissued' THEN payable_amount ELSE 0 END) AS monthly_reissue_amount,
+              SUM(CASE WHEN status = 'refund' THEN payable_amount ELSE 0 END) AS monthly_refund_amount
+              `))
+                .where("created_by", agent_id)
+                .andWhereRaw("DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")
+                .first();
             const total_booking = yield this.db('flight_booking')
                 .withSchema(this.BTOB_SCHEMA)
                 .select(this.db.raw(`
@@ -311,7 +333,6 @@ class AgencyModel extends schema_1.default {
                   `))
                 .first()
                 .where("created_by", agent_id);
-            const currentYear = new Date().getFullYear();
             const booking_graph = yield this.db('flight_booking')
                 .withSchema(this.BTOB_SCHEMA)
                 .select(this.db.raw(`
@@ -326,7 +347,7 @@ class AgencyModel extends schema_1.default {
                 .groupByRaw('TRIM(TO_CHAR(created_at, \'Month\'))')
                 .orderByRaw('MIN(created_at)');
             return {
-                total_booking,
+                total_booking: Object.assign(Object.assign(Object.assign({}, total_booking), daily_booking_amount), monthly_booking_amount),
                 booking_graph
             };
         });
