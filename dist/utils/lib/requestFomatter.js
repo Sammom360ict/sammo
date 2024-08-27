@@ -318,7 +318,7 @@ class RequestFormatter {
                         DepartureDateTime: (0, dateTimeFormatter_1.dateTimeFormatter)(option.departure.date, option.departure.time),
                         FlightNumber: String(option.carrier.carrier_operating_flight_number),
                         NumberInParty: String(passengerLength),
-                        ResBookDesigCode: 'Y',
+                        ResBookDesigCode: flight.passengers[0].availability[0].segments[0].booking_code,
                         Status: 'NN',
                         DestinationLocation: {
                             LocationCode: option.arrival.airport_code,

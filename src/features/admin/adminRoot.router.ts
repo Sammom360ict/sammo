@@ -35,8 +35,8 @@ class AdminRootRouter {
     this.Router.use('/profile', this.ProfileRouter.router);
     //administration
     this.Router.use('/administration', this.AdministrationRouter.router);
-    // //article
-    // this.Router.use('/article', this.ArticleRouter.router);
+    //article
+    this.Router.use('/article', this.ArticleRouter.router);
     //airline commission
     this.Router.use('/airlines-commission', this.AirlinesCommissionRouter.router);
     //airline router
