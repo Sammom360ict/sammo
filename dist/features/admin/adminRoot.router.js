@@ -20,7 +20,6 @@ class AdminRootRouter {
     constructor() {
         this.Router = (0, express_1.Router)();
         this.ProfileRouter = new profile_router_1.default();
-        this.AdministrationRouter = new administration_router_1.default();
         this.ArticleRouter = new article_router_1.default();
         this.AirlinesCommissionRouter = new airlineCommision_router_1.AirlineCommissionRouter();
         this.AirlineRouter = new airline_router_1.AirlineRouter();
@@ -28,36 +27,33 @@ class AdminRootRouter {
         this.BookingRequestRouter = new bookingRequest_router_1.BookingRequestRouter();
         this.VisaRouter = new visa_router_1.AdminVisaRouter();
         this.DashBoardRouter = new dashboard_router_1.default();
-        this.B2CFlightBookingRouter = new flightBooking_router_1.default();
-        this.AdminAgencyRouter = new adminAgency_router_1.AdminAgencyRouter();
-        this.B2BBookingRouter = new b2bFlightBooking_router_1.default();
         this.callRouter();
     }
     callRouter() {
         //profile
-        this.Router.use('/profile', this.ProfileRouter.router);
+        this.Router.use("/profile", this.ProfileRouter.router);
         //administration
-        this.Router.use('/administration', this.AdministrationRouter.router);
+        this.Router.use("/administration", new administration_router_1.default().router);
         //article
-        this.Router.use('/article', this.ArticleRouter.router);
+        this.Router.use("/article", this.ArticleRouter.router);
         //airline commission
-        this.Router.use('/airlines-commission', this.AirlinesCommissionRouter.router);
+        this.Router.use("/airlines-commission", this.AirlinesCommissionRouter.router);
         //airline router
-        this.Router.use('/airlines', this.AirlineRouter.router);
+        this.Router.use("/airlines", this.AirlineRouter.router);
         //airport router
-        this.Router.use('/airport', this.AirportRouter.router);
+        this.Router.use("/airport", this.AirportRouter.router);
         // //booking request router
         // this.Router.use('/booking-request', this.BookingRequestRouter.router);
         // //visa router
-        this.Router.use('/visa', this.VisaRouter.router);
+        this.Router.use("/visa", this.VisaRouter.router);
         //dashboard router
-        this.Router.use('/dashboard', this.DashBoardRouter.router);
+        this.Router.use("/dashboard", this.DashBoardRouter.router);
         //b2c flight booking router
-        this.Router.use('/b2c/flight-booking', this.B2CFlightBookingRouter.router);
+        this.Router.use("/b2c/flight-booking", new flightBooking_router_1.default().router);
         //b2b flight booking router
-        this.Router.use('/b2b/flight-booking', this.B2BBookingRouter.router);
+        this.Router.use("/b2b/flight-booking", new b2bFlightBooking_router_1.default().router);
         //agency router
-        this.Router.use('/agency', this.AdminAgencyRouter.router);
+        this.Router.use("/agency", new adminAgency_router_1.AdminAgencyRouter().router);
     }
 }
 exports.default = AdminRootRouter;

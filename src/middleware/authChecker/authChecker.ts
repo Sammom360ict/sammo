@@ -1,13 +1,13 @@
-import { NextFunction, Request, Response } from 'express';
-import StatusCode from '../../utils/miscellaneous/statusCode';
-import ResMsg from '../../utils/miscellaneous/responseMessage';
-import Lib from '../../utils/lib/lib';
-import config from '../../config/config';
+import { NextFunction, Request, Response } from "express";
+import StatusCode from "../../utils/miscellaneous/statusCode";
+import ResMsg from "../../utils/miscellaneous/responseMessage";
+import Lib from "../../utils/lib/lib";
+import config from "../../config/config";
 import {
   IAdmin,
-  IB2BAgent,
+  IB2BAgencyUser,
   IUser,
-} from '../../features/common/commonUtils/types/commonTypes';
+} from "../../features/common/commonUtils/types/commonTypes";
 
 class AuthChecker {
   // admin auth checker
@@ -23,7 +23,7 @@ class AuthChecker {
         .json({ success: false, message: ResMsg.HTTP_UNAUTHORIZED });
     }
 
-    const authSplit = authorization.split(' ');
+    const authSplit = authorization.split(" ");
 
     if (authSplit.length !== 2) {
       return res.status(StatusCode.HTTP_UNAUTHORIZED).json({
@@ -76,7 +76,7 @@ class AuthChecker {
         .json({ success: false, message: ResMsg.HTTP_UNAUTHORIZED });
     }
 
-    const authSplit = authorization.split(' ');
+    const authSplit = authorization.split(" ");
 
     if (authSplit.length !== 2) {
       return res.status(StatusCode.HTTP_UNAUTHORIZED).json({
@@ -119,7 +119,7 @@ class AuthChecker {
     if (!authorization) {
       next();
     } else {
-      const authSplit = authorization.split(' ');
+      const authSplit = authorization.split(" ");
 
       if (authSplit.length !== 2) {
         return res.status(StatusCode.HTTP_UNAUTHORIZED).json({
@@ -150,8 +150,6 @@ class AuthChecker {
         }
       }
     }
-
-
   };
 
   // b2b auth checker
@@ -167,7 +165,7 @@ class AuthChecker {
         .json({ success: false, message: ResMsg.HTTP_UNAUTHORIZED });
     }
 
-    const authSplit = authorization.split(' ');
+    const authSplit = authorization.split(" ");
 
     if (authSplit.length !== 2) {
       return res.status(StatusCode.HTTP_UNAUTHORIZED).json({
@@ -179,7 +177,7 @@ class AuthChecker {
     const verify = Lib.verifyToken(
       authSplit[1],
       config.JWT_SECRET_ADMIN
-    ) as IB2BAgent;
+    ) as IB2BAgencyUser;
 
     if (!verify) {
       return res
@@ -192,7 +190,7 @@ class AuthChecker {
           message: ResMsg.HTTP_FORBIDDEN,
         });
       } else {
-        req.agency = verify as IB2BAgent;
+        req.agency = verify as IB2BAgencyUser;
         next();
       }
     }

@@ -15,7 +15,7 @@ const bookingRequestModel_1 = require("./bookingModel/bookingRequestModel");
 const visaModel_1 = require("./visaModel/visaModel");
 const flightModel_1 = require("./flightModel/flightModel");
 const paymentModel_1 = __importDefault(require("./userModel/paymentModel"));
-const flightBookingModel_1 = __importDefault(require("./flightModel/flightBookingModel"));
+const btocFlightBookingModel_1 = __importDefault(require("./flightModel/btocFlightBookingModel"));
 const flightTicketModel_1 = __importDefault(require("./flightModel/flightTicketModel"));
 const agencyModel_1 = require("./agencyModel/agencyModel");
 const b2bFlightBookingModel_1 = __importDefault(require("./agencyModel/b2bFlightBookingModel"));
@@ -67,7 +67,7 @@ class Models {
     }
     //flight booking model
     flightBookingModel(trx) {
-        return new flightBookingModel_1.default(trx || database_1.db);
+        return new btocFlightBookingModel_1.default(trx || database_1.db);
     }
     //flight ticket issue model
     flightTicketIssueModel(trx) {

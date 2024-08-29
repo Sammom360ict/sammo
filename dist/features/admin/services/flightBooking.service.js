@@ -37,7 +37,7 @@ class adminFlightBookingService extends abstract_service_1.default {
                 status: status,
                 from_date: from_date,
                 to_date: to_date,
-                filter: filter
+                filter: filter,
             });
             return {
                 success: true,
@@ -89,7 +89,9 @@ class adminFlightBookingService extends abstract_service_1.default {
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
-                data: Object.assign(Object.assign({}, checkBooking[0]), { segments: getSegments, traveler: getTraveler, ticket: ticket_issue_data.length ? { ticket_issue_data, ticket_issue_segment_data } : null }),
+                data: Object.assign(Object.assign({}, checkBooking[0]), { segments: getSegments, traveler: getTraveler, ticket: ticket_issue_data.length
+                        ? { ticket_issue_data, ticket_issue_segment_data }
+                        : null }),
             };
         });
     }
@@ -101,7 +103,7 @@ class adminFlightBookingService extends abstract_service_1.default {
             let { id } = req.admin;
             const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
                 id: Number(booking_id),
-                status: 'pending'
+                status: "pending",
             });
             if (!checkFlightBooking.length) {
                 return {
@@ -119,17 +121,17 @@ class adminFlightBookingService extends abstract_service_1.default {
                 const requestBody = this.RequestFormatter.cancelBookingReqBody(pnr_code);
                 const response = yield this.request.postRequest(sabreApiEndpoints_1.CANCEL_BOOKING_ENDPOINT, requestBody);
                 if (!response.errors) {
-                    yield flightBookingModel.updateBooking({ status: 'cancelled' }, parseInt(booking_id));
+                    yield flightBookingModel.updateBooking({ status: "cancelled" }, parseInt(booking_id));
                     return {
                         success: true,
-                        message: 'Booking successfully canceled',
+                        message: "Booking successfully canceled",
                         code: this.StatusCode.HTTP_OK,
                     };
                 }
                 else {
                     return {
                         success: false,
-                        message: 'PNR is not valid for cancel',
+                        message: "PNR is not valid for cancel",
                         code: this.StatusCode.HTTP_NOT_FOUND,
                     };
                 }
@@ -137,8 +139,8 @@ class adminFlightBookingService extends abstract_service_1.default {
             else {
                 return {
                     success: false,
-                    message: this.ResMsg.HTTP_BAD_REQUEST,
                     code: this.StatusCode.HTTP_BAD_REQUEST,
+                    message: "Cancellation time has been expired",
                 };
             }
         });
@@ -147,13 +149,13 @@ class adminFlightBookingService extends abstract_service_1.default {
     ticketIssue(req) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b;
-            const flightBookingModel = this.Model.b2bFlightBookingModel();
+            const flightBookingModel = this.Model.flightBookingModel();
             const ticketModel = this.Model.b2bTicketIssueModel();
             const { id: booking_id } = req.params;
             let { id } = req.admin;
             const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
                 id: Number(booking_id),
-                status: 'pending'
+                status: "pending",
             });
             if (!checkFlightBooking.length) {
                 return {
@@ -170,9 +172,9 @@ class adminFlightBookingService extends abstract_service_1.default {
             if (currentUTCTimestamp < databaseUTCTimestamp) {
                 const ticketReqBody = this.RequestFormatter.ticketIssueReqBody(pnr_code);
                 const response = yield this.request.postRequest(sabreApiEndpoints_1.TICKET_ISSUE_ENDPOINT, ticketReqBody);
-                if (((_b = (_a = response === null || response === void 0 ? void 0 : response.AirTicketRS) === null || _a === void 0 ? void 0 : _a.ApplicationResults) === null || _b === void 0 ? void 0 : _b.status) === 'Complete') {
+                if (((_b = (_a = response === null || response === void 0 ? void 0 : response.AirTicketRS) === null || _a === void 0 ? void 0 : _a.ApplicationResults) === null || _b === void 0 ? void 0 : _b.status) === "Complete") {
                     //update booking
-                    yield flightBookingModel.updateBooking({ status: 'issued' }, Number(booking_id));
+                    yield flightBookingModel.updateBooking({ status: "issued" }, Number(booking_id));
                     //get booking details from sabre
                     const sabre_response = yield this.request.postRequest(sabreApiEndpoints_1.GET_BOOKING_ENDPOINT, {
                         confirmationId: pnr_code,
@@ -204,30 +206,47 @@ class adminFlightBookingService extends abstract_service_1.default {
                         });
                     }
                     let bags;
-                    if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.maximumPieces) {
-                        bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.maximumPieces + "pcs";
+                    if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                        .maximumPieces) {
+                        bags =
+                            sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                                .maximumPieces + "pcs";
                     }
-                    else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInPounds) {
-                        bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInPounds + "lb";
+                    else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                        .totalWeightInPounds) {
+                        bags =
+                            sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                                .totalWeightInPounds + "lb";
                     }
-                    else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInKilograms) {
-                        bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInKilograms + "k";
+                    else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                        .totalWeightInKilograms) {
+                        bags =
+                            sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                                .totalWeightInKilograms + "k";
                     }
                     const flight_segment_data = yield flightBookingModel.getFlightSegment(Number(booking_id));
                     //flight segment insertion
                     for (let i = 0; i < sabre_response.flights.length; i++) {
-                        let departure_data = flight_segment_data[i] ? flight_segment_data[i].origin : null;
+                        let departure_data = flight_segment_data[i]
+                            ? flight_segment_data[i].origin
+                            : null;
                         if (departure_data) {
-                            const part1 = departure_data.split('(')[1].split(')')[0];
-                            const part2 = part1.split('-').slice(0, 2).join('-').trim();
-                            const [city, country] = part2.split(' - ').map((part) => part.trim().toUpperCase());
+                            const part1 = departure_data.split("(")[1].split(")")[0];
+                            const part2 = part1.split("-").slice(0, 2).join("-").trim();
+                            const [city, country] = part2
+                                .split(" - ")
+                                .map((part) => part.trim().toUpperCase());
                             departure_data = `${city}, ${country}`;
                         }
-                        let arrival_data = flight_segment_data[i] ? flight_segment_data[i].destination : null;
+                        let arrival_data = flight_segment_data[i]
+                            ? flight_segment_data[i].destination
+                            : null;
                         if (arrival_data) {
-                            const part1 = arrival_data.split('(')[1].split(')')[0];
-                            const part2 = part1.split('-').slice(0, 2).join('-').trim();
-                            const [city, country] = part2.split(' - ').map((part) => part.trim().toUpperCase());
+                            const part1 = arrival_data.split("(")[1].split(")")[0];
+                            const part2 = part1.split("-").slice(0, 2).join("-").trim();
+                            const [city, country] = part2
+                                .split(" - ")
+                                .map((part) => part.trim().toUpperCase());
                             arrival_data = `${city}, ${country}`;
                         }
                         yield ticketModel.createFlightTicketSegment({
@@ -255,7 +274,7 @@ class adminFlightBookingService extends abstract_service_1.default {
                         success: true,
                         code: this.StatusCode.HTTP_SUCCESSFUL,
                         message: `Ticket has been issued`,
-                        data: response
+                        data: response,
                     };
                 }
                 else {
@@ -263,14 +282,14 @@ class adminFlightBookingService extends abstract_service_1.default {
                         success: false,
                         code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
                         message: `Ticket cannot be issued now. Please try again letter`,
-                        data: response
+                        data: response,
                     };
                 }
             }
             else {
                 return {
                     success: false,
-                    message: this.ResMsg.HTTP_BAD_REQUEST,
+                    message: "Ticket issue time has been expired",
                     code: this.StatusCode.HTTP_BAD_REQUEST,
                 };
             }

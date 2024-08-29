@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import { AdminAgencyValidator } from '../utils/validators/admin.agency.validator';
-import { AdminAgencyService } from '../services/adminAgency.service';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import { AdminAgencyValidator } from "../utils/validators/admin.agency.validator";
+import { AdminAgencyService } from "../services/adminAgency.service";
 
 export class AdminAgencyController extends AbstractController {
   private services = new AdminAgencyService();
@@ -21,6 +21,17 @@ export class AdminAgencyController extends AbstractController {
       } else {
         this.error(rest.message, code);
       }
+    }
+  );
+
+  //get applications
+  public getAllDepositRequestList = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.services.getAllDepositRequestList(
+        req
+      );
+      res.status(code).json(data);
     }
   );
 

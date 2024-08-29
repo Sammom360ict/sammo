@@ -1,4 +1,4 @@
-import { Knex } from 'knex';
+import { Knex } from "knex";
 
 // Db or Transaction connection types
 export type TDB = Knex | Knex.Transaction;
@@ -8,16 +8,16 @@ export interface IAdmin {
   id: number;
   username: string;
   first_name: string;
-  last_name:string;
+  last_name: string;
   gender: string;
   email: string;
   phone_number: string;
   photo: string | null;
   status: boolean;
-  role_id:number;
+  role_id: number;
 }
 
-export interface IB2BAgent{
+export interface IB2BAgencyUser {
   id: number;
   name: string;
   email: string;
@@ -34,7 +34,7 @@ export interface IUser {
   id: number;
   username: string;
   first_name: string;
-  last_name:string;
+  last_name: string;
   gender: string;
   email: string;
   phone_number: string;
@@ -63,22 +63,21 @@ export interface IPromiseRes<T> {
   data?: T;
 }
 
-export interface IAirportFilterQuery{
-  country_id?:number;
-  name?:string;
-  limit?:number;
-  skip?:number;
+export interface IAirportFilterQuery {
+  country_id?: number;
+  name?: string;
+  limit?: number;
+  skip?: number;
 }
-export interface IAirlineFilterQuery{
-  code?:string;
-  name?:string;
-  limit?:number;
-  skip?:number;
-}
-
-export interface IVisaFilterQuery{
-  country_id?:number;
-  limit?:number;
-  skip?:number;
+export interface IAirlineFilterQuery {
+  code?: string;
+  name?: string;
+  limit?: number;
+  skip?: number;
 }
 
+export interface IVisaFilterQuery {
+  country_id?: number;
+  limit?: number;
+  skip?: number;
+}

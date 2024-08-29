@@ -1,24 +1,24 @@
-import BookingTravelerRouter from './routers/bookingTraveler.router';
-import BookingFlightRouter from './routers/bookingFlight.router';
-import { Router } from 'express';
-import BookingProfileRouter from './routers/bookingProfile.router';
-import { BookingPaymentRouter } from './routers/bookingPayment.router';
-import flightBookingRouter from './routers/flightBooking.router';
-import ticketIssueRouter from './routers/ticketIssue.router';
-import { BtoBSubAgencyRouter } from './routers/subAgency.router';
-import { B2BVisaRouter } from './routers/bookingVisa.router';
-import { B2BDashboardRouter } from './routers/dashboard.router';
+import BookingTravelerRouter from "./routers/bookingTraveler.router";
+import BookingFlightRouter from "./routers/bookingFlight.router";
+import { Router } from "express";
+import BookingProfileRouter from "./routers/bookingProfile.router";
+import { BookingPaymentRouter } from "./routers/bookingPayment.router";
+import flightBookingRouter from "./routers/flightBooking.router";
+import ticketIssueRouter from "./routers/ticketIssue.router";
+import { BtoBSubAgencyRouter } from "./routers/subAgency.router";
+import { B2BVisaRouter } from "./routers/bookingVisa.router";
+import { B2BDashboardRouter } from "./routers/dashboard.router";
+import { BtobRouter } from "./routers/btob.router";
 
 class B2BRootRouter {
   public Router = Router();
-  private FlightRouter = new BookingFlightRouter();
+
   private TravelerRouter = new BookingTravelerRouter();
   private ProfileRouter = new BookingProfileRouter();
-  private PaymentRouter = new BookingPaymentRouter();
   private FlightBookingRouter = new flightBookingRouter();
   private TicketRouter = new ticketIssueRouter();
   private SubAgentRouter = new BtoBSubAgencyRouter();
-  private VisaRouter = new B2BVisaRouter();
+
   private dashboardRouter = new B2BDashboardRouter();
 
   constructor() {
@@ -27,38 +27,34 @@ class B2BRootRouter {
 
   private callRouter() {
     // flight router
-    this.Router.use('/flight', this.FlightRouter.router);
+    this.Router.use("/flight", new BookingFlightRouter().router);
 
     // traveler router
-    this.Router.use(
-      '/travelers',
-      this.TravelerRouter.router
-    );
+    this.Router.use("/travelers", this.TravelerRouter.router);
 
     //profile
-    this.Router.use(
-      '/profile',
-      this.ProfileRouter.router
-    );
+    this.Router.use("/profile", this.ProfileRouter.router);
 
-
-    // //payment router
-    // this.Router.use('/payment',this.PaymentRouter.router);
+    //payment router
+    // this.Router.use("/payment", new BookingPaymentRouter().router);
 
     //flight booking router
-    this.Router.use('/flight-booking', this.FlightBookingRouter.router);
+    this.Router.use("/flight-booking", this.FlightBookingRouter.router);
 
-    //ticket router 
-    this.Router.use('/ticket-issue', this.TicketRouter.router);
+    //ticket router
+    this.Router.use("/ticket-issue", this.TicketRouter.router);
 
     //sub agent
-    this.Router.use('/sub-agent', this.SubAgentRouter.router);
+    this.Router.use("/sub-agent", this.SubAgentRouter.router);
 
     //visa router
-    this.Router.use('/visa-application', this.VisaRouter.router);
+    this.Router.use("/visa-application", new B2BVisaRouter().router);
+
+    // b2b request
+    this.Router.use("/", new BtobRouter().router);
 
     //dashboard router
-    this.Router.use('/dashboard', this.dashboardRouter.router);
+    this.Router.use("/dashboard", this.dashboardRouter.router);
   }
 }
 export default B2BRootRouter;

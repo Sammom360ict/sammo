@@ -26,7 +26,7 @@ class AuthChecker {
                     .status(statusCode_1.default.HTTP_UNAUTHORIZED)
                     .json({ success: false, message: responseMessage_1.default.HTTP_UNAUTHORIZED });
             }
-            const authSplit = authorization.split(' ');
+            const authSplit = authorization.split(" ");
             if (authSplit.length !== 2) {
                 return res.status(statusCode_1.default.HTTP_UNAUTHORIZED).json({
                     success: false,
@@ -69,7 +69,7 @@ class AuthChecker {
                     .status(statusCode_1.default.HTTP_UNAUTHORIZED)
                     .json({ success: false, message: responseMessage_1.default.HTTP_UNAUTHORIZED });
             }
-            const authSplit = authorization.split(' ');
+            const authSplit = authorization.split(" ");
             if (authSplit.length !== 2) {
                 return res.status(statusCode_1.default.HTTP_UNAUTHORIZED).json({
                     success: false,
@@ -104,7 +104,7 @@ class AuthChecker {
                 next();
             }
             else {
-                const authSplit = authorization.split(' ');
+                const authSplit = authorization.split(" ");
                 if (authSplit.length !== 2) {
                     return res.status(statusCode_1.default.HTTP_UNAUTHORIZED).json({
                         success: false,
@@ -140,7 +140,7 @@ class AuthChecker {
                     .status(statusCode_1.default.HTTP_UNAUTHORIZED)
                     .json({ success: false, message: responseMessage_1.default.HTTP_UNAUTHORIZED });
             }
-            const authSplit = authorization.split(' ');
+            const authSplit = authorization.split(" ");
             if (authSplit.length !== 2) {
                 return res.status(statusCode_1.default.HTTP_UNAUTHORIZED).json({
                     success: false,

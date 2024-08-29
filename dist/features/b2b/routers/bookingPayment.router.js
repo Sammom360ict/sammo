@@ -14,9 +14,9 @@ class BookingPaymentRouter extends abstract_router_1.default {
     }
     callRouter() {
         //payment
-        this.router.route('/').post(this.controller.createPayment);
+        this.router.route("/").post(this.controller.createPayment);
         //transaction list
-        this.router.route('/transaction').get(this.controller.getTransaction);
+        this.router.route("/transaction").get(this.controller.getTransaction);
     }
 }
 exports.BookingPaymentRouter = BookingPaymentRouter;

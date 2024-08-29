@@ -37,7 +37,7 @@ class PaymentService extends abstract_service_1.default {
                     success: true,
                     code: this.StatusCode.HTTP_OK,
                     message: "Unverified Transaction",
-                    redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${undefined}`
+                    redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${undefined}`,
                 };
             }
             const [paymentTryId, bookingId, user_id] = tran_id;
@@ -45,7 +45,7 @@ class PaymentService extends abstract_service_1.default {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 message: "Payment Failed",
-                redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${bookingId}`
+                redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${bookingId}`,
             };
         });
     }
@@ -60,7 +60,7 @@ class PaymentService extends abstract_service_1.default {
                     success: true,
                     code: this.StatusCode.HTTP_OK,
                     message: "Unverified Transaction",
-                    redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${undefined}`
+                    redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${undefined}`,
                 };
             }
             const [paymentTryId, bookingId, user_id] = tran_id;
@@ -72,22 +72,22 @@ class PaymentService extends abstract_service_1.default {
                     success: true,
                     code: this.StatusCode.HTTP_OK,
                     message: "Unverified Transaction",
-                    redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${bookingId}`
+                    redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${bookingId}`,
                 };
             }
             const { payable_amount, booking_id, pnr_code } = paymentTry[0];
             //confirm payment
             const ssl_response = yield axios_1.default.post(`${config_1.default.SSL_URL}/validator/api/validationserverAPI.php?val_id=${body === null || body === void 0 ? void 0 : body.val_id}&store_id=${config_1.default.SSL_STORE_ID}&store_passwd=${config_1.default.SSL_STORE_PASSWORD}&format=json`);
-            if (((_a = ssl_response === null || ssl_response === void 0 ? void 0 : ssl_response.data) === null || _a === void 0 ? void 0 : _a.status) !== 'VALID') {
+            if (((_a = ssl_response === null || ssl_response === void 0 ? void 0 : ssl_response.data) === null || _a === void 0 ? void 0 : _a.status) !== "VALID") {
                 yield paymentModel.updatePaymentTry({
-                    status: 'FAILED',
-                    description: `Payment was initiated but transaction was not verified. Session ID: ${body === null || body === void 0 ? void 0 : body.val_id}, Amount: ${payable_amount}`
+                    status: "FAILED",
+                    description: `Payment was initiated but transaction was not verified. Session ID: ${body === null || body === void 0 ? void 0 : body.val_id}, Amount: ${payable_amount}`,
                 }, paymentTryId);
                 return {
                     success: true,
                     code: this.StatusCode.HTTP_OK,
-                    message: 'Unverified transaction',
-                    redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${bookingId}`
+                    message: "Unverified transaction",
+                    redirect_url: `${constants_1.CLIENT_URL}/paymentFail/${bookingId}`,
                 };
             }
             else {
@@ -98,41 +98,41 @@ class PaymentService extends abstract_service_1.default {
                     session_id: body.val_id,
                     type: ssl_response.data.card_type,
                     bank_tran_id: ssl_response.data.bank_tran_id,
-                    transaction_date: ssl_response.data.tran_date
+                    transaction_date: ssl_response.data.tran_date,
                 });
                 //---ticket issue---//
                 const ticketReqBody = this.requestFormatter.ticketIssueReqBody(pnr_code);
                 const response = yield this.sabreRequest.postRequest(sabreApiEndpoints_1.TICKET_ISSUE_ENDPOINT, ticketReqBody);
-                if (((_c = (_b = response === null || response === void 0 ? void 0 : response.AirTicketRS) === null || _b === void 0 ? void 0 : _b.ApplicationResults) === null || _c === void 0 ? void 0 : _c.status) === 'Complete') {
+                if (((_c = (_b = response === null || response === void 0 ? void 0 : response.AirTicketRS) === null || _b === void 0 ? void 0 : _b.ApplicationResults) === null || _c === void 0 ? void 0 : _c.status) === "Complete") {
                     const ticket_res = yield this.ticketIssueService.ticketIssueDataInsert(booking_id, pnr_code);
                     if (ticket_res.success) {
                         yield paymentModel.updatePaymentTry({
-                            status: 'COMPLETED',
+                            status: "COMPLETED",
                             description: `Payment and ticket issued is completed. PNR:${pnr_code}`,
                         }, paymentTryId);
-                        yield bookingModel.updateBooking({ status: 'issued' }, booking_id);
+                        yield bookingModel.updateBooking({ status: "issued" }, booking_id);
                         return ticket_res;
                     }
                     else {
                         yield paymentModel.updatePaymentTry({
-                            status: 'PURCHASE_PENDING',
-                            description: `Payment is completed. But Ticket not confirmed. PNR:${pnr_code}`
+                            status: "PURCHASE_PENDING",
+                            description: `Payment is completed. But Ticket not confirmed. PNR:${pnr_code}`,
                         }, paymentTryId);
-                        yield bookingModel.updateBooking({ status: 'paid' }, booking_id);
+                        yield bookingModel.updateBooking({ status: "paid" }, booking_id);
                         return ticket_res;
                     }
                 }
                 else {
                     yield paymentModel.updatePaymentTry({
-                        status: 'PURCHASE_PENDING',
-                        description: `Payment is completed. But Ticket not issued. PNR:${pnr_code}`
+                        status: "PURCHASE_PENDING",
+                        description: `Payment is completed. But Ticket not issued. PNR:${pnr_code}`,
                     }, paymentTryId);
-                    yield bookingModel.updateBooking({ status: 'paid' }, booking_id);
+                    yield bookingModel.updateBooking({ status: "paid" }, booking_id);
                     return {
                         success: true,
-                        message: 'Ticket not issued. Please contact us.',
+                        message: "Ticket not issued. Please contact us.",
                         code: this.StatusCode.HTTP_OK,
-                        redirect_url: `${constants_1.CLIENT_URL}/paymentSuccess/${bookingId}`
+                        redirect_url: `${constants_1.CLIENT_URL}/paymentSuccess/${bookingId}`,
                     };
                 }
                 //---ticket issue---//
@@ -149,7 +149,7 @@ class PaymentService extends abstract_service_1.default {
                     success: true,
                     code: this.StatusCode.HTTP_OK,
                     message: "Unverified Transaction",
-                    redirect_url: `${constants_1.CLIENT_URL}/paymentCancel/${undefined}`
+                    redirect_url: `${constants_1.CLIENT_URL}/paymentCancel/${undefined}`,
                 };
             }
             const [paymentTryId, bookingId, user_id] = tran_id;
@@ -157,7 +157,7 @@ class PaymentService extends abstract_service_1.default {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 message: "Payment cancelled",
-                redirect_url: `${constants_1.CLIENT_URL}/paymentCancel/${bookingId}`
+                redirect_url: `${constants_1.CLIENT_URL}/paymentCancel/${bookingId}`,
             };
         });
     }

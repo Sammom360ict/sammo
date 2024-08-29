@@ -25,7 +25,7 @@ class ResponseFormatter {
             let results = retrieveResponse.results;
             // BY AIRLINE
             if (query.carrier_operating) {
-                const airlines = query.carrier_operating.split(',');
+                const airlines = query.carrier_operating.split(",");
                 results = results.filter((item) => {
                     if (airlines.includes(item.carrier_code)) {
                         return item;
@@ -34,15 +34,15 @@ class ResponseFormatter {
             }
             //BY BAGGAGE
             if (query.baggage) {
-                const baggage = query.baggage.split(',').map(b => b.trim());
+                const baggage = query.baggage.split(",").map((b) => b.trim());
                 let combinedResults = new Set();
                 baggage.forEach((baggage_element) => {
                     const [baggage_count, baggage_unit] = baggage_element.split(" ");
                     const filteredResults = results.filter((item) => {
                         return item.passengers.some((passenger) => {
                             return passenger.availability.some((availability) => {
-                                return String(baggage_unit) === String(availability.baggage.unit) &&
-                                    String(baggage_count) === String(availability.baggage.count);
+                                return (String(baggage_unit) === String(availability.baggage.unit) &&
+                                    String(baggage_count) === String(availability.baggage.count));
                             });
                         });
                     });
@@ -61,8 +61,8 @@ class ResponseFormatter {
                             results = results.filter((item) => {
                                 const date = new Date(item.flights[index].options[0].departure.date);
                                 const year = date.getFullYear();
-                                const month = String(date.getMonth() + 1).padStart(2, '0');
-                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, "0");
+                                const day = String(date.getDate()).padStart(2, "0");
                                 const time = item.flights[index].options[0].departure.time;
                                 const departureTime = `${year}-${month}-${day}T${time}`;
                                 return element <= departureTime;
@@ -80,8 +80,8 @@ class ResponseFormatter {
                             results = results.filter((item) => {
                                 const date = new Date(item.flights[index].options[0].departure.date);
                                 const year = date.getFullYear();
-                                const month = String(date.getMonth() + 1).padStart(2, '0');
-                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, "0");
+                                const day = String(date.getDate()).padStart(2, "0");
                                 const time = item.flights[index].options[0].departure.time;
                                 const departureTime = `${year}-${month}-${day}T${time}`;
                                 return element >= departureTime;
@@ -102,8 +102,8 @@ class ResponseFormatter {
                             results = results.filter((item) => {
                                 const date = new Date(item.flights[index].options[item.flights[index].options.length - 1].arrival.date);
                                 const year = date.getFullYear();
-                                const month = String(date.getMonth() + 1).padStart(2, '0');
-                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, "0");
+                                const day = String(date.getDate()).padStart(2, "0");
                                 const time = item.flights[index].options[item.flights[index].options.length - 1].arrival.time;
                                 const arrivalTime = `${year}-${month}-${day}T${time}`;
                                 return element <= arrivalTime;
@@ -121,8 +121,8 @@ class ResponseFormatter {
                             results = results.filter((item) => {
                                 const date = new Date(item.flights[index].options[item.flights[index].options.length - 1].arrival.date);
                                 const year = date.getFullYear();
-                                const month = String(date.getMonth() + 1).padStart(2, '0');
-                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, "0");
+                                const day = String(date.getDate()).padStart(2, "0");
                                 const time = item.flights[index].options[item.flights[index].options.length - 1].arrival.time;
                                 const arrivalTime = `${year}-${month}-${day}T${time}`;
                                 return element >= arrivalTime;
@@ -133,14 +133,14 @@ class ResponseFormatter {
             }
             if (query.sort_by) {
                 switch (query.sort_by) {
-                    case 'CHEAPEST':
+                    case "CHEAPEST":
                         results = results.sort((item1, item2) => item1.fare.payable - item2.fare.payable);
-                        console.log('sorted res', results[0]);
+                        console.log("sorted res", results[0]);
                         break;
-                    case 'FASTEST':
+                    case "FASTEST":
                         results = results.sort((item1, item2) => item1.flights[0].elapsed_time - item2.flights[0].elapsed_time);
                         break;
-                    case 'EARLIEST':
+                    case "EARLIEST":
                         results = results.sort((item1, item2) => lib_1.default.getTimeValue(item1.flights[0].options[0].departure.time) -
                             lib_1.default.getTimeValue(item2.flights[0].options[0].departure.time));
                         break;
@@ -176,7 +176,7 @@ class ResponseFormatter {
             }
             // BY NON REFUNDABLE
             if (query.refundable) {
-                let booleanValue = query.refundable === 'true' ? true : false;
+                let booleanValue = query.refundable === "true" ? true : false;
                 results = results.filter((item) => {
                     if (item.refundable[0].refundable === booleanValue) {
                         return item;
@@ -184,8 +184,8 @@ class ResponseFormatter {
                 });
             }
             const count = results.length;
-            const page = query.page || '1';
-            const size = query.size || '50';
+            const page = query.page || "1";
+            const size = query.size || "50";
             // PAGINATION
             results = this.FlightUtils.getLimitOffset(results, page, size);
             const updatedResponse = {
@@ -220,7 +220,7 @@ class ResponseFormatter {
                     country: item.departure.country,
                     terminal: item.departure.terminal,
                     time: item.departure.time,
-                    date: '',
+                    date: "",
                     date_adjustment: item.departure.dateAdjustment,
                 };
                 const arrival = {
@@ -231,7 +231,7 @@ class ResponseFormatter {
                     country: item.arrival.country,
                     time: item.arrival.time,
                     terminal: item.arrival.terminal,
-                    date: '',
+                    date: "",
                     date_adjustment: item.arrival.dateAdjustment,
                 };
                 const carrier = {
@@ -304,8 +304,8 @@ class ResponseFormatter {
                         for (let j = 0; j < pfd.segments.length; j++) {
                             const segd = pfd.segments[j];
                             const segment = segd.segment;
-                            const meal_type = lib_1.default.getMeal(segment.mealCode || '');
-                            const cabin_type = lib_1.default.getCabin(segment.cabinCode || '');
+                            const meal_type = lib_1.default.getMeal(segment.mealCode || "");
+                            const cabin_type = lib_1.default.getCabin(segment.cabinCode || "");
                             segments.push({
                                 id: j + 1,
                                 name: `Segment-${j + 1}`,
@@ -332,7 +332,7 @@ class ResponseFormatter {
                             segments,
                             baggage: {
                                 id: newBaggage === null || newBaggage === void 0 ? void 0 : newBaggage.id,
-                                unit: newBaggage.unit || 'pieces',
+                                unit: newBaggage.unit || "pieces",
                                 count: newBaggage.weight || newBaggage.pieceCount,
                             },
                         });
@@ -381,14 +381,14 @@ class ResponseFormatter {
                         }
                     }
                 }
-                new_fare['commission'] = commissionPer;
+                new_fare["commission"] = commissionPer;
                 const commissionAmount = (fare.totalFare.equivalentAmount * commissionPer) / 100;
-                new_fare['base_fare'] = fare.totalFare.equivalentAmount;
-                new_fare['discount'] = commissionAmount;
-                new_fare['ait'] = ait;
-                new_fare['payable'] = fare.totalFare.totalPrice - commissionAmount + ait;
-                new_fare['total_price'] = fare.totalFare.totalPrice + ait;
-                new_fare['total_tax'] = fare.totalFare.totalTaxAmount;
+                new_fare["base_fare"] = fare.totalFare.equivalentAmount;
+                new_fare["discount"] = commissionAmount;
+                new_fare["ait"] = ait;
+                new_fare["payable"] = fare.totalFare.totalPrice - commissionAmount + ait;
+                new_fare["total_price"] = fare.totalFare.totalPrice + ait;
+                new_fare["total_tax"] = fare.totalFare.totalTaxAmount;
                 const itinery = {
                     flight_id: (0, uuid_1.v4)(),
                     fare: new_fare,
@@ -414,7 +414,10 @@ class ResponseFormatter {
                 })));
                 return Object.assign(Object.assign({}, item), { fare: item.fare, flights: updatedFlights });
             })));
-            const isDomesticFlight = updatedItineraries[0].leg_descriptions.every((leg) => constants_1.BD_AIRPORT.includes(leg.departureLocation) && constants_1.BD_AIRPORT.includes(leg.arrivalLocation)) ? true : false;
+            const isDomesticFlight = updatedItineraries[0].leg_descriptions.every((leg) => constants_1.BD_AIRPORT.includes(leg.departureLocation) &&
+                constants_1.BD_AIRPORT.includes(leg.arrivalLocation))
+                ? true
+                : false;
             return Object.assign(Object.assign({}, updatedItineraries[0]), { isDomesticFlight });
         });
         // PNR RESPONSE FORMATTER
@@ -460,7 +463,7 @@ class ResponseFormatter {
             const conn = this.Model.commonModel(trx);
             const airCapConn = this.Model.AirlineCommissionModel(trx);
             if (data.statistics.itineraryCount === 0) {
-                throw new customError_1.default('Flight not found', 404);
+                throw new customError_1.default("Flight not found", 404);
             }
             const OriginDest = reqBody.OriginDestinationInformation;
             const scheduleDesc = [];
@@ -483,7 +486,7 @@ class ResponseFormatter {
                     country: item.departure.country,
                     terminal: item.departure.terminal,
                     time: item.departure.time,
-                    date: '',
+                    date: "",
                     date_adjustment: item.departure.dateAdjustment,
                 };
                 const arrival = {
@@ -494,7 +497,7 @@ class ResponseFormatter {
                     country: item.arrival.country,
                     time: item.arrival.time,
                     terminal: item.arrival.terminal,
-                    date: '',
+                    date: "",
                     date_adjustment: item.arrival.dateAdjustment,
                 };
                 const carrier = {
@@ -588,8 +591,8 @@ class ResponseFormatter {
                         for (let j = 0; j < pfd.segments.length; j++) {
                             const segd = pfd.segments[j];
                             const segment = segd.segment;
-                            const meal_type = lib_1.default.getMeal((segment === null || segment === void 0 ? void 0 : segment.mealCode) || '');
-                            const cabin_type = lib_1.default.getCabin((segment === null || segment === void 0 ? void 0 : segment.cabinCode) || '');
+                            const meal_type = lib_1.default.getMeal((segment === null || segment === void 0 ? void 0 : segment.mealCode) || "");
+                            const cabin_type = lib_1.default.getCabin((segment === null || segment === void 0 ? void 0 : segment.cabinCode) || "");
                             segments.push({
                                 id: j + 1,
                                 name: `Segment-${j + 1}`,
@@ -619,13 +622,13 @@ class ResponseFormatter {
                             baggage: (newBaggage === null || newBaggage === void 0 ? void 0 : newBaggage.id)
                                 ? {
                                     id: newBaggage === null || newBaggage === void 0 ? void 0 : newBaggage.id,
-                                    unit: newBaggage.unit || 'pieces',
+                                    unit: newBaggage.unit || "pieces",
                                     count: newBaggage.weight || newBaggage.pieceCount,
                                 }
                                 : {
                                     id: 1,
-                                    unit: 'N/A',
-                                    count: 'N/A',
+                                    unit: "N/A",
+                                    count: "N/A",
                                 },
                         });
                     }
@@ -673,14 +676,14 @@ class ResponseFormatter {
                         }
                     }
                 }
-                new_fare['commission'] = commissionPer;
+                new_fare["commission"] = commissionPer;
                 const commissionAmount = (fare.totalFare.equivalentAmount * commissionPer) / 100;
-                new_fare['base_fare'] = fare.totalFare.equivalentAmount;
-                new_fare['discount'] = commissionAmount;
-                new_fare['ait'] = ait;
-                new_fare['payable'] = fare.totalFare.totalPrice - commissionAmount + ait;
-                new_fare['total_price'] = fare.totalFare.totalPrice + ait;
-                new_fare['total_tax'] = fare.totalFare.totalTaxAmount;
+                new_fare["base_fare"] = fare.totalFare.equivalentAmount;
+                new_fare["discount"] = commissionAmount;
+                new_fare["ait"] = ait;
+                new_fare["payable"] = fare.totalFare.totalPrice - commissionAmount + ait;
+                new_fare["total_price"] = fare.totalFare.totalPrice + ait;
+                new_fare["total_tax"] = fare.totalFare.totalTaxAmount;
                 const itinery = {
                     flight_id: (0, uuid_1.v4)(),
                     fare: new_fare,
@@ -736,7 +739,8 @@ class ResponseFormatter {
                 //baggage
                 const baggageInfo = yield Promise.all(item.passengers.map((element) => __awaiter(this, void 0, void 0, function* () {
                     element.availability.map((element2) => __awaiter(this, void 0, void 0, function* () {
-                        if (!(element2.baggage.count === 'N/A' || element2.baggage.unit === 'N/A')) {
+                        if (!(element2.baggage.count === "N/A" ||
+                            element2.baggage.unit === "N/A")) {
                             const baggage_element = element2.baggage.count + " " + element2.baggage.unit;
                             if (!baggage.includes(baggage_element)) {
                                 baggage.push(baggage_element);
@@ -748,15 +752,17 @@ class ResponseFormatter {
                 flights.forEach((element, ind) => {
                     const date = new Date(element.options[0].departure.date);
                     const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, "0");
+                    const day = String(date.getDate()).padStart(2, "0");
                     const time = element.options[0].departure.time;
                     const departureTime = `${year}-${month}-${day}T${time}`;
-                    if (minDepartureTime[ind] === undefined || departureTime < minDepartureTime[ind]) {
+                    if (minDepartureTime[ind] === undefined ||
+                        departureTime < minDepartureTime[ind]) {
                         minDepartureTime[ind] = departureTime;
                         depDest[ind] = element.options[0].departure.city;
                     }
-                    if (maxDepartureTime[ind] === undefined || departureTime > maxDepartureTime[ind]) {
+                    if (maxDepartureTime[ind] === undefined ||
+                        departureTime > maxDepartureTime[ind]) {
                         maxDepartureTime[ind] = departureTime;
                     }
                 });
@@ -764,18 +770,20 @@ class ResponseFormatter {
                 flights.forEach((element, ind) => {
                     const date = new Date(element.options[element.options.length - 1].arrival.date);
                     const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, "0");
+                    const day = String(date.getDate()).padStart(2, "0");
                     const time = element.options[element.options.length - 1].arrival.time;
                     const arrivalTime = `${year}-${month}-${day}T${time}`;
-                    if (minArrivalTime[ind] === undefined || arrivalTime < minArrivalTime[ind]) {
+                    if (minArrivalTime[ind] === undefined ||
+                        arrivalTime < minArrivalTime[ind]) {
                         minArrivalTime[ind] = arrivalTime;
                     }
-                    if (maxArrivalTime[ind] === undefined || arrivalTime > maxArrivalTime[ind]) {
+                    if (maxArrivalTime[ind] === undefined ||
+                        arrivalTime > maxArrivalTime[ind]) {
                         maxArrivalTime[ind] = arrivalTime;
                     }
                 });
-                //new stoppage filter 
+                //new stoppage filter
                 flights.forEach((element, ind) => {
                     if (!total_stoppage[ind]) {
                         total_stoppage[ind] = new Set();
@@ -791,13 +799,13 @@ class ResponseFormatter {
                 return {
                     min: minDepartureTime[ind],
                     max: maxDepartureTime[ind],
-                    airport: depDest[ind]
+                    airport: depDest[ind],
                 };
             });
             const arrival_time = minArrivalTime.map((_, ind) => {
                 return {
                     min: minArrivalTime[ind],
-                    max: maxArrivalTime[ind]
+                    max: maxArrivalTime[ind],
                 };
             });
             const filter = {

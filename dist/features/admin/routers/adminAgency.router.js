@@ -15,29 +15,29 @@ class AdminAgencyRouter extends abstract_router_1.default {
     // call router
     callRouter() {
         // deposit to agency
+        this.router.route("/deposit").post(this.controller.depositToAgency);
+        // deposit request
         this.router
-            .route('/deposit')
-            .post(this.controller.depositToAgency);
+            .route("/deposit-request")
+            .get(this.controller.getAllDepositRequestList);
         //transaction list
-        this.router
-            .route('/transaction/:id')
-            .get(this.controller.getTransaction);
+        this.router.route("/transaction/:id").get(this.controller.getTransaction);
         // create get
         this.router
-            .route('/')
+            .route("/")
             .post(this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER), this.controller.create)
             .get(this.controller.get);
         // create user
         this.router
-            .route('/user')
+            .route("/user")
             .post(this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER), this.controller.createUser);
         // update user
         this.router
-            .route('/user/:id')
+            .route("/user/:id")
             .patch(this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER), this.controller.updateUser);
         // update, get single
         this.router
-            .route('/:id')
+            .route("/:id")
             .patch(this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER), this.controller.update)
             .get(this.controller.getSingle);
     }

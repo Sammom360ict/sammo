@@ -1,5 +1,5 @@
-import AbstractRouter from '../../../abstract/abstract.router';
-import { AdminAgencyController } from '../controllers/adminAgency.controller';
+import AbstractRouter from "../../../abstract/abstract.router";
+import { AdminAgencyController } from "../controllers/adminAgency.controller";
 
 export class AdminAgencyRouter extends AbstractRouter {
   private controller = new AdminAgencyController();
@@ -10,22 +10,20 @@ export class AdminAgencyRouter extends AbstractRouter {
 
   // call router
   private callRouter() {
-
     // deposit to agency
+    this.router.route("/deposit").post(this.controller.depositToAgency);
+
+    // deposit request
     this.router
-      .route('/deposit')
-      .post(
-        this.controller.depositToAgency
-      );
+      .route("/deposit-request")
+      .get(this.controller.getAllDepositRequestList);
 
     //transaction list
-    this.router
-      .route('/transaction/:id')
-      .get(this.controller.getTransaction)
-      
+    this.router.route("/transaction/:id").get(this.controller.getTransaction);
+
     // create get
     this.router
-      .route('/')
+      .route("/")
       .post(
         this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER),
         this.controller.create
@@ -34,7 +32,7 @@ export class AdminAgencyRouter extends AbstractRouter {
 
     // create user
     this.router
-      .route('/user')
+      .route("/user")
       .post(
         this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER),
         this.controller.createUser
@@ -42,7 +40,7 @@ export class AdminAgencyRouter extends AbstractRouter {
 
     // update user
     this.router
-      .route('/user/:id')
+      .route("/user/:id")
       .patch(
         this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER),
         this.controller.updateUser
@@ -50,7 +48,7 @@ export class AdminAgencyRouter extends AbstractRouter {
 
     // update, get single
     this.router
-      .route('/:id')
+      .route("/:id")
       .patch(
         this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER),
         this.controller.update

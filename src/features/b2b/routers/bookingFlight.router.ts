@@ -1,5 +1,5 @@
-import BookingFlightController from '../controllers/bookinglight.controller';
-import AbstractRouter from '../../../abstract/abstract.router';
+import BookingFlightController from "../controllers/bookinglight.controller";
+import AbstractRouter from "../../../abstract/abstract.router";
 
 export default class BookingFlightRouter extends AbstractRouter {
   private controller = new BookingFlightController();
@@ -11,14 +11,12 @@ export default class BookingFlightRouter extends AbstractRouter {
 
   private callRouter() {
     // search flight
-    this.router.route('/search').post(this.controller.flightSearch);
+    this.router.route("/search").post(this.controller.flightSearch);
 
     // filter flight
-    this.router.route('/filter').get(this.controller.flightFilter);
+    this.router.route("/filter").get(this.controller.flightFilter);
 
     // revalidate flight
-    this.router
-      .route('/revalidate')
-      .post(this.controller.revalidatedFlightV2);
+    this.router.route("/revalidate").post(this.controller.revalidatedFlightV2);
   }
 }

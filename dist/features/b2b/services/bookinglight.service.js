@@ -58,7 +58,7 @@ class BookingFlightService extends abstract_service_1.default {
                 if (!flightRequestBody) {
                     return {
                         success: false,
-                        message: 'Capping is not available for any flight',
+                        message: "Capping is not available for any flight",
                         code: this.StatusCode.HTTP_NOT_FOUND,
                     };
                 }
@@ -102,7 +102,7 @@ class BookingFlightService extends abstract_service_1.default {
             if (!retrievedData) {
                 return {
                     success: false,
-                    message: 'Data lost! Search again.',
+                    message: "Data lost! Search again.",
                     code: this.StatusCode.HTTP_NOT_FOUND,
                 };
             }
@@ -123,7 +123,7 @@ class BookingFlightService extends abstract_service_1.default {
             if (data) {
                 return {
                     success: true,
-                    message: 'Ticket has been revalidate successfully!',
+                    message: "Ticket has been revalidate successfully!",
                     data,
                     code: this.StatusCode.HTTP_OK,
                 };
@@ -151,11 +151,15 @@ class BookingFlightService extends abstract_service_1.default {
             const formattedReqBody = this.ReqFormatter.revalidateReqBodyFormatter(retrievedData.reqBody, foundItem);
             const response = yield this.request.postRequest(sabreApiEndpoints_1.FLIGHT_REVALIDATE_ENDPOINT, formattedReqBody);
             if (((_a = response.groupedItineraryResponse) === null || _a === void 0 ? void 0 : _a.statistics.itineraryCount) === 0) {
-                throw new customError_1.default('Cannot revalidate flight with this flight id', 400);
+                throw new customError_1.default("Cannot revalidate flight with this flight id", 400);
             }
             const formattedResponse = yield this.ResFormatter.revalidate(response.groupedItineraryResponse, retrievedData.reqBody);
-            formattedResponse.ticket_last_date = formattedResponse.ticket_last_date ? formattedResponse.ticket_last_date : foundItem.ticket_last_date;
-            formattedResponse.ticket_last_time = formattedResponse.ticket_last_time ? formattedResponse.ticket_last_time : foundItem.ticket_last_time;
+            formattedResponse.ticket_last_date = formattedResponse.ticket_last_date
+                ? formattedResponse.ticket_last_date
+                : foundItem.ticket_last_date;
+            formattedResponse.ticket_last_time = formattedResponse.ticket_last_time
+                ? formattedResponse.ticket_last_time
+                : foundItem.ticket_last_time;
             return formattedResponse;
         });
     }
@@ -168,13 +172,13 @@ class BookingFlightService extends abstract_service_1.default {
             const response = yield this.request.postRequest(sabreApiEndpoints_1.FLIGHT_REVALIDATE_ENDPOINT, formattedReqBody);
             console.log({ response });
             if (((_a = response.groupedItineraryResponse) === null || _a === void 0 ? void 0 : _a.statistics.itineraryCount) === 0) {
-                throw new customError_1.default('Cannot revalidate flight with this flight id', 400);
+                throw new customError_1.default("Cannot revalidate flight with this flight id", 400);
             }
             const data = yield this.ResFormatter.revalidate(response.groupedItineraryResponse, body);
             if (data) {
                 return {
                     success: true,
-                    message: 'Ticket has been revalidate successfully!',
+                    message: "Ticket has been revalidate successfully!",
                     data,
                     code: this.StatusCode.HTTP_OK,
                 };

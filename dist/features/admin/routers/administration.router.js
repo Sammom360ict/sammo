@@ -14,40 +14,36 @@ class AdministrationRouter extends abstract_router_1.default {
     callRouter() {
         //create role, view role
         this.router
-            .route('/role')
+            .route("/role")
             .post(this.AdministrationController.createRole)
             .get(this.AdministrationController.roleList);
         //create permission, view permission
         this.router
-            .route('/permission')
+            .route("/permission")
             .post(this.AdministrationController.createPermission)
             .get(this.AdministrationController.permissionList);
         //get role permissions, update role permissions
         this.router
-            .route('/role/:id')
+            .route("/role/:id")
             .get(this.AdministrationController.getSingleRolePermission)
             .patch(this.AdministrationController.updateRolePermissions);
         //create admin, view admin
         this.router
-            .route('/admin')
+            .route("/admin")
             .post(this.uploader.cloudUploadRaw(this.fileFolders.ADMIN_FILES), this.AdministrationController.createAdmin)
             .get(this.AdministrationController.getAllAdmin);
         //get single admin, update admin
         this.router
-            .route('/admin/:id')
+            .route("/admin/:id")
             .get(this.AdministrationController.getSingleAdmin)
             .patch(this.uploader.cloudUploadRaw(this.fileFolders.ADMIN_FILES), this.AdministrationController.updateAdmin);
         //create city
-        this.router
-            .route('/city')
-            .post(this.AdministrationController.createCity);
+        this.router.route("/city").post(this.AdministrationController.createCity);
         //get users
-        this.router
-            .route('/users')
-            .get(this.AdministrationController.getUsers);
+        this.router.route("/users").get(this.AdministrationController.getUsers);
         //get user single
         this.router
-            .route('/users/:id')
+            .route("/users/:id")
             .get(this.AdministrationController.getSingleUser)
             .patch(this.uploader.cloudUploadRaw(this.fileFolders.USER_FILES), this.AdministrationController.editUserProfile);
     }

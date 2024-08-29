@@ -1,11 +1,11 @@
-import { Request } from 'express';
-import AbstractServices from '../../../abstract/abstract.service';
-import Lib from '../../../utils/lib/lib';
-import config from '../../../config/config';
+import { Request } from "express";
+import AbstractServices from "../../../abstract/abstract.service";
+import Lib from "../../../utils/lib/lib";
+import config from "../../../config/config";
 import {
   ILoginPayload,
   IForgetPasswordPayload,
-} from '../../common/commonUtils/types/commonTypes';
+} from "../../common/commonUtils/types/commonTypes";
 
 class UserAuthService extends AbstractServices {
   //registration service
@@ -19,7 +19,11 @@ class UserAuthService extends AbstractServices {
       const { password, email, phone_number, username, ...rest } = req.body;
       const model = this.Model.userModel(trx);
       //check users email and phone number and username
-      const check_user = await model.getProfileDetails({ email, phone_number, username });
+      const check_user = await model.getProfileDetails({
+        email,
+        phone_number,
+        username,
+      });
       if (check_user.length) {
         if (check_user[0].email === email) {
           return {
@@ -67,7 +71,7 @@ class UserAuthService extends AbstractServices {
         create_date: new Date(),
       };
 
-      const token = Lib.createToken(tokenData, config.JWT_SECRET_USER, '48h');
+      const token = Lib.createToken(tokenData, config.JWT_SECRET_USER, "48h");
 
       if (registration.length) {
         return {
@@ -115,8 +119,8 @@ class UserAuthService extends AbstractServices {
       return {
         success: false,
         code: this.StatusCode.HTTP_FORBIDDEN,
-        message: "Your account has been disabled"
-      }
+        message: "Your account has been disabled",
+      };
     }
 
     const token_data = {
@@ -131,7 +135,7 @@ class UserAuthService extends AbstractServices {
       status: rest.status,
       email: rest.email,
     };
-    const token = Lib.createToken(token_data, config.JWT_SECRET_USER, '48h');
+    const token = Lib.createToken(token_data, config.JWT_SECRET_USER, "48h");
     return {
       success: true,
       code: this.StatusCode.HTTP_OK,

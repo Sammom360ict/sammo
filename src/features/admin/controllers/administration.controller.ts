@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import AdminProfileService from '../services/profile.service';
-import AdministrationService from '../services/administration.service';
-import AdministrationValidator from '../utils/validators/administration.validator';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import AdminProfileService from "../services/profile.service";
+import AdministrationService from "../services/administration.service";
+import AdministrationValidator from "../utils/validators/administration.validator";
 
 class AdministrationController extends AbstractController {
   private AdministrationService = new AdministrationService();
@@ -115,10 +115,12 @@ class AdministrationController extends AbstractController {
   public updateAdmin = this.asyncWrapper.wrap(
     { bodySchema: this.AdministrationValidator.updateAdmin },
     async (req: Request, res: Response) => {
-      const { code, ...data } = await this.AdministrationService.updateAdmin(req);
+      const { code, ...data } = await this.AdministrationService.updateAdmin(
+        req
+      );
       res.status(code).json(data);
     }
-  )
+  );
 
   //get users
   public getUsers = this.asyncWrapper.wrap(
@@ -127,34 +129,42 @@ class AdministrationController extends AbstractController {
       const { code, ...data } = await this.AdministrationService.getUsers(req);
       res.status(code).json(data);
     }
-  )
+  );
 
   //get user single
   public getSingleUser = this.asyncWrapper.wrap(
-    { paramSchema:this.commonValidator.singleParamValidator },
+    { paramSchema: this.commonValidator.singleParamValidator },
     async (req: Request, res: Response) => {
-      const { code, ...data } = await this.AdministrationService.getSingleUser(req);
+      const { code, ...data } = await this.AdministrationService.getSingleUser(
+        req
+      );
       res.status(code).json(data);
     }
-  )
+  );
 
-    //edit user profile
-    public editUserProfile = this.asyncWrapper.wrap(
-      {paramSchema:this.commonValidator.singleParamValidator, bodySchema: this.AdministrationValidator.editUserProfileValidator },
-      async (req: Request, res: Response) => {
-        const { code, ...data } = await this.AdministrationService.editUserProfile(req);
-        res.status(code).json(data);
-      }
-    );
+  //edit user profile
+  public editUserProfile = this.asyncWrapper.wrap(
+    {
+      paramSchema: this.commonValidator.singleParamValidator,
+      bodySchema: this.AdministrationValidator.editUserProfileValidator,
+    },
+    async (req: Request, res: Response) => {
+      const { code, ...data } =
+        await this.AdministrationService.editUserProfile(req);
+      res.status(code).json(data);
+    }
+  );
 
-    //create city
-    public createCity = this.asyncWrapper.wrap(
-      {bodySchema: this.AdministrationValidator.createCityValidator },
-      async (req: Request, res: Response) => {
-        const { code, ...data } = await this.AdministrationService.createCity(req);
-        res.status(code).json(data);
-      }
-    );
+  //create city
+  public createCity = this.asyncWrapper.wrap(
+    { bodySchema: this.AdministrationValidator.createCityValidator },
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.AdministrationService.createCity(
+        req
+      );
+      res.status(code).json(data);
+    }
+  );
 }
 
 export default AdministrationController;

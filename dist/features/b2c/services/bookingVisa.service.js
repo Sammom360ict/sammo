@@ -18,7 +18,7 @@ class BookingVisaService extends abstract_service_1.default {
     //create visa application
     createVisaApplication(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.db.transaction(((trx) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
                 const { id, first_name, last_name } = req.user;
                 const model = this.Model.VisaModel(trx);
                 const body = req.body;
@@ -31,7 +31,8 @@ class BookingVisaService extends abstract_service_1.default {
                         message: this.ResMsg.HTTP_NOT_FOUND,
                     };
                 }
-                const payable = (Number(data[0].visa_fee) + Number(data[0].processing_fee)) * Number(body.traveler);
+                const payable = (Number(data[0].visa_fee) + Number(data[0].processing_fee)) *
+                    Number(body.traveler);
                 const application_body = {
                     user_id: id,
                     visa_id: visa_id,
@@ -46,7 +47,7 @@ class BookingVisaService extends abstract_service_1.default {
                     contact_number: body.contact_number,
                     whatsapp_number: body.whatsapp_number,
                     nationality: body.nationality,
-                    residence: body.residence
+                    residence: body.residence,
                 };
                 const create_application = yield model.b2cCreateApplication(application_body);
                 if (create_application.length) {
@@ -57,7 +58,7 @@ class BookingVisaService extends abstract_service_1.default {
                     yield model.b2cCreateTraveler(traveler_body);
                     const tracking_body = {
                         application_id: create_application[0].id,
-                        status: 'pending',
+                        status: "pending",
                         details: `${first_name} ${last_name} has applied for the visa`,
                     };
                     yield model.b2cCreateTracking(tracking_body);
@@ -74,21 +75,25 @@ class BookingVisaService extends abstract_service_1.default {
                         message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR,
                     };
                 }
-            })));
+            }));
         });
     }
-    //get list 
+    //get list
     getApplicationList(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.user;
             const model = this.Model.VisaModel();
             const { limit, skip } = req.query;
-            const data = yield model.getB2CApplication({ user_id: id, limit: limit ? Number(limit) : 100, skip: skip ? Number(skip) : 0 }, true);
+            const data = yield model.getB2CApplication({
+                user_id: id,
+                limit: limit ? Number(limit) : 100,
+                skip: skip ? Number(skip) : 0,
+            }, true);
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 total: data.total,
-                data: data.data
+                data: data.data,
             };
         });
     }
@@ -111,7 +116,7 @@ class BookingVisaService extends abstract_service_1.default {
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
-                data: Object.assign(Object.assign({}, data[0]), { traveler_data, tracking_data })
+                data: Object.assign(Object.assign({}, data[0]), { traveler_data, tracking_data }),
             };
         });
     }

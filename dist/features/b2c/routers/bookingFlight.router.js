@@ -13,13 +13,11 @@ class BookingFlightRouter extends abstract_router_1.default {
     }
     callRouter() {
         // search flight
-        this.router.route('/search').post(this.controller.flightSearch);
+        this.router.route("/search").post(this.controller.flightSearch);
         // filter flight
-        this.router.route('/filter').get(this.controller.flightFilter);
+        this.router.route("/filter").get(this.controller.flightFilter);
         // revalidate flight
-        this.router
-            .route('/revalidate')
-            .post(this.controller.revalidate);
+        this.router.route("/revalidate").post(this.controller.revalidate);
     }
 }
 exports.default = BookingFlightRouter;

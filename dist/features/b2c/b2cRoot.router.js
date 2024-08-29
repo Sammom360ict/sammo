@@ -15,10 +15,8 @@ const bookingVisa_router_1 = require("./routers/bookingVisa.router");
 class B2CRootRouter {
     constructor() {
         this.Router = (0, express_1.Router)();
-        this.FlightRouter = new bookingFlight_router_1.default();
         this.TravelerRouter = new bookingTraveler_router_1.default();
         this.ProfileRouter = new bookingProfile_router_1.default();
-        this.VisaRouter = new bookingVisa_router_1.BookingVisaRouter();
         this.PaymentRouter = new bookingPayment_router_1.BookingPaymentRouter();
         this.FlightBookingRouter = new flightBooking_router_1.default();
         this.TicketRouter = new ticketIssue_router_1.default();
@@ -27,19 +25,19 @@ class B2CRootRouter {
     }
     callRouter() {
         // flight router
-        this.Router.use('/flight', this.authChecker.userPublicAuthChecker, this.FlightRouter.router);
+        this.Router.use("/flight", this.authChecker.userPublicAuthChecker, new bookingFlight_router_1.default().router);
         // traveler router
-        this.Router.use('/traveler', this.authChecker.userAuthChecker, this.TravelerRouter.router);
+        this.Router.use("/traveler", this.authChecker.userAuthChecker, this.TravelerRouter.router);
         //profile
-        this.Router.use('/profile', this.authChecker.userAuthChecker, this.ProfileRouter.router);
+        this.Router.use("/profile", this.authChecker.userAuthChecker, this.ProfileRouter.router);
         //visa application router
-        this.Router.use('/visa-application', this.authChecker.userAuthChecker, this.VisaRouter.router);
+        this.Router.use("/visa-application", this.authChecker.userAuthChecker, new bookingVisa_router_1.BookingVisaRouter().router);
         //payment router
-        this.Router.use('/payment', this.authChecker.userAuthChecker, this.PaymentRouter.router);
+        this.Router.use("/payment", this.authChecker.userAuthChecker, this.PaymentRouter.router);
         //flight booking router
-        this.Router.use('/flight-booking', this.authChecker.userAuthChecker, this.FlightBookingRouter.router);
-        //ticket router 
-        this.Router.use('/ticket-issue', this.authChecker.userAuthChecker, this.TicketRouter.router);
+        this.Router.use("/flight-booking", this.authChecker.userAuthChecker, this.FlightBookingRouter.router);
+        //ticket router
+        this.Router.use("/ticket-issue", this.authChecker.userAuthChecker, this.TicketRouter.router);
     }
 }
 exports.default = B2CRootRouter;

@@ -1,4 +1,4 @@
-import { Knex } from 'knex';
+import { Knex } from "knex";
 import {
   IArrival,
   ICarrier,
@@ -15,14 +15,14 @@ import {
   IResponse,
   IScheduleDesc,
   IUpdatedSchedules,
-} from '../interfaces/flight/flightSearchInterface';
-import CustomError from './customError';
-import Models from '../../models/rootModel';
-import Lib from './lib';
-import { v4 as uuidv4 } from 'uuid';
-import FlightUtils from './flightUtils';
-import { IFlightSearchRes } from '../interfaces/flight/flightSearchResInterface';
-import { BD_AIRPORT } from '../miscellaneous/constants';
+} from "../interfaces/flight/flightSearchInterface";
+import CustomError from "./customError";
+import Models from "../../models/rootModel";
+import Lib from "./lib";
+import { v4 as uuidv4 } from "uuid";
+import FlightUtils from "./flightUtils";
+import { IFlightSearchRes } from "../interfaces/flight/flightSearchResInterface";
+import { BD_AIRPORT } from "../miscellaneous/constants";
 
 export default class ResponseFormatter {
   private Model: Models;
@@ -31,10 +31,6 @@ export default class ResponseFormatter {
     this.Model = new Models();
     this.FlightUtils = new FlightUtils();
   }
-
-
-
-
 
   // Flight search
   public async flightSearch(
@@ -47,7 +43,7 @@ export default class ResponseFormatter {
     const airCapConn = this.Model.AirlineCommissionModel(trx);
 
     if (data.statistics.itineraryCount === 0) {
-      throw new CustomError('Flight not found', 404);
+      throw new CustomError("Flight not found", 404);
     }
 
     const OriginDest = reqBody.OriginDestinationInformation;
@@ -75,7 +71,7 @@ export default class ResponseFormatter {
         country: item.departure.country,
         terminal: item.departure.terminal,
         time: item.departure.time,
-        date: '',
+        date: "",
         date_adjustment: item.departure.dateAdjustment,
       };
 
@@ -87,7 +83,7 @@ export default class ResponseFormatter {
         country: item.arrival.country,
         time: item.arrival.time,
         terminal: item.arrival.terminal,
-        date: '',
+        date: "",
         date_adjustment: item.arrival.dateAdjustment,
       };
 
@@ -207,8 +203,8 @@ export default class ResponseFormatter {
           for (let j = 0; j < pfd.segments.length; j++) {
             const segd = pfd.segments[j];
             const segment = segd.segment;
-            const meal_type = Lib.getMeal(segment?.mealCode || '');
-            const cabin_type = Lib.getCabin(segment?.cabinCode || '');
+            const meal_type = Lib.getMeal(segment?.mealCode || "");
+            const cabin_type = Lib.getCabin(segment?.cabinCode || "");
             segments.push({
               id: j + 1,
               name: `Segment-${j + 1}`,
@@ -242,15 +238,15 @@ export default class ResponseFormatter {
             segments,
             baggage: newBaggage?.id
               ? {
-                id: newBaggage?.id,
-                unit: newBaggage.unit || 'pieces',
-                count: newBaggage.weight || newBaggage.pieceCount,
-              }
+                  id: newBaggage?.id,
+                  unit: newBaggage.unit || "pieces",
+                  count: newBaggage.weight || newBaggage.pieceCount,
+                }
               : {
-                id: 1,
-                unit: 'N/A',
-                count: 'N/A',
-              },
+                  id: 1,
+                  unit: "N/A",
+                  count: "N/A",
+                },
           });
         }
 
@@ -315,15 +311,15 @@ export default class ResponseFormatter {
         }
       }
 
-      new_fare['commission'] = commissionPer;
+      new_fare["commission"] = commissionPer;
       const commissionAmount =
         (fare.totalFare.equivalentAmount * commissionPer) / 100;
-      new_fare['base_fare'] = fare.totalFare.equivalentAmount;
-      new_fare['discount'] = commissionAmount;
-      new_fare['ait'] = ait;
-      new_fare['payable'] = fare.totalFare.totalPrice - commissionAmount + ait;
-      new_fare['total_price'] = fare.totalFare.totalPrice + ait;
-      new_fare['total_tax'] = fare.totalFare.totalTaxAmount;
+      new_fare["base_fare"] = fare.totalFare.equivalentAmount;
+      new_fare["discount"] = commissionAmount;
+      new_fare["ait"] = ait;
+      new_fare["payable"] = fare.totalFare.totalPrice - commissionAmount + ait;
+      new_fare["total_price"] = fare.totalFare.totalPrice + ait;
+      new_fare["total_tax"] = fare.totalFare.totalTaxAmount;
 
       const itinery: IItinerary = {
         flight_id: uuidv4(),
@@ -402,13 +398,19 @@ export default class ResponseFormatter {
         const baggageInfo = await Promise.all(
           item.passengers.map(async (element) => {
             element.availability.map(async (element2) => {
-              if (!(element2.baggage.count === 'N/A' || element2.baggage.unit === 'N/A')) {
-                const baggage_element = element2.baggage.count + " " + element2.baggage.unit;
+              if (
+                !(
+                  element2.baggage.count === "N/A" ||
+                  element2.baggage.unit === "N/A"
+                )
+              ) {
+                const baggage_element =
+                  element2.baggage.count + " " + element2.baggage.unit;
                 if (!baggage.includes(baggage_element)) {
                   baggage.push(baggage_element);
                 }
               }
-            })
+            });
           })
         );
 
@@ -416,44 +418,58 @@ export default class ResponseFormatter {
         flights.forEach((element, ind) => {
           const date = new Date(element.options[0].departure.date);
           const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
           const time = element.options[0].departure.time;
           const departureTime = `${year}-${month}-${day}T${time}`;
 
-          if (minDepartureTime[ind] === undefined || departureTime < minDepartureTime[ind]) {
+          if (
+            minDepartureTime[ind] === undefined ||
+            departureTime < minDepartureTime[ind]
+          ) {
             minDepartureTime[ind] = departureTime;
             depDest[ind] = element.options[0].departure.city;
           }
-          if (maxDepartureTime[ind] === undefined || departureTime > maxDepartureTime[ind]) {
+          if (
+            maxDepartureTime[ind] === undefined ||
+            departureTime > maxDepartureTime[ind]
+          ) {
             maxDepartureTime[ind] = departureTime;
           }
         });
 
         //arrival time
         flights.forEach((element, ind) => {
-          const date = new Date(element.options[element.options.length - 1].arrival.date);
+          const date = new Date(
+            element.options[element.options.length - 1].arrival.date
+          );
           const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
           const time = element.options[element.options.length - 1].arrival.time;
           const arrivalTime = `${year}-${month}-${day}T${time}`;
 
-          if (minArrivalTime[ind] === undefined || arrivalTime < minArrivalTime[ind]) {
+          if (
+            minArrivalTime[ind] === undefined ||
+            arrivalTime < minArrivalTime[ind]
+          ) {
             minArrivalTime[ind] = arrivalTime;
           }
-          if (maxArrivalTime[ind] === undefined || arrivalTime > maxArrivalTime[ind]) {
+          if (
+            maxArrivalTime[ind] === undefined ||
+            arrivalTime > maxArrivalTime[ind]
+          ) {
             maxArrivalTime[ind] = arrivalTime;
           }
         });
 
-        //new stoppage filter 
+        //new stoppage filter
         flights.forEach((element, ind) => {
           if (!total_stoppage[ind]) {
             total_stoppage[ind] = new Set();
           }
           total_stoppage[ind].add(element.options.length - 1);
-        })
+        });
 
         return { ...item, fare: item.fare, flights: updatedFlights };
       })
@@ -467,13 +483,13 @@ export default class ResponseFormatter {
       return {
         min: minDepartureTime[ind],
         max: maxDepartureTime[ind],
-        airport: depDest[ind]
+        airport: depDest[ind],
       };
     });
     const arrival_time = minArrivalTime.map((_, ind) => {
       return {
         min: minArrivalTime[ind],
-        max: maxArrivalTime[ind]
+        max: maxArrivalTime[ind],
       };
     });
 
@@ -503,7 +519,7 @@ export default class ResponseFormatter {
 
     // BY AIRLINE
     if (query.carrier_operating) {
-      const airlines = query.carrier_operating.split(',');
+      const airlines = query.carrier_operating.split(",");
       results = results.filter((item: any) => {
         if (airlines.includes(item.carrier_code)) {
           return item;
@@ -513,7 +529,7 @@ export default class ResponseFormatter {
 
     //BY BAGGAGE
     if (query.baggage) {
-      const baggage = query.baggage.split(',').map(b => b.trim());
+      const baggage = query.baggage.split(",").map((b) => b.trim());
       let combinedResults = new Set();
 
       baggage.forEach((baggage_element) => {
@@ -522,8 +538,10 @@ export default class ResponseFormatter {
         const filteredResults = results.filter((item: any) => {
           return item.passengers.some((passenger: any) => {
             return passenger.availability.some((availability: any) => {
-              return String(baggage_unit) === String(availability.baggage.unit) &&
-                String(baggage_count) === String(availability.baggage.count);
+              return (
+                String(baggage_unit) === String(availability.baggage.unit) &&
+                String(baggage_count) === String(availability.baggage.count)
+              );
             });
           });
         });
@@ -539,40 +557,48 @@ export default class ResponseFormatter {
       if (query.min_departure_time) {
         const min_time: string[] = query.min_departure_time.split(",");
         let min_departure_time = min_time;
-        min_departure_time = min_departure_time.map((item: any) => item.replace(" ", "+"));
+        min_departure_time = min_departure_time.map((item: any) =>
+          item.replace(" ", "+")
+        );
         min_departure_time.forEach((element: any, index: number) => {
           if (element !== "null") {
             results = results.filter((item: any) => {
-              const date = new Date(item.flights[index].options[0].departure.date);
+              const date = new Date(
+                item.flights[index].options[0].departure.date
+              );
               const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, '0');
-              const day = String(date.getDate()).padStart(2, '0');
+              const month = String(date.getMonth() + 1).padStart(2, "0");
+              const day = String(date.getDate()).padStart(2, "0");
               const time = item.flights[index].options[0].departure.time;
               const departureTime = `${year}-${month}-${day}T${time}`;
               return element <= departureTime;
-            })
+            });
           }
-        })
+        });
       }
 
       if (query.max_departure_time) {
         // let max_departure_time = JSON.parse(query.max_departure_time);
         const max_time: string[] = query.max_departure_time.split(",");
         let max_departure_time = max_time;
-        max_departure_time = max_departure_time.map((item: any) => item.replace(" ", "+"));
+        max_departure_time = max_departure_time.map((item: any) =>
+          item.replace(" ", "+")
+        );
         max_departure_time.forEach((element: any, index: number) => {
           if (element !== "null") {
             results = results.filter((item: any) => {
-              const date = new Date(item.flights[index].options[0].departure.date);
+              const date = new Date(
+                item.flights[index].options[0].departure.date
+              );
               const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, '0');
-              const day = String(date.getDate()).padStart(2, '0');
+              const month = String(date.getMonth() + 1).padStart(2, "0");
+              const day = String(date.getDate()).padStart(2, "0");
               const time = item.flights[index].options[0].departure.time;
               const departureTime = `${year}-${month}-${day}T${time}`;
               return element >= departureTime;
-            })
+            });
           }
-        })
+        });
       }
     }
 
@@ -582,60 +608,78 @@ export default class ResponseFormatter {
         // let min_arrival_time = JSON.parse(query.min_arrival_time);
         const min_time: string[] = query.min_arrival_time.split(",");
         let min_arrival_time = min_time;
-        min_arrival_time = min_arrival_time.map((item: any) => item.replace(" ", "+"));
+        min_arrival_time = min_arrival_time.map((item: any) =>
+          item.replace(" ", "+")
+        );
         min_arrival_time.forEach((element: any, index: number) => {
           if (element !== "null") {
             results = results.filter((item: any) => {
-              const date = new Date(item.flights[index].options[item.flights[index].options.length - 1].arrival.date);
+              const date = new Date(
+                item.flights[index].options[
+                  item.flights[index].options.length - 1
+                ].arrival.date
+              );
               const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, '0');
-              const day = String(date.getDate()).padStart(2, '0');
-              const time = item.flights[index].options[item.flights[index].options.length - 1].arrival.time;
+              const month = String(date.getMonth() + 1).padStart(2, "0");
+              const day = String(date.getDate()).padStart(2, "0");
+              const time =
+                item.flights[index].options[
+                  item.flights[index].options.length - 1
+                ].arrival.time;
               const arrivalTime = `${year}-${month}-${day}T${time}`;
               return element <= arrivalTime;
-            })
+            });
           }
-        })
+        });
       }
 
       if (query.max_arrival_time) {
         // let max_arrival_time = JSON.parse(query.max_arrival_time);
         const max_time: string[] = query.max_arrival_time.split(",");
         let max_arrival_time = max_time;
-        max_arrival_time = max_arrival_time.map((item: any) => item.replace(" ", "+"));
+        max_arrival_time = max_arrival_time.map((item: any) =>
+          item.replace(" ", "+")
+        );
         max_arrival_time.forEach((element: any, index: number) => {
           if (element !== "null") {
             results = results.filter((item: any) => {
-              const date = new Date(item.flights[index].options[item.flights[index].options.length - 1].arrival.date);
+              const date = new Date(
+                item.flights[index].options[
+                  item.flights[index].options.length - 1
+                ].arrival.date
+              );
               const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, '0');
-              const day = String(date.getDate()).padStart(2, '0');
-              const time = item.flights[index].options[item.flights[index].options.length - 1].arrival.time;
+              const month = String(date.getMonth() + 1).padStart(2, "0");
+              const day = String(date.getDate()).padStart(2, "0");
+              const time =
+                item.flights[index].options[
+                  item.flights[index].options.length - 1
+                ].arrival.time;
               const arrivalTime = `${year}-${month}-${day}T${time}`;
               return element >= arrivalTime;
-            })
+            });
           }
-        })
+        });
       }
     }
 
     if (query.sort_by) {
       switch (query.sort_by) {
-        case 'CHEAPEST':
+        case "CHEAPEST":
           results = results.sort(
             (item1: any, item2: any) => item1.fare.payable - item2.fare.payable
           );
-          console.log('sorted res', results[0]);
+          console.log("sorted res", results[0]);
           break;
 
-        case 'FASTEST':
+        case "FASTEST":
           results = results.sort(
             (item1: any, item2: any) =>
               item1.flights[0].elapsed_time - item2.flights[0].elapsed_time
           );
           break;
 
-        case 'EARLIEST':
+        case "EARLIEST":
           results = results.sort(
             (item1: any, item2: any) =>
               Lib.getTimeValue(item1.flights[0].options[0].departure.time) -
@@ -650,20 +694,22 @@ export default class ResponseFormatter {
 
     // BY STOPPAGE
     if (query.stoppage) {
-      console.log({stoppage: query.stoppage})
+      console.log({ stoppage: query.stoppage });
       const stoppage_filter = JSON.parse(query.stoppage);
-      stoppage_filter.forEach((allowedStoppages: string | any[], ind: string | number) => {
-        if (allowedStoppages === null) {
-          return;
-        }
-        results = results.filter((item: any) => {
-          if (item.flights[ind]) {
-            return allowedStoppages.includes(item.flights[ind].stoppage);
+      stoppage_filter.forEach(
+        (allowedStoppages: string | any[], ind: string | number) => {
+          if (allowedStoppages === null) {
+            return;
           }
-          return false;
-        });
-        console.log({ results });
-      });
+          results = results.filter((item: any) => {
+            if (item.flights[ind]) {
+              return allowedStoppages.includes(item.flights[ind].stoppage);
+            }
+            return false;
+          });
+          console.log({ results });
+        }
+      );
     }
 
     // BY PRICE RANGE
@@ -682,7 +728,7 @@ export default class ResponseFormatter {
 
     // BY NON REFUNDABLE
     if (query.refundable) {
-      let booleanValue = query.refundable === 'true' ? true : false;
+      let booleanValue = query.refundable === "true" ? true : false;
 
       results = results.filter((item: any) => {
         if (item.refundable[0].refundable === booleanValue) {
@@ -693,8 +739,8 @@ export default class ResponseFormatter {
 
     const count = results.length;
 
-    const page = query.page || '1';
-    const size = query.size || '50';
+    const page = query.page || "1";
+    const size = query.size || "50";
 
     // PAGINATION
     results = this.FlightUtils.getLimitOffset(results, page, size);
@@ -740,7 +786,7 @@ export default class ResponseFormatter {
         country: item.departure.country,
         terminal: item.departure.terminal,
         time: item.departure.time,
-        date: '',
+        date: "",
         date_adjustment: item.departure.dateAdjustment,
       };
 
@@ -752,7 +798,7 @@ export default class ResponseFormatter {
         country: item.arrival.country,
         time: item.arrival.time,
         terminal: item.arrival.terminal,
-        date: '',
+        date: "",
         date_adjustment: item.arrival.dateAdjustment,
       };
 
@@ -845,8 +891,8 @@ export default class ResponseFormatter {
           for (let j = 0; j < pfd.segments.length; j++) {
             const segd = pfd.segments[j];
             const segment = segd.segment;
-            const meal_type = Lib.getMeal(segment.mealCode || '');
-            const cabin_type = Lib.getCabin(segment.cabinCode || '');
+            const meal_type = Lib.getMeal(segment.mealCode || "");
+            const cabin_type = Lib.getCabin(segment.cabinCode || "");
             segments.push({
               id: j + 1,
               name: `Segment-${j + 1}`,
@@ -879,7 +925,7 @@ export default class ResponseFormatter {
             segments,
             baggage: {
               id: newBaggage?.id,
-              unit: newBaggage.unit || 'pieces',
+              unit: newBaggage.unit || "pieces",
               count: newBaggage.weight || newBaggage.pieceCount,
             },
           });
@@ -945,15 +991,15 @@ export default class ResponseFormatter {
         }
       }
 
-      new_fare['commission'] = commissionPer;
+      new_fare["commission"] = commissionPer;
       const commissionAmount =
         (fare.totalFare.equivalentAmount * commissionPer) / 100;
-      new_fare['base_fare'] = fare.totalFare.equivalentAmount;
-      new_fare['discount'] = commissionAmount;
-      new_fare['ait'] = ait;
-      new_fare['payable'] = fare.totalFare.totalPrice - commissionAmount + ait;
-      new_fare['total_price'] = fare.totalFare.totalPrice + ait;
-      new_fare['total_tax'] = fare.totalFare.totalTaxAmount;
+      new_fare["base_fare"] = fare.totalFare.equivalentAmount;
+      new_fare["discount"] = commissionAmount;
+      new_fare["ait"] = ait;
+      new_fare["payable"] = fare.totalFare.totalPrice - commissionAmount + ait;
+      new_fare["total_price"] = fare.totalFare.totalPrice + ait;
+      new_fare["total_tax"] = fare.totalFare.totalTaxAmount;
 
       const itinery: IItinerary = {
         flight_id: uuidv4(),
@@ -990,13 +1036,16 @@ export default class ResponseFormatter {
       })
     );
 
-    const isDomesticFlight = updatedItineraries[0].leg_descriptions.every((leg: { departureLocation: string; arrivalLocation: string; }) =>
-      BD_AIRPORT.includes(leg.departureLocation) && BD_AIRPORT.includes(leg.arrivalLocation)
-    ) ? true : false;
+    const isDomesticFlight = updatedItineraries[0].leg_descriptions.every(
+      (leg: { departureLocation: string; arrivalLocation: string }) =>
+        BD_AIRPORT.includes(leg.departureLocation) &&
+        BD_AIRPORT.includes(leg.arrivalLocation)
+    )
+      ? true
+      : false;
 
-    return { ...updatedItineraries[0], isDomesticFlight }
+    return { ...updatedItineraries[0], isDomesticFlight };
   };
-
 
   // PNR RESPONSE FORMATTER
   public pnrResponseFormatter = async (response: any) => {

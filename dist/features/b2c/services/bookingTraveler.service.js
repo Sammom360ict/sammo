@@ -46,7 +46,7 @@ class BookingTravelerService extends abstract_service_1.default {
                 frequent_flyer_airline: body.frequent_flyer_airline,
                 frequent_flyer_number: body.frequent_flyer_number,
                 gender: body.gender,
-                country_id: body.country
+                country_id: body.country,
             };
             yield model.insertTraveler(traveler_body);
             return {
@@ -92,9 +92,8 @@ class BookingTravelerService extends abstract_service_1.default {
             }
             return {
                 success: true,
-                data,
                 code: this.StatusCode.HTTP_OK,
-                message: this.ResMsg.HTTP_OK,
+                data,
             };
         });
     }

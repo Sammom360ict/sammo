@@ -1,20 +1,18 @@
-import { Request } from 'express';
-import AbstractServices from '../../../abstract/abstract.service';
-import Lib from '../../../utils/lib/lib';
-import { v4 as uuidv4 } from 'uuid';
+import { Request } from "express";
+import AbstractServices from "../../../abstract/abstract.service";
+import Lib from "../../../utils/lib/lib";
 
 export class AdminAgencyService extends AbstractServices {
   constructor() {
     super();
   }
 
-
   //deposit to agency
   public async depositToAgency(req: Request) {
     const { id } = req.admin;
     const body = req.body;
     body.created_by = id;
-    body.type = 'credit';
+    body.type = "credit";
     const model = this.Model.agencyModel();
     const res = await model.insertAgencyDeposit(body);
     if (res) {
@@ -22,14 +20,31 @@ export class AdminAgencyService extends AbstractServices {
         success: true,
         code: this.StatusCode.HTTP_SUCCESSFUL,
         message: this.ResMsg.HTTP_SUCCESSFUL,
-      }
+      };
     } else {
       return {
         success: false,
         code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
-        message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR
-      }
+        message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR,
+      };
     }
+  }
+
+  //get list
+  public async getAllDepositRequestList(req: Request) {
+    const { limit, skip, status } = req.query;
+    const data = await this.Model.agencyModel().getAllAgencyDepositRequest({
+      limit: Number(limit),
+      skip: Number(skip),
+      status: status as string,
+    });
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      total: data.total,
+      data: data.data,
+    };
   }
 
   //get transaction
@@ -49,10 +64,9 @@ export class AdminAgencyService extends AbstractServices {
       code: this.StatusCode.HTTP_OK,
       message: this.ResMsg.HTTP_OK,
       total: data.total,
-      data: data.data
-    }
+      data: data.data,
+    };
   }
-
 
   // Create agency
   public async create(req: Request) {
@@ -84,7 +98,7 @@ export class AdminAgencyService extends AbstractServices {
         return {
           success: false,
           code: this.StatusCode.HTTP_CONFLICT,
-          message: 'Email already exist.',
+          message: "Email already exist.",
         };
       }
 
@@ -98,16 +112,16 @@ export class AdminAgencyService extends AbstractServices {
       };
 
       files.forEach((item) => {
-        if (item.fieldname === 'agency_logo') {
-          agencyBody['agency_logo'] = item.filename;
-        } else if (item.fieldname === 'user_photo') {
-          userBody['photo'] = item.filename;
+        if (item.fieldname === "agency_logo") {
+          agencyBody["agency_logo"] = item.filename;
+        } else if (item.fieldname === "user_photo") {
+          userBody["photo"] = item.filename;
         }
       });
 
       const agency = await agencyModel.createAgency(agencyBody);
 
-      userBody['agency_id'] = agency[0].id;
+      userBody["agency_id"] = agency[0].id;
 
       // let btocToken = '';
 
@@ -128,7 +142,7 @@ export class AdminAgencyService extends AbstractServices {
         data: {
           id: agency[0].id,
           agency_logo: agencyBody.agency_logo,
-          user_photo: userBody.photo
+          user_photo: userBody.photo,
         },
       };
     });
@@ -165,8 +179,10 @@ export class AdminAgencyService extends AbstractServices {
     }
 
     const query = req.query;
-    const users = await agencyModel.getUser({ agency_id: Number(id), ...query });
-
+    const users = await agencyModel.getUser({
+      agency_id: Number(id),
+      ...query,
+    });
 
     return {
       success: true,
@@ -174,7 +190,7 @@ export class AdminAgencyService extends AbstractServices {
       message: this.ResMsg.HTTP_OK,
       data: {
         ...data[0],
-        users
+        users,
       },
     };
   }
@@ -187,12 +203,11 @@ export class AdminAgencyService extends AbstractServices {
     const files = (req.files as Express.Multer.File[]) || [];
 
     if (files.length) {
-      body['agency_logo'] = files[0].filename;
+      body["agency_logo"] = files[0].filename;
     }
 
     const agencyModel = this.Model.agencyModel();
     await agencyModel.updateAgency(body, Number(id));
-
 
     return {
       success: true,
@@ -215,7 +230,7 @@ export class AdminAgencyService extends AbstractServices {
       return {
         success: false,
         code: this.StatusCode.HTTP_CONFLICT,
-        message: 'Email already exist.',
+        message: "Email already exist.",
       };
     }
 
@@ -230,7 +245,7 @@ export class AdminAgencyService extends AbstractServices {
     };
 
     if (files.length) {
-      userBody['photo'] = files[0].filename;
+      userBody["photo"] = files[0].filename;
     }
 
     const newUser = await userModel.createAgencyUser(userBody);
@@ -266,7 +281,7 @@ export class AdminAgencyService extends AbstractServices {
     };
 
     if (files.length) {
-      userBody['photo'] = files[0].filename;
+      userBody["photo"] = files[0].filename;
     }
 
     await userModel.updateAgencyUser(userBody, Number(id));

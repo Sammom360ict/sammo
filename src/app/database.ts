@@ -1,9 +1,9 @@
-import config from './../config/config';
-import knex from 'knex';
+import config from "./../config/config";
+import knex from "knex";
 
 const createDbCon = () => {
   const connection = knex({
-    client: 'pg',
+    client: "pg",
     connection: {
       host: config.DB_HOST,
       port: parseInt(config.DB_PORT),
@@ -20,7 +20,7 @@ const createDbCon = () => {
     },
   });
 
-  console.log('Travel trip bd Database has been Connected...💻');
+  console.log("Travel trip bd Database has been Connected...💻");
   return connection;
 };
 

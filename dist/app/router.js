@@ -16,26 +16,22 @@ class RootRouter {
         this.v1Router = (0, express_1.Router)();
         this.commonRouter = new commonRouter_1.default();
         this.authRouter = new auth_router_1.default();
-        this.adminRouter = new adminRoot_router_1.default();
         this.authChecker = new authChecker_1.default();
-        this.B2CRootRouter = new b2cRoot_router_1.default();
-        this.paymentRouter = new paymentRouter_1.default();
-        this.B2BRouter = new b2bRoot_router_1.default();
         this.callV1Router();
     }
     callV1Router() {
         //common
-        this.v1Router.use('/common', this.commonRouter.router);
+        this.v1Router.use("/common", this.commonRouter.router);
         //payment
-        this.v1Router.use('/payment', this.paymentRouter.router);
+        this.v1Router.use("/payment", new paymentRouter_1.default().router);
         //auth
-        this.v1Router.use('/auth', this.authRouter.AuthRouter);
+        this.v1Router.use("/auth", this.authRouter.AuthRouter);
         //admin
-        this.v1Router.use('/admin', this.authChecker.adminAuthChecker, this.adminRouter.Router);
+        this.v1Router.use("/admin", this.authChecker.adminAuthChecker, new adminRoot_router_1.default().Router);
         //b2c
-        this.v1Router.use('/btoc', this.B2CRootRouter.Router);
+        this.v1Router.use("/btoc", new b2cRoot_router_1.default().Router);
         //b2b
-        this.v1Router.use('/btob', this.authChecker.b2bAuthChecker, this.B2BRouter.Router);
+        this.v1Router.use("/btob", this.authChecker.b2bAuthChecker, new b2bRoot_router_1.default().Router);
     }
 }
 exports.default = RootRouter;

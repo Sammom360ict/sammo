@@ -24,7 +24,7 @@ class AgencyModel extends schema_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db("agency_info")
                 .withSchema(this.BTOB_SCHEMA)
-                .insert(payload, 'id');
+                .insert(payload, "id");
         });
     }
     //create agency user
@@ -32,7 +32,7 @@ class AgencyModel extends schema_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db("btob_user")
                 .withSchema(this.BTOB_SCHEMA)
-                .insert(payload, 'id');
+                .insert(payload, "id");
         });
     }
     //get agency
@@ -53,7 +53,7 @@ class AgencyModel extends schema_1.default {
                     qb.andWhere("ref_id", payload.ref_id);
                 }
             })
-                .orderBy("id", 'desc')
+                .orderBy("id", "desc")
                 .limit(payload.limit || 100)
                 .offset(payload.skip || 0);
             let total = [];
@@ -95,7 +95,7 @@ class AgencyModel extends schema_1.default {
                 .withSchema(this.BTOB_SCHEMA)
                 .select("id", "name", "email", "mobile_number", "photo", "status")
                 .where("agency_id", payload.agency_id)
-                .orderBy("id", 'desc')
+                .orderBy("id", "desc")
                 .limit(payload.limit || 100)
                 .offset(payload.skip || 0);
         });
@@ -134,18 +134,58 @@ class AgencyModel extends schema_1.default {
             });
         });
     }
+    //insert agency deposit request
+    insertAgencyDepositRequest(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db("agency_deposit_request")
+                .withSchema(this.BTOB_SCHEMA)
+                .insert(payload, "id");
+        });
+    }
+    //get agency deposit request
+    getAllAgencyDepositRequest(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ agency_id, status, limit, skip, }) {
+            const data = yield this.db("agency_deposit_request as adr")
+                .withSchema(this.BTOB_SCHEMA)
+                .select("adr.*", "ai.agency_name", "ai.agency_logo", "ai.phone as agency_phone")
+                .join("agency_info as ai", "adr.agency_id", "ai.id")
+                .where(function () {
+                if (agency_id) {
+                    this.andWhere("adr.agency_id", agency_id);
+                }
+                if (status) {
+                    this.andWhere("adr.status", status);
+                }
+            })
+                .limit(limit || 100)
+                .offset(skip || 0)
+                .orderBy("adr.id", "desc");
+            const total = yield this.db("agency_deposit_request")
+                .withSchema(this.BTOB_SCHEMA)
+                .count("* as total")
+                .where(function () {
+                if (agency_id) {
+                    this.andWhere("adr.agency_id", agency_id);
+                }
+                if (status) {
+                    this.andWhere("adr.status", status);
+                }
+            });
+            return { data, total: parseInt(total[0].total) };
+        });
+    }
     //insert agency deposit
     insertAgencyDeposit(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db("agency_deposits")
                 .withSchema(this.BTOB_SCHEMA)
-                .insert(payload, 'id');
+                .insert(payload, "id");
         });
     }
     //get total deposit
     getTotalDeposit(agency_id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.db('b2b.agency_deposits')
+            const data = yield this.db("b2b.agency_deposits")
                 .select(this.db.raw(`
         (
           SELECT 
@@ -175,16 +215,13 @@ class AgencyModel extends schema_1.default {
                 .where((qb) => {
                 qb.andWhere("ad.agency_id", params.agency_id);
                 if (params.start_date && params.end_date) {
-                    qb.andWhereBetween("ad.date", [
-                        params.start_date,
-                        params.end_date,
-                    ]);
+                    qb.andWhereBetween("ad.date", [params.start_date, params.end_date]);
                 }
                 if (params.type) {
-                    qb.andWhere('ad.type', params.type);
+                    qb.andWhere("ad.type", params.type);
                 }
                 if (params.search) {
-                    qb.andWhere('ad.details', 'like', `%${params.search}%`);
+                    qb.andWhere("ad.details", "like", `%${params.search}%`);
                 }
             })
                 .orderBy("ad.id", "desc")
@@ -197,16 +234,13 @@ class AgencyModel extends schema_1.default {
                     .where((qb) => {
                     qb.andWhere("ad.agency_id", params.agency_id);
                     if (params.start_date && params.end_date) {
-                        qb.andWhereBetween("ad.date", [
-                            params.start_date,
-                            params.end_date,
-                        ]);
+                        qb.andWhereBetween("ad.date", [params.start_date, params.end_date]);
                     }
                     if (params.type) {
-                        qb.andWhere('ad.type', params.type);
+                        qb.andWhere("ad.type", params.type);
                     }
                     if (params.search) {
-                        qb.andWhere('ad.details', 'like', `%${params.search}%`);
+                        qb.andWhere("ad.details", "like", `%${params.search}%`);
                     }
                 });
             }
@@ -216,46 +250,45 @@ class AgencyModel extends schema_1.default {
     //insert b2b traveler
     insertTraveler(payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.db("b2b.travelers")
-                .insert(payload, 'id');
+            return yield this.db("b2b.travelers").insert(payload, "id");
         });
     }
     // get all travelers
     getAllTravelers(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             const { limit, skip, agency_id, name, status } = payload;
-            const dtbs = this.db('b2b.travelers');
+            const dtbs = this.db("b2b.travelers");
             if (limit && skip) {
                 dtbs.limit(parseInt(limit));
                 dtbs.offset(parseInt(skip));
             }
             const data = yield dtbs
-                .select('travelers.id', 'reference', 'first_name as mid_name', 'sur_name', this.db.raw(`
+                .select("travelers.id", "reference", "first_name as mid_name", "sur_name", this.db.raw(`
                 CASE 
                     WHEN gender = 'M' THEN 'M' 
                     WHEN gender = 'F' THEN 'F' 
                     ELSE gender 
                 END as gender
-                `), 'phone', 'date_of_birth', 'email', 'type', 'passport_number', 'passport_expire_date', 'country_id', 'city', 'frequent_flyer_airline', 'frequent_flyer_number', 'con.name as country')
-                .leftJoin('dbo.country as con', 'con.id', 'travelers.country_id')
+                `), "phone", "date_of_birth", "email", "type", "passport_number", "passport_expire_date", "country_id", "city", "frequent_flyer_airline", "frequent_flyer_number", "con.name as country")
+                .leftJoin("dbo.country as con", "con.id", "travelers.country_id")
                 .where({ agency_id })
                 .andWhere(function () {
                 if (name) {
                     this.andWhereRaw("LOWER(CONCAT(first_name, ' ', sur_name)) LIKE LOWER(?)", [`%${name.toLowerCase()}%`]);
                 }
                 if (status !== undefined) {
-                    this.andWhere('status', status);
+                    this.andWhere("status", status);
                 }
             });
-            const total = yield this.db('b2b.travelers')
-                .count('id as total')
+            const total = yield this.db("b2b.travelers")
+                .count("id as total")
                 .where({ agency_id })
                 .andWhere(function () {
                 if (name) {
                     this.andWhereRaw("LOWER(CONCAT(first_name, ' ', sur_name)) LIKE LOWER(?)", [`%${name.toLowerCase()}%`]);
                 }
                 if (status !== undefined) {
-                    this.andWhere('status', status);
+                    this.andWhere("status", status);
                 }
             });
             return { data, total: parseInt(total[0].total) };
@@ -264,7 +297,7 @@ class AgencyModel extends schema_1.default {
     //   update travelers
     updateTravelers(agency_id, id, payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.db('travelers')
+            return yield this.db("travelers")
                 .withSchema(this.BTOB_SCHEMA)
                 .update(payload)
                 .where({
@@ -276,23 +309,23 @@ class AgencyModel extends schema_1.default {
     // get single travelers
     getSingleTravelers(agency_id, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.db('b2b.travelers')
-                .select('travelers.id', 'reference', 'first_name as mid_name', 'sur_name', this.db.raw(`
+            return yield this.db("b2b.travelers")
+                .select("travelers.id", "reference", "first_name as mid_name", "sur_name", this.db.raw(`
           CASE 
             WHEN gender = 'M' THEN 'M' 
             WHEN gender = 'F' THEN 'F' 
             ELSE gender 
           END as gender
-        `), 'phone', 'date_of_birth', 'email', 'type', 'passport_number', 'passport_expire_date', 'country_id', 'city', 'frequent_flyer_airline', 'frequent_flyer_number', 'con.name as country')
-                .leftJoin('dbo.country as con', 'con.id', 'travelers.country_id')
+        `), "phone", "date_of_birth", "email", "type", "passport_number", "passport_expire_date", "country_id", "city", "frequent_flyer_airline", "frequent_flyer_number", "con.name as country")
+                .leftJoin("dbo.country as con", "con.id", "travelers.country_id")
                 .where({ agency_id })
-                .andWhere('travelers.id', id);
+                .andWhere("travelers.id", id);
         });
     }
     //delete travelers
     deleteTraveler(agency_id, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.db('b2b.travelers')
+            return yield this.db("b2b.travelers")
                 .delete()
                 .where({ agency_id })
                 .andWhere({ id });
@@ -303,7 +336,7 @@ class AgencyModel extends schema_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const currentDate = new Date();
             const currentYear = new Date().getFullYear();
-            const daily_booking_amount = yield this.db('flight_booking')
+            const daily_booking_amount = yield this.db("flight_booking")
                 .withSchema(this.BTOB_SCHEMA)
                 .select(this.db.raw(`
               SUM(CASE WHEN status = 'issued' THEN payable_amount ELSE 0 END) AS daily_issue_amount,
@@ -313,7 +346,7 @@ class AgencyModel extends schema_1.default {
                 .where("created_by", agent_id)
                 .andWhereRaw("DATE(created_at) = ?", [currentDate])
                 .first();
-            const monthly_booking_amount = yield this.db('flight_booking')
+            const monthly_booking_amount = yield this.db("flight_booking")
                 .withSchema(this.BTOB_SCHEMA)
                 .select(this.db.raw(`
               SUM(CASE WHEN status = 'issued' THEN payable_amount ELSE 0 END) AS monthly_issue_amount,
@@ -323,7 +356,7 @@ class AgencyModel extends schema_1.default {
                 .where("created_by", agent_id)
                 .andWhereRaw("DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)")
                 .first();
-            const total_booking = yield this.db('flight_booking')
+            const total_booking = yield this.db("flight_booking")
                 .withSchema(this.BTOB_SCHEMA)
                 .select(this.db.raw(`
                   COUNT(*) AS total,
@@ -333,7 +366,7 @@ class AgencyModel extends schema_1.default {
                   `))
                 .first()
                 .where("created_by", agent_id);
-            const booking_graph = yield this.db('flight_booking')
+            const booking_graph = yield this.db("flight_booking")
                 .withSchema(this.BTOB_SCHEMA)
                 .select(this.db.raw(`
               TRIM(TO_CHAR(created_at, 'Month')) AS month_name,
@@ -343,12 +376,12 @@ class AgencyModel extends schema_1.default {
               COUNT(*) FILTER (WHERE status = 'issued') AS total_issued
           `))
                 .whereRaw(`EXTRACT(YEAR FROM created_at) = ${currentYear}`)
-                .andWhere('created_by', agent_id)
-                .groupByRaw('TRIM(TO_CHAR(created_at, \'Month\'))')
-                .orderByRaw('MIN(created_at)');
+                .andWhere("created_by", agent_id)
+                .groupByRaw("TRIM(TO_CHAR(created_at, 'Month'))")
+                .orderByRaw("MIN(created_at)");
             return {
                 total_booking: Object.assign(Object.assign(Object.assign({}, total_booking), daily_booking_amount), monthly_booking_amount),
-                booking_graph
+                booking_graph,
             };
         });
     }

@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import PaymentService from '../commonService/paymentService';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import PaymentService from "../commonService/paymentService";
 
 class PaymentController extends AbstractController {
   private PaymentService = new PaymentService();
@@ -12,15 +12,12 @@ class PaymentController extends AbstractController {
   public paymentFailed = this.asyncWrapper.wrap(
     null,
     async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.PaymentService.paymentFailed(
-        req
-      );
+      const { code, ...rest } = await this.PaymentService.paymentFailed(req);
       if (rest.redirect_url) {
         console.log(rest.redirect_url);
         res.status(code).redirect(rest.redirect_url);
-      }
-      else {
-        console.log({rest});
+      } else {
+        console.log({ rest });
         res.status(code).json(rest);
       }
     }
@@ -30,13 +27,10 @@ class PaymentController extends AbstractController {
   public paymentSuccess = this.asyncWrapper.wrap(
     null,
     async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.PaymentService.paymentSuccess(
-        req
-      );
+      const { code, ...rest } = await this.PaymentService.paymentSuccess(req);
       if (rest.redirect_url) {
         res.status(code).redirect(rest.redirect_url);
-      }
-      else {
+      } else {
         res.status(code).json(rest);
       }
     }
@@ -46,19 +40,14 @@ class PaymentController extends AbstractController {
   public paymentCancelled = this.asyncWrapper.wrap(
     null,
     async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.PaymentService.paymentCancelled(
-        req
-      );
+      const { code, ...rest } = await this.PaymentService.paymentCancelled(req);
       if (rest.redirect_url) {
         res.status(code).redirect(rest.redirect_url);
-      }
-      else {
+      } else {
         res.status(code).json(rest);
       }
     }
   );
-
-
 }
 
 export default PaymentController;

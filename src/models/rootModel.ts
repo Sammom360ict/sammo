@@ -1,21 +1,21 @@
-import { Knex } from 'knex';
-import CommonModel from './commonModel/commonModel';
-import AdminModel from './adminModel/adminModel';
-import { db } from '../app/database';
-import AdministrationModel from './adminModel/administrationModel';
-import UserModel from './userModel/userModel';
-import TravelerModel from './userModel/travelerModel';
-import ArticleModel from './articleModel/articleModel';
-import { AirlineCommissionModel } from './commonModel/airlinesCommissionModel';
-import { BookingRequestModel } from './bookingModel/bookingRequestModel';
-import { VisaModel } from './visaModel/visaModel';
-import { FlightModel } from './flightModel/flightModel';
-import PaymentModel from './userModel/paymentModel';
-import FlightBookingModel from './flightModel/flightBookingModel';
-import FlightTicketModel from './flightModel/flightTicketModel';
-import { AgencyModel } from './agencyModel/agencyModel';
-import B2BFlightBookingModel from './agencyModel/b2bFlightBookingModel';
-import B2BFlightTicketModel from './agencyModel/b2bFlightTicketModel';
+import { Knex } from "knex";
+import CommonModel from "./commonModel/commonModel";
+import AdminModel from "./adminModel/adminModel";
+import { db } from "../app/database";
+import AdministrationModel from "./adminModel/administrationModel";
+import UserModel from "./userModel/userModel";
+import TravelerModel from "./userModel/travelerModel";
+import ArticleModel from "./articleModel/articleModel";
+import { AirlineCommissionModel } from "./commonModel/airlinesCommissionModel";
+import { BookingRequestModel } from "./bookingModel/bookingRequestModel";
+import { VisaModel } from "./visaModel/visaModel";
+import { FlightModel } from "./flightModel/flightModel";
+import PaymentModel from "./userModel/paymentModel";
+import FlightBookingModel from "./flightModel/btocFlightBookingModel";
+import FlightTicketModel from "./flightModel/flightTicketModel";
+import { AgencyModel } from "./agencyModel/agencyModel";
+import B2BFlightBookingModel from "./agencyModel/b2bFlightBookingModel";
+import B2BFlightTicketModel from "./agencyModel/b2bFlightTicketModel";
 
 class Models {
   //booking request models

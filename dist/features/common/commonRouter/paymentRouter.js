@@ -12,9 +12,9 @@ class PaymentRouter extends abstract_router_1.default {
         this.callRouter();
     }
     callRouter() {
-        this.router.route('/failed').post(this.Controller.paymentFailed);
-        this.router.route('/success').post(this.Controller.paymentSuccess);
-        this.router.route('/cancelled').post(this.Controller.paymentCancelled);
+        this.router.route("/failed").post(this.Controller.paymentFailed);
+        this.router.route("/success").post(this.Controller.paymentSuccess);
+        this.router.route("/cancelled").post(this.Controller.paymentCancelled);
     }
 }
 exports.default = PaymentRouter;

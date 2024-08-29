@@ -8,7 +8,7 @@ const config_1 = __importDefault(require("./../config/config"));
 const knex_1 = __importDefault(require("knex"));
 const createDbCon = () => {
     const connection = (0, knex_1.default)({
-        client: 'pg',
+        client: "pg",
         connection: {
             host: config_1.default.DB_HOST,
             port: parseInt(config_1.default.DB_PORT),
@@ -24,7 +24,7 @@ const createDbCon = () => {
             max: 100,
         },
     });
-    console.log('Travel trip bd Database has been Connected...💻');
+    console.log("Travel trip bd Database has been Connected...💻");
     return connection;
 };
 exports.db = createDbCon();

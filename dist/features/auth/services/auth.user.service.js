@@ -38,7 +38,11 @@ class UserAuthService extends abstract_service_1.default {
                 const _a = req.body, { password, email, phone_number, username } = _a, rest = __rest(_a, ["password", "email", "phone_number", "username"]);
                 const model = this.Model.userModel(trx);
                 //check users email and phone number and username
-                const check_user = yield model.getProfileDetails({ email, phone_number, username });
+                const check_user = yield model.getProfileDetails({
+                    email,
+                    phone_number,
+                    username,
+                });
                 if (check_user.length) {
                     if (check_user[0].email === email) {
                         return {
@@ -83,7 +87,7 @@ class UserAuthService extends abstract_service_1.default {
                     status: true,
                     create_date: new Date(),
                 };
-                const token = lib_1.default.createToken(tokenData, config_1.default.JWT_SECRET_USER, '48h');
+                const token = lib_1.default.createToken(tokenData, config_1.default.JWT_SECRET_USER, "48h");
                 if (registration.length) {
                     return {
                         success: true,
@@ -130,7 +134,7 @@ class UserAuthService extends abstract_service_1.default {
                 return {
                     success: false,
                     code: this.StatusCode.HTTP_FORBIDDEN,
-                    message: "Your account has been disabled"
+                    message: "Your account has been disabled",
                 };
             }
             const token_data = {
@@ -145,7 +149,7 @@ class UserAuthService extends abstract_service_1.default {
                 status: rest.status,
                 email: rest.email,
             };
-            const token = lib_1.default.createToken(token_data, config_1.default.JWT_SECRET_USER, '48h');
+            const token = lib_1.default.createToken(token_data, config_1.default.JWT_SECRET_USER, "48h");
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,

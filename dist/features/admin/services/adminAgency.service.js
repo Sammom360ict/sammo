@@ -25,7 +25,7 @@ class AdminAgencyService extends abstract_service_1.default {
             const { id } = req.admin;
             const body = req.body;
             body.created_by = id;
-            body.type = 'credit';
+            body.type = "credit";
             const model = this.Model.agencyModel();
             const res = yield model.insertAgencyDeposit(body);
             if (res) {
@@ -39,9 +39,26 @@ class AdminAgencyService extends abstract_service_1.default {
                 return {
                     success: false,
                     code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
-                    message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR
+                    message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR,
                 };
             }
+        });
+    }
+    //get list
+    getAllDepositRequestList(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { limit, skip, status } = req.query;
+            const data = yield this.Model.agencyModel().getAllAgencyDepositRequest({
+                limit: Number(limit),
+                skip: Number(skip),
+                status: status,
+            });
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                total: data.total,
+                data: data.data,
+            };
         });
     }
     //get transaction
@@ -62,7 +79,7 @@ class AdminAgencyService extends abstract_service_1.default {
                 code: this.StatusCode.HTTP_OK,
                 message: this.ResMsg.HTTP_OK,
                 total: data.total,
-                data: data.data
+                data: data.data,
             };
         });
     }
@@ -85,7 +102,7 @@ class AdminAgencyService extends abstract_service_1.default {
                     return {
                         success: false,
                         code: this.StatusCode.HTTP_CONFLICT,
-                        message: 'Email already exist.',
+                        message: "Email already exist.",
                     };
                 }
                 const hashed_password = yield lib_1.default.hashPass(user_password);
@@ -96,15 +113,15 @@ class AdminAgencyService extends abstract_service_1.default {
                     mobile_number: user_phone,
                 };
                 files.forEach((item) => {
-                    if (item.fieldname === 'agency_logo') {
-                        agencyBody['agency_logo'] = item.filename;
+                    if (item.fieldname === "agency_logo") {
+                        agencyBody["agency_logo"] = item.filename;
                     }
-                    else if (item.fieldname === 'user_photo') {
-                        userBody['photo'] = item.filename;
+                    else if (item.fieldname === "user_photo") {
+                        userBody["photo"] = item.filename;
                     }
                 });
                 const agency = yield agencyModel.createAgency(agencyBody);
-                userBody['agency_id'] = agency[0].id;
+                userBody["agency_id"] = agency[0].id;
                 // let btocToken = '';
                 // if (btoc_commission) {
                 //   btocToken = uuidv4();
@@ -121,7 +138,7 @@ class AdminAgencyService extends abstract_service_1.default {
                     data: {
                         id: agency[0].id,
                         agency_logo: agencyBody.agency_logo,
-                        user_photo: userBody.photo
+                        user_photo: userBody.photo,
                     },
                 };
             }));
@@ -172,7 +189,7 @@ class AdminAgencyService extends abstract_service_1.default {
             const { id } = req.params;
             const files = req.files || [];
             if (files.length) {
-                body['agency_logo'] = files[0].filename;
+                body["agency_logo"] = files[0].filename;
             }
             const agencyModel = this.Model.agencyModel();
             yield agencyModel.updateAgency(body, Number(id));
@@ -197,7 +214,7 @@ class AdminAgencyService extends abstract_service_1.default {
                 return {
                     success: false,
                     code: this.StatusCode.HTTP_CONFLICT,
-                    message: 'Email already exist.',
+                    message: "Email already exist.",
                 };
             }
             const hashed_password = yield lib_1.default.hashPass(password);
@@ -209,7 +226,7 @@ class AdminAgencyService extends abstract_service_1.default {
                 agency_id,
             };
             if (files.length) {
-                userBody['photo'] = files[0].filename;
+                userBody["photo"] = files[0].filename;
             }
             const newUser = yield userModel.createAgencyUser(userBody);
             return {
@@ -239,7 +256,7 @@ class AdminAgencyService extends abstract_service_1.default {
             }
             const userBody = Object.assign({}, req.body);
             if (files.length) {
-                userBody['photo'] = files[0].filename;
+                userBody["photo"] = files[0].filename;
             }
             yield userModel.updateAgencyUser(userBody, Number(id));
             return {

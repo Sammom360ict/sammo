@@ -14,12 +14,12 @@ class B2BVisaRouter extends abstract_router_1.default {
     }
     callRouter() {
         //create application, list
-        this.router.route('/')
+        this.router
+            .route("/")
             .post(this.controller.createApplication)
             .get(this.controller.getApplicationList);
         //single application
-        this.router.route('/:id')
-            .get(this.controller.getSingleApplication);
+        this.router.route("/:id").get(this.controller.getSingleApplication);
     }
 }
 exports.B2BVisaRouter = B2BVisaRouter;

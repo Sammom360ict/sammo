@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import adminFlightBookingService from '../services/flightBooking.service';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import adminFlightBookingService from "../services/flightBooking.service";
 
 class adminFlightBookingController extends AbstractController {
   private service = new adminFlightBookingService();
@@ -8,8 +8,6 @@ class adminFlightBookingController extends AbstractController {
   constructor() {
     super();
   }
-
-
 
   // get all flight booking
   public getAllFlightBooking = this.asyncWrapper.wrap(
@@ -23,7 +21,7 @@ class adminFlightBookingController extends AbstractController {
 
   // get single flight booking
   public getSingleFlightBooking = this.asyncWrapper.wrap(
-    { paramSchema: this.commonValidator.singleParamStringValidator('id') },
+    { paramSchema: this.commonValidator.singleParamStringValidator("id") },
     async (req: Request, res: Response) => {
       const { code, ...rest } = await this.service.getSingleFlightBooking(req);
 
@@ -33,7 +31,7 @@ class adminFlightBookingController extends AbstractController {
 
   // issue ticket
   public issueTicket = this.asyncWrapper.wrap(
-    { paramSchema: this.commonValidator.singleParamStringValidator('id') },
+    { paramSchema: this.commonValidator.singleParamStringValidator("id") },
     async (req: Request, res: Response) => {
       const { code, ...rest } = await this.service.ticketIssue(req);
 
@@ -43,7 +41,7 @@ class adminFlightBookingController extends AbstractController {
 
   // cancel flight booking
   public cancelFlightBooking = this.asyncWrapper.wrap(
-    { paramSchema: this.commonValidator.singleParamStringValidator('id') },
+    { paramSchema: this.commonValidator.singleParamStringValidator("id") },
     async (req: Request, res: Response) => {
       const { code, ...rest } = await this.service.cancelFlightBooking(req);
 
