@@ -20,6 +20,7 @@ export const origin: string[] = [
   "http://192.168.0.236:5173",
   "http://192.168.0.190:5173",
   "https://b2b.traveltripbd.com",
+  "https://traveltripbd.com",
   "https://www.b2b.traveltripbd.com",
   "https://admin.traveltripbd.com",
   "https://www.admin.traveltripbd.com",
