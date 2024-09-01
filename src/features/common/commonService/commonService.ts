@@ -1,6 +1,6 @@
-import { Request } from 'express';
-import AbstractServices from '../../../abstract/abstract.service';
-import { IGetOTPPayload } from '../../../utils/interfaces/common/commonInterface';
+import { Request } from "express";
+import AbstractServices from "../../../abstract/abstract.service";
+import { IGetOTPPayload } from "../../../utils/interfaces/common/commonInterface";
 import {
   OTP_EMAIL_SUBJECT,
   OTP_FOR,
@@ -9,19 +9,19 @@ import {
   OTP_TYPE_FORGET_USER,
   OTP_TYPE_VERIFY_USER,
   SABRE_TOKEN_ENV,
-} from '../../../utils/miscellaneous/constants';
-import Lib from '../../../utils/lib/lib';
-import { sendEmailOtpTemplate } from '../../../utils/templates/sendEmailOtp';
-import ResMsg from '../../../utils/miscellaneous/responseMessage';
-import config from '../../../config/config';
+} from "../../../utils/miscellaneous/constants";
+import Lib from "../../../utils/lib/lib";
+import { sendEmailOtpTemplate } from "../../../utils/templates/sendEmailOtp";
+import ResMsg from "../../../utils/miscellaneous/responseMessage";
+import config from "../../../config/config";
 import {
   IAirlineFilterQuery,
   IAirportFilterQuery,
   IVisaFilterQuery,
-} from '../commonUtils/types/commonTypes';
-import qs from 'qs';
-import { GET_TOKEN_ENDPOINT } from '../../../utils/miscellaneous/sabreApiEndpoints';
-import axios from 'axios';
+} from "../commonUtils/types/commonTypes";
+import qs from "qs";
+import { GET_TOKEN_ENDPOINT } from "../../../utils/miscellaneous/sabreApiEndpoints";
+import axios from "axios";
 
 class commonService extends AbstractServices {
   constructor() {
@@ -32,18 +32,18 @@ class commonService extends AbstractServices {
   public async getSabreToken() {
     try {
       let data = qs.stringify({
-        grant_type: 'password',
+        grant_type: "password",
         username: config.SABRE_USERNAME,
         password: config.SABRE_PASSWORD,
       });
 
       let axiosConfig = {
-        method: 'post',
+        method: "post",
         maxBodyLength: Infinity,
         url: `${config.SABRE_URL}/${GET_TOKEN_ENDPOINT}`,
         headers: {
           Authorization: `Basic ${config.SABRE_AUTH_TOKEN}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         data: data,
       };
@@ -77,7 +77,7 @@ class commonService extends AbstractServices {
           return {
             success: false,
             code: this.StatusCode.HTTP_NOT_FOUND,
-            message: 'No user has been found with this email',
+            message: "No user has been found with this email",
           };
         }
       } else if (type === OTP_TYPE_FORGET_ADMIN) {
@@ -98,17 +98,17 @@ class commonService extends AbstractServices {
           return {
             success: false,
             code: this.StatusCode.HTTP_NOT_FOUND,
-            message: 'No unverified user found.',
+            message: "No unverified user found.",
           };
         }
-      } else if( type === OTP_TYPE_FORGET_AGENT) {
+      } else if (type === OTP_TYPE_FORGET_AGENT) {
         const agentModel = this.Model.agencyModel();
-        const checkAgent = await agentModel.getSingleUser({email});
+        const checkAgent = await agentModel.getSingleUser({ email });
         if (!checkAgent.length) {
           return {
             success: false,
             code: this.StatusCode.HTTP_NOT_FOUND,
-            message: 'No user found.',
+            message: "No user found.",
           };
         }
       }
@@ -131,10 +131,10 @@ class commonService extends AbstractServices {
         const [send_email] = await Promise.all([
           email
             ? Lib.sendEmail(
-              email,
-              OTP_EMAIL_SUBJECT,
-              sendEmailOtpTemplate(otp, OTP_FOR)
-            )
+                email,
+                OTP_EMAIL_SUBJECT,
+                sendEmailOtpTemplate(otp, OTP_FOR)
+              )
             : undefined,
         ]);
 
@@ -161,7 +161,7 @@ class commonService extends AbstractServices {
           };
         }
       } catch (error) {
-        console.error('Error sending email or SMS:', error);
+        console.error("Error sending email or SMS:", error);
         return {
           success: false,
           code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
@@ -220,7 +220,7 @@ class commonService extends AbstractServices {
             return {
               success: false,
               code: this.StatusCode.HTTP_NOT_FOUND,
-              message: 'No unverified user found.',
+              message: "No unverified user found.",
             };
           }
 
@@ -232,9 +232,9 @@ class commonService extends AbstractServices {
           return {
             success: true,
             code: this.StatusCode.HTTP_ACCEPTED,
-            message: 'User successfully verified.',
+            message: "User successfully verified.",
           };
-        } else if(type === OTP_TYPE_FORGET_AGENT) {
+        } else if (type === OTP_TYPE_FORGET_AGENT) {
           secret = config.JWT_SECRET_AGENT;
         }
 
@@ -244,7 +244,7 @@ class commonService extends AbstractServices {
             type: type,
           },
           secret,
-          '5m'
+          "5m"
         );
 
         return {
@@ -338,13 +338,16 @@ class commonService extends AbstractServices {
   public async getAllVisaList(req: Request) {
     let { country_id, limit, skip } = req.query as IVisaFilterQuery;
     const model = this.Model.VisaModel();
-    const data = await model.get({ country_id, status: true, limit, skip }, true);
+    const data = await model.get(
+      { country_id, status: true, limit, skip },
+      true
+    );
     return {
       success: true,
       code: this.StatusCode.HTTP_OK,
       total: data.total,
       data: data.data,
-    }
+    };
   }
 
   //get single visa
@@ -357,13 +360,13 @@ class commonService extends AbstractServices {
         success: false,
         code: this.StatusCode.HTTP_NOT_FOUND,
         message: this.ResMsg.HTTP_NOT_FOUND,
-      }
+      };
     } else {
       return {
         success: true,
         code: this.StatusCode.HTTP_OK,
         data: data[0],
-      }
+      };
     }
   }
 }

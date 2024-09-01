@@ -51,7 +51,7 @@ class BtoBSubAgencyService extends abstract_service_1.default {
                     return {
                         success: false,
                         code: this.StatusCode.HTTP_CONFLICT,
-                        message: 'Email already exist.',
+                        message: "Email already exist.",
                     };
                 }
                 const hashed_password = yield lib_1.default.hashPass(user_password);
@@ -62,15 +62,15 @@ class BtoBSubAgencyService extends abstract_service_1.default {
                     mobile_number: user_phone,
                 };
                 files.forEach((item) => {
-                    if (item.fieldname === 'agency_logo') {
-                        agencyBody['agency_logo'] = item.filename;
+                    if (item.fieldname === "agency_logo") {
+                        agencyBody["agency_logo"] = item.filename;
                     }
-                    else if (item.fieldname === 'user_photo') {
-                        userBody['photo'] = item.filename;
+                    else if (item.fieldname === "user_photo") {
+                        userBody["photo"] = item.filename;
                     }
                 });
                 const agency = yield agencyModel.createAgency(agencyBody);
-                userBody['agency_id'] = agency[0].id;
+                userBody["agency_id"] = agency[0].id;
                 yield agencyModel.createAgencyUser(userBody);
                 return {
                     success: true,
@@ -79,7 +79,7 @@ class BtoBSubAgencyService extends abstract_service_1.default {
                     data: {
                         id: agency[0].id,
                         logo: agencyBody.agency_logo,
-                        user_photo: userBody.photo
+                        user_photo: userBody.photo,
                     },
                 };
             }));
@@ -91,7 +91,13 @@ class BtoBSubAgencyService extends abstract_service_1.default {
             const { name, status, limit, skip } = req.query;
             const { agency_id } = req.agency;
             const agencyModel = this.Model.agencyModel();
-            const { data, total } = yield agencyModel.getAgency({ ref_id: agency_id, name: name, status: status, limit: limit, skip: skip });
+            const { data, total } = yield agencyModel.getAgency({
+                ref_id: agency_id,
+                name: name,
+                status: status,
+                limit: limit,
+                skip: skip,
+            });
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
@@ -116,7 +122,11 @@ class BtoBSubAgencyService extends abstract_service_1.default {
                     message: this.ResMsg.HTTP_NOT_FOUND,
                 };
             }
-            const users = yield agencyModel.getUser({ agency_id: Number(id), limit: limit, skip: skip });
+            const users = yield agencyModel.getUser({
+                agency_id: Number(id),
+                limit: limit,
+                skip: skip,
+            });
             const _a = data[0], { ref_id } = _a, restAgencyData = __rest(_a, ["ref_id"]);
             return {
                 success: true,

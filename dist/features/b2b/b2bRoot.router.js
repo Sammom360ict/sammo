@@ -18,7 +18,6 @@ class B2BRootRouter {
         this.Router = (0, express_1.Router)();
         this.TravelerRouter = new bookingTraveler_router_1.default();
         this.ProfileRouter = new bookingProfile_router_1.default();
-        this.FlightBookingRouter = new flightBooking_router_1.default();
         this.TicketRouter = new ticketIssue_router_1.default();
         this.SubAgentRouter = new subAgency_router_1.BtoBSubAgencyRouter();
         this.dashboardRouter = new dashboard_router_1.B2BDashboardRouter();
@@ -34,17 +33,17 @@ class B2BRootRouter {
         //payment router
         // this.Router.use("/payment", new BookingPaymentRouter().router);
         //flight booking router
-        this.Router.use("/flight-booking", this.FlightBookingRouter.router);
+        this.Router.use("/flight-booking", new flightBooking_router_1.default().router);
         //ticket router
         this.Router.use("/ticket-issue", this.TicketRouter.router);
         //sub agent
         this.Router.use("/sub-agent", this.SubAgentRouter.router);
         //visa router
         this.Router.use("/visa-application", new bookingVisa_router_1.B2BVisaRouter().router);
-        // b2b request
-        this.Router.use("/", new btob_router_1.BtobRouter().router);
         //dashboard router
         this.Router.use("/dashboard", this.dashboardRouter.router);
+        // b2b request
+        this.Router.use("/", new btob_router_1.BtobRouter().router);
     }
 }
 exports.default = B2BRootRouter;

@@ -16,6 +16,7 @@ const dashboard_router_1 = __importDefault(require("./routers/dashboard.router")
 const flightBooking_router_1 = __importDefault(require("./routers/flightBooking.router"));
 const adminAgency_router_1 = require("./routers/adminAgency.router");
 const b2bFlightBooking_router_1 = __importDefault(require("./routers/b2bFlightBooking.router"));
+const admin_btoc_router_1 = require("./routers/admin.btoc.router");
 class AdminRootRouter {
     constructor() {
         this.Router = (0, express_1.Router)();
@@ -48,6 +49,8 @@ class AdminRootRouter {
         this.Router.use("/visa", this.VisaRouter.router);
         //dashboard router
         this.Router.use("/dashboard", this.DashBoardRouter.router);
+        // btoc router
+        this.Router.use("/btoc", new admin_btoc_router_1.AdminBtocRouter().router);
         //b2c flight booking router
         this.Router.use("/b2c/flight-booking", new flightBooking_router_1.default().router);
         //b2b flight booking router

@@ -61,6 +61,49 @@ class AdminAgencyService extends abstract_service_1.default {
             };
         });
     }
+    //get list
+    updateDepositRequest(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const { status: bdy_status } = req.body;
+            const model = this.Model.agencyModel();
+            // get single deposit
+            const data = yield model.getSingleDeposit({
+                id: parseInt(req.params.id),
+            });
+            if (!data.length) {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_NOT_FOUND,
+                    message: this.ResMsg.HTTP_NOT_FOUND,
+                };
+            }
+            const { status, amount, agency_id } = data[0];
+            console.log({ data });
+            if (status == "pending" && bdy_status == "approved") {
+                console.log("first");
+                yield model.insertAgencyDeposit({
+                    type: "credit",
+                    amount,
+                    agency_id,
+                    created_by: req.admin.id,
+                });
+                yield model.updateAgencyDepositRequest({
+                    status: bdy_status,
+                }, { id: parseInt(id), agency_id });
+            }
+            else {
+                yield model.updateAgencyDepositRequest({
+                    status: bdy_status,
+                }, { id: parseInt(id), agency_id });
+            }
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                message: "Updated Succesfully",
+            };
+        });
+    }
     //get transaction
     getTransaction(req) {
         return __awaiter(this, void 0, void 0, function* () {

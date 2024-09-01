@@ -12,8 +12,7 @@ class ticketIssueRouter extends abstract_router_1.default {
         this.callRouter();
     }
     callRouter() {
-        this.router.route("/:id")
-            .post(this.controller.ticketIssue);
+        this.router.route("/:id").post(this.controller.ticketIssue);
     }
 }
 exports.default = ticketIssueRouter;

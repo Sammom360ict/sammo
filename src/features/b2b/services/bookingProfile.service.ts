@@ -1,7 +1,10 @@
-import { IProfile, IChangePasswordPayload } from '../utils/types/bookingProfile.interfaces';
-import AbstractServices from '../../../abstract/abstract.service';
-import { Request } from 'express';
-import Lib from '../../../utils/lib/lib';
+import {
+  IProfile,
+  IChangePasswordPayload,
+} from "../utils/types/bookingProfile.interfaces";
+import AbstractServices from "../../../abstract/abstract.service";
+import { Request } from "express";
+import Lib from "../../../utils/lib/lib";
 
 export default class BookingProfileService extends AbstractServices {
   //get profile
@@ -31,10 +34,7 @@ export default class BookingProfileService extends AbstractServices {
     }
     const model = this.Model.agencyModel();
 
-    const update_profile = await model.updateAgencyUser(
-      req.body,
-      id
-    );
+    const update_profile = await model.updateAgencyUser(req.body, id);
     if (update_profile) {
       return {
         success: true,

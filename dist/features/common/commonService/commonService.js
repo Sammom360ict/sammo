@@ -30,17 +30,17 @@ class commonService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let data = qs_1.default.stringify({
-                    grant_type: 'password',
+                    grant_type: "password",
                     username: config_1.default.SABRE_USERNAME,
                     password: config_1.default.SABRE_PASSWORD,
                 });
                 let axiosConfig = {
-                    method: 'post',
+                    method: "post",
                     maxBodyLength: Infinity,
                     url: `${config_1.default.SABRE_URL}/${sabreApiEndpoints_1.GET_TOKEN_ENDPOINT}`,
                     headers: {
                         Authorization: `Basic ${config_1.default.SABRE_AUTH_TOKEN}`,
-                        'Content-Type': 'application/x-www-form-urlencoded',
+                        "Content-Type": "application/x-www-form-urlencoded",
                     },
                     data: data,
                 };
@@ -73,7 +73,7 @@ class commonService extends abstract_service_1.default {
                         return {
                             success: false,
                             code: this.StatusCode.HTTP_NOT_FOUND,
-                            message: 'No user has been found with this email',
+                            message: "No user has been found with this email",
                         };
                     }
                 }
@@ -95,7 +95,7 @@ class commonService extends abstract_service_1.default {
                         return {
                             success: false,
                             code: this.StatusCode.HTTP_NOT_FOUND,
-                            message: 'No unverified user found.',
+                            message: "No unverified user found.",
                         };
                     }
                 }
@@ -106,7 +106,7 @@ class commonService extends abstract_service_1.default {
                         return {
                             success: false,
                             code: this.StatusCode.HTTP_NOT_FOUND,
-                            message: 'No user found.',
+                            message: "No user found.",
                         };
                     }
                 }
@@ -151,7 +151,7 @@ class commonService extends abstract_service_1.default {
                     }
                 }
                 catch (error) {
-                    console.error('Error sending email or SMS:', error);
+                    console.error("Error sending email or SMS:", error);
                     return {
                         success: false,
                         code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
@@ -202,14 +202,14 @@ class commonService extends abstract_service_1.default {
                             return {
                                 success: false,
                                 code: this.StatusCode.HTTP_NOT_FOUND,
-                                message: 'No unverified user found.',
+                                message: "No unverified user found.",
                             };
                         }
                         yield userModel.updateProfile({ is_verified: true }, { id: checkUser[0].id });
                         return {
                             success: true,
                             code: this.StatusCode.HTTP_ACCEPTED,
-                            message: 'User successfully verified.',
+                            message: "User successfully verified.",
                         };
                     }
                     else if (type === constants_1.OTP_TYPE_FORGET_AGENT) {
@@ -218,7 +218,7 @@ class commonService extends abstract_service_1.default {
                     const token = lib_1.default.createToken({
                         email: email,
                         type: type,
-                    }, secret, '5m');
+                    }, secret, "5m");
                     return {
                         success: true,
                         code: this.StatusCode.HTTP_ACCEPTED,

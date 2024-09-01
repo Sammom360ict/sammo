@@ -20,7 +20,7 @@ class BtobService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const files = req.files || [];
             if (files.length) {
-                req.body["doc"] = files[0].filename;
+                req.body["docs"] = files[0].filename;
             }
             yield this.Model.agencyModel().insertAgencyDepositRequest(Object.assign(Object.assign({}, req.body), { agency_id: req.agency.agency_id }));
             return {

@@ -11,6 +11,7 @@ import AdminDashboardRouter from "./routers/dashboard.router";
 import adminFlightBookingRouter from "./routers/flightBooking.router";
 import { AdminAgencyRouter } from "./routers/adminAgency.router";
 import adminB2BFlightBookingRouter from "./routers/b2bFlightBooking.router";
+import { AdminBtocRouter } from "./routers/admin.btoc.router";
 class AdminRootRouter {
   public Router = Router();
   private ProfileRouter = new AdminProfileRouter();
@@ -55,6 +56,9 @@ class AdminRootRouter {
 
     //dashboard router
     this.Router.use("/dashboard", this.DashBoardRouter.router);
+
+    // btoc router
+    this.Router.use("/btoc", new AdminBtocRouter().router);
 
     //b2c flight booking router
     this.Router.use(

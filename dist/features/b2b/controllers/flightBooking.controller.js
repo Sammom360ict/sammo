@@ -42,7 +42,7 @@ class flightBookingController extends abstract_controller_1.default {
             res.status(code).json(rest);
         }));
         // get single flight booking
-        this.getSingleFlightBooking = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamStringValidator('id') }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getSingleFlightBooking = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamStringValidator("id") }, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _c = yield this.service.getSingleFlightBooking(req), { code } = _c, rest = __rest(_c, ["code"]);
             res.status(code).json(rest);
         }));

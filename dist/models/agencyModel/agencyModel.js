@@ -142,6 +142,16 @@ class AgencyModel extends schema_1.default {
                 .insert(payload, "id");
         });
     }
+    //update agency deposit request
+    updateAgencyDepositRequest(payload_1, _a) {
+        return __awaiter(this, arguments, void 0, function* (payload, { id, agency_id }) {
+            return yield this.db("agency_deposit_request")
+                .withSchema(this.BTOB_SCHEMA)
+                .update(payload)
+                .where({ id })
+                .andWhere({ agency_id });
+        });
+    }
     //get agency deposit request
     getAllAgencyDepositRequest(_a) {
         return __awaiter(this, arguments, void 0, function* ({ agency_id, status, limit, skip, }) {
@@ -160,9 +170,9 @@ class AgencyModel extends schema_1.default {
                 .limit(limit || 100)
                 .offset(skip || 0)
                 .orderBy("adr.id", "desc");
-            const total = yield this.db("agency_deposit_request")
+            const total = yield this.db("agency_deposit_request as adr")
                 .withSchema(this.BTOB_SCHEMA)
-                .count("* as total")
+                .count("adr.id as total")
                 .where(function () {
                 if (agency_id) {
                     this.andWhere("adr.agency_id", agency_id);
@@ -172,6 +182,16 @@ class AgencyModel extends schema_1.default {
                 }
             });
             return { data, total: parseInt(total[0].total) };
+        });
+    }
+    // get single deposit
+    getSingleDeposit(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ id }) {
+            return yield this.db("agency_deposit_request as adr")
+                .withSchema(this.BTOB_SCHEMA)
+                .select("adr.*", "ai.agency_name", "ai.agency_logo", "ai.phone as agency_phone")
+                .join("agency_info as ai", "adr.agency_id", "ai.id")
+                .where("adr.id", id);
         });
     }
     //insert agency deposit

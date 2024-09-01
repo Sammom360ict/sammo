@@ -31,8 +31,8 @@ class ticketIssueController extends abstract_controller_1.default {
         super(...arguments);
         this.service = new ticketIssue_service_1.default();
         this.ticketIssue = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const rest = __rest(yield this.service.ticketIssue(req), []);
-            res.status(200).json(rest);
+            const _a = yield this.service.ticketIssue(req), { code } = _a, rest = __rest(_a, ["code"]);
+            res.status(code).json(rest);
         }));
     }
 }

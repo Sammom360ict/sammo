@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import flightBookingService from '../services/flightBooking.service';
-import FlightBookingValidator from '../utils/validators/flightBooking.validator';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import flightBookingService from "../services/flightBooking.service";
+import FlightBookingValidator from "../utils/validators/flightBooking.validator";
 
 class flightBookingController extends AbstractController {
   private service = new flightBookingService();
@@ -33,7 +33,7 @@ class flightBookingController extends AbstractController {
 
   // get single flight booking
   public getSingleFlightBooking = this.asyncWrapper.wrap(
-    { paramSchema: this.commonValidator.singleParamStringValidator('id') },
+    { paramSchema: this.commonValidator.singleParamStringValidator("id") },
     async (req: Request, res: Response) => {
       const { code, ...rest } = await this.service.getSingleFlightBooking(req);
 

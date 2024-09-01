@@ -122,39 +122,6 @@ class AdministrationController extends AbstractController {
     }
   );
 
-  //get users
-  public getUsers = this.asyncWrapper.wrap(
-    { querySchema: this.AdministrationValidator.getUsersFilterValidator },
-    async (req: Request, res: Response) => {
-      const { code, ...data } = await this.AdministrationService.getUsers(req);
-      res.status(code).json(data);
-    }
-  );
-
-  //get user single
-  public getSingleUser = this.asyncWrapper.wrap(
-    { paramSchema: this.commonValidator.singleParamValidator },
-    async (req: Request, res: Response) => {
-      const { code, ...data } = await this.AdministrationService.getSingleUser(
-        req
-      );
-      res.status(code).json(data);
-    }
-  );
-
-  //edit user profile
-  public editUserProfile = this.asyncWrapper.wrap(
-    {
-      paramSchema: this.commonValidator.singleParamValidator,
-      bodySchema: this.AdministrationValidator.editUserProfileValidator,
-    },
-    async (req: Request, res: Response) => {
-      const { code, ...data } =
-        await this.AdministrationService.editUserProfile(req);
-      res.status(code).json(data);
-    }
-  );
-
   //create city
   public createCity = this.asyncWrapper.wrap(
     { bodySchema: this.AdministrationValidator.createCityValidator },

@@ -14,12 +14,12 @@ class BookingProfileRouter extends abstract_router_1.default {
     callRouter() {
         //view profile, edit profile
         this.router
-            .route('/')
+            .route("/")
             .get(this.ProfileController.getProfile)
-            .patch(this.uploader.cloudUploadRaw(this.fileFolders.USER_FILES), this.ProfileController.editProfile);
+            .patch(this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER), this.ProfileController.editProfile);
         //change password
         this.router
-            .route('/change-password')
+            .route("/change-password")
             .post(this.ProfileController.changePassword);
     }
 }

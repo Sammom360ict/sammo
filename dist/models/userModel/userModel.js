@@ -62,12 +62,12 @@ class UserModel extends schema_1.default {
         });
     }
     //list
-    list(query_1) {
+    getAllUser(query_1) {
         return __awaiter(this, arguments, void 0, function* (query, is_total = false) {
             var _a;
             const data = yield this.db("users")
                 .withSchema(this.BTOC_SCHEMA)
-                .select("id", "username", "first_name", "last_name", "email", "photo", "status", "phone_number")
+                .select("id", "username", "first_name", "last_name", "email", "photo", "status", "phone_number", "created_at")
                 .where((qb) => {
                 if (query.status !== undefined) {
                     qb.where("status", query.status);

@@ -1,20 +1,30 @@
-import { Request } from 'express';
-import AbstractServices from '../../../abstract/abstract.service';
-import ResponseFormatter from '../../../utils/lib/responseFormatter';
-import { CANCEL_BOOKING_ENDPOINT, FLIGHT_BOOKING_ENDPOINT, GET_BOOKING_ENDPOINT } from '../../../utils/miscellaneous/sabreApiEndpoints';
-import CustomError from '../../../utils/lib/customError';
-import { IFlightOption } from '../../../utils/interfaces/flight/flightSearchInterface';
-import BookingFlightService from './bookinglight.service';
-import RequestFormatter from '../../../utils/lib/requestFomatter';
-import { IPnrRequestBody } from '../utils/types/pnr.types';
-import { IInsertFlightSegmentPayload, IInsertFlightTravelerPayload } from '../../../utils/interfaces/flight/flightBookingInterface';
-import { offerPriceEndPoint, orderCancelEndPoint, orderCreateEndPoint, orderSellEndPoint } from '../../../utils/miscellaneous/bdFareApiEndpoints';
-import { getRedis } from '../../../app/redis';
-import SabreRequests from '../../../utils/lib/sabreRequest';
-
+import { Request } from "express";
+import AbstractServices from "../../../abstract/abstract.service";
+import ResponseFormatter from "../../../utils/lib/responseFormatter";
+import {
+  CANCEL_BOOKING_ENDPOINT,
+  FLIGHT_BOOKING_ENDPOINT,
+  GET_BOOKING_ENDPOINT,
+} from "../../../utils/miscellaneous/sabreApiEndpoints";
+import CustomError from "../../../utils/lib/customError";
+import { IFlightOption } from "../../../utils/interfaces/flight/flightSearchInterface";
+import BookingFlightService from "./bookinglight.service";
+import RequestFormatter from "../../../utils/lib/requestFomatter";
+import { IPnrRequestBody } from "../utils/types/pnr.types";
+import {
+  IInsertFlightSegmentPayload,
+  IInsertFlightTravelerPayload,
+} from "../../../utils/interfaces/flight/flightBookingInterface";
+import {
+  offerPriceEndPoint,
+  orderCancelEndPoint,
+  orderCreateEndPoint,
+  orderSellEndPoint,
+} from "../../../utils/miscellaneous/bdFareApiEndpoints";
+import { getRedis } from "../../../app/redis";
+import SabreRequests from "../../../utils/lib/sabreRequest";
 
 class flightBookingService extends AbstractServices {
-
   private ResFormatter = new ResponseFormatter();
   private RequestFormatter = new RequestFormatter();
   private BookingFlightService = new BookingFlightService();
@@ -49,8 +59,10 @@ class flightBookingService extends AbstractServices {
     return await this.db.transaction(async (trx) => {
       const requestBody = this.RequestFormatter.pnrReqBody(body, data);
 
-
-      const response: any = await this.request.postRequest(FLIGHT_BOOKING_ENDPOINT, requestBody);
+      const response: any = await this.request.postRequest(
+        FLIGHT_BOOKING_ENDPOINT,
+        requestBody
+      );
       console.log({ response });
 
       if (!response) {
@@ -62,7 +74,7 @@ class flightBookingService extends AbstractServices {
       }
       if (
         response?.CreatePassengerNameRecordRS?.ApplicationResults?.status !==
-        'Complete'
+        "Complete"
       ) {
         return {
           success: false,
@@ -85,15 +97,23 @@ class flightBookingService extends AbstractServices {
 
       //save traveler
       const travelersModel = this.Model.agencyModel();
-      const traveler_promises = body.passengers.map(async (element:any) => {
+      const traveler_promises = body.passengers.map(async (element: any) => {
         if (element.save_information) {
-          const { mid_name, save_information, country, passport_expire_date, ...rest } = element;
+          const {
+            mid_name,
+            save_information,
+            country,
+            passport_expire_date,
+            ...rest
+          } = element;
           return travelersModel.insertTraveler({
             first_name: mid_name,
             ...rest,
             agency_id,
             country_id: country ? Number(country) : undefined,
-            passport_expire_date: passport_expire_date ? passport_expire_date.split("T")[0] : undefined,
+            passport_expire_date: passport_expire_date
+              ? passport_expire_date.split("T")[0]
+              : undefined,
           });
         }
       });
@@ -111,20 +131,20 @@ class flightBookingService extends AbstractServices {
       const payable_amount = data.fare.payable;
       let ticket_issue_last_time: any = undefined;
       if (data.ticket_last_date && data.ticket_last_time) {
-        ticket_issue_last_time = String(data.ticket_last_date) + " " + String(data.ticket_last_time)
+        ticket_issue_last_time =
+          String(data.ticket_last_date) + " " + String(data.ticket_last_time);
       }
 
       const { passengers, flights, leg_descriptions } = data;
-      let journey_type = 'One way';
+      let journey_type = "One way";
 
       if (leg_descriptions.length == 2) {
-        journey_type = 'Round Trip';
+        journey_type = "Round Trip";
       }
 
       if (leg_descriptions.length > 2) {
-        journey_type = 'Multi City';
+        journey_type = "Multi City";
       }
-
 
       //insert flight booking
       const res = await flightBookingModel.insertFlightBooking({
@@ -141,19 +161,18 @@ class flightBookingService extends AbstractServices {
         ticket_price,
         total_tax,
         ait,
-        discount
+        discount,
       });
 
       //insert segment
 
-      let flight_class = '';
-      let baggage = '';
+      let flight_class = "";
+      let baggage = "";
 
       passengers.forEach((item) => {
         flight_class = `${item.availability[0].segments[0].cabin_type}(${item.availability[0].segments[0].booking_code})`;
         baggage = `${item.availability[0].baggage.count} ${item.availability[0].baggage.unit}`;
       });
-
 
       const segmentBody: IInsertFlightSegmentPayload[] = [];
 
@@ -172,19 +191,19 @@ class flightBookingService extends AbstractServices {
             class: flight_class,
             destination:
               option.arrival.airport +
-              ' (' +
+              " (" +
               option.arrival.city +
-              '-' +
+              "-" +
               option.arrival.city_code +
-              ')',
+              ")",
             flight_number: `${option.carrier.carrier_marketing_code} ${option.carrier.carrier_marketing_flight_number}`,
             origin:
               option.departure.airport +
-              ' (' +
+              " (" +
               option.departure.city +
-              '-' +
+              "-" +
               option.departure.city_code +
-              ')',
+              ")",
           });
         });
       });
@@ -195,14 +214,22 @@ class flightBookingService extends AbstractServices {
       let travelerBody: IInsertFlightTravelerPayload[] = [];
       travelerBody = traveler.map((obj: any) => {
         const { save_information, passport_expire_date, ...rest } = obj;
-        return { ...rest, flight_booking_id: res[0].id, passport_expiry_date: passport_expire_date ? passport_expire_date.split("T")[0] : undefined };
+        return {
+          ...rest,
+          flight_booking_id: res[0].id,
+          passport_expiry_date: passport_expire_date
+            ? passport_expire_date.split("T")[0]
+            : undefined,
+        };
       });
 
       await flightBookingModel.insertFlightTraveler(travelerBody);
       return {
         success: true,
-        message: 'Pnr has been created successfully',
-        ticketLastDateTime: ticket_issue_last_time ? ticket_issue_last_time : null,
+        message: "Pnr has been created successfully",
+        ticketLastDateTime: ticket_issue_last_time
+          ? ticket_issue_last_time
+          : null,
         booking_id: res[0].id,
         data: formattedResponse,
         response,
@@ -224,7 +251,7 @@ class flightBookingService extends AbstractServices {
       user_id: user_id,
       status: status as string,
       from_date: from_date as string,
-      to_date: to_date as string
+      to_date: to_date as string,
     });
 
     return {
@@ -237,7 +264,7 @@ class flightBookingService extends AbstractServices {
 
   // get single flight booking
   public async getSingleFlightBooking(req: Request) {
-    const { agency_id,id:user_id } = req.agency;
+    const { agency_id, id: user_id } = req.agency;
 
     const { id } = req.params;
 
@@ -260,29 +287,38 @@ class flightBookingService extends AbstractServices {
 
     const getTraveler = await model.getFlightTraveler(Number(id));
     getTraveler.forEach((item) => {
-      if (item.gender === 'M') {
-        item.gender = 'Male';
+      if (item.gender === "M") {
+        item.gender = "Male";
       }
-      if (item.gender === 'F') {
-        item.gender = 'Female';
+      if (item.gender === "F") {
+        item.gender = "Female";
       }
-    })
+    });
 
     // const sabre_response:any = await postRequest(GET_BOOKING_ENDPOINT, {
     //   confirmationId: checkBooking[0].pnr_code,
     // });
 
     const ticket_model = this.Model.b2bFlightBookingModel();
-    const ticket_issue_data = await ticket_model.getSingleIssueTicket(Number(id));
-    const ticket_issue_segment_data = await ticket_model.getTicketSegment(Number(id));
+    const ticket_issue_data = await ticket_model.getSingleIssueTicket(
+      Number(id)
+    );
+    const ticket_issue_segment_data = await ticket_model.getTicketSegment(
+      Number(id)
+    );
 
     return {
       success: true,
       code: this.StatusCode.HTTP_OK,
-      data: { ...checkBooking[0], segments: getSegments, traveler: getTraveler, ticket: ticket_issue_data.length ? { ticket_issue_data, ticket_issue_segment_data } : null },
-    }
-
-
+      data: {
+        ...checkBooking[0],
+        segments: getSegments,
+        traveler: getTraveler,
+        ticket: ticket_issue_data.length
+          ? { ticket_issue_data, ticket_issue_segment_data }
+          : null,
+      },
+    };
   }
 
   // cancel flight booking
@@ -295,7 +331,7 @@ class flightBookingService extends AbstractServices {
     const checkFlightBooking = await flightBookingModel.getSingleFlightBooking({
       user_id,
       id: Number(booking_id),
-      status: 'pending',
+      status: "pending",
     });
 
     if (!checkFlightBooking.length) {
@@ -316,29 +352,32 @@ class flightBookingService extends AbstractServices {
 
     if (currentUTCTimestamp < databaseUTCTimestamp) {
       const requestBody = this.RequestFormatter.cancelBookingReqBody(pnr_code);
-      const response = await this.request.postRequest(CANCEL_BOOKING_ENDPOINT, requestBody);
+      const response = await this.request.postRequest(
+        CANCEL_BOOKING_ENDPOINT,
+        requestBody
+      );
 
       if (!response.errors) {
         await flightBookingModel.updateBooking(
-          { status: 'cancelled', cancelled_by: user_id },
+          { status: "cancelled", cancelled_by: user_id },
           parseInt(booking_id)
         );
         return {
           success: true,
-          message: 'Booking successfully canceled',
+          message: "Booking successfully canceled",
           code: this.StatusCode.HTTP_OK,
         };
       } else {
         return {
           success: false,
-          message: 'PNR is not valid for cancel',
+          message: "PNR is not valid for cancel",
           code: this.StatusCode.HTTP_NOT_FOUND,
         };
       }
     } else {
       return {
         success: false,
-        message: this.ResMsg.HTTP_BAD_REQUEST,
+        message: "The ticket cancellation time has already passed",
         code: this.StatusCode.HTTP_BAD_REQUEST,
       };
     }

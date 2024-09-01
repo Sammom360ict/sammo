@@ -23,30 +23,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BtobController = void 0;
+exports.AdminBtocController = void 0;
 const abstract_controller_1 = __importDefault(require("../../../abstract/abstract.controller"));
-const btob_service_1 = require("../services/btob.service");
-const btob_validator_1 = require("../utils/validators/btob.validator");
-class BtobController extends abstract_controller_1.default {
+const admin_btoc_service_1 = require("../services/admin.btoc.service");
+const admin_btoc_validator_1 = __importDefault(require("../utils/validators/admin.btoc.validator"));
+class AdminBtocController extends abstract_controller_1.default {
     constructor() {
         super(...arguments);
-        this.service = new btob_service_1.BtobService();
-        this.validator = new btob_validator_1.BtobValidator();
-        //create application
-        this.insertDeposit = this.asyncWrapper.wrap({ bodySchema: this.validator.insertDeposit }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _a = yield this.service.insertDeposit(req), { code } = _a, data = __rest(_a, ["code"]);
+        this.service = new admin_btoc_service_1.AdminBtocService();
+        this.validator = new admin_btoc_validator_1.default();
+        //get users
+        this.getUsers = this.asyncWrapper.wrap({ querySchema: this.validator.getUsersFilterValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _a = yield this.service.getUsers(req), { code } = _a, data = __rest(_a, ["code"]);
             res.status(code).json(data);
         }));
-        //get applications
-        this.getAllDepositRequestList = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _b = yield this.service.getAllDepositRequestList(req), { code } = _b, data = __rest(_b, ["code"]);
+        //get user single
+        this.getSingleUser = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _b = yield this.service.getSingleUser(req), { code } = _b, data = __rest(_b, ["code"]);
             res.status(code).json(data);
         }));
-        //get single application
-        this.getSingleApplication = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _c = yield this.service.getSingleApplication(req), { code } = _c, data = __rest(_c, ["code"]);
+        //edit user profile
+        this.editUserProfile = this.asyncWrapper.wrap({
+            paramSchema: this.commonValidator.singleParamValidator,
+            bodySchema: this.validator.editUserProfileValidator,
+        }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _c = yield this.service.editUserProfile(req), { code } = _c, data = __rest(_c, ["code"]);
             res.status(code).json(data);
         }));
     }
 }
-exports.BtobController = BtobController;
+exports.AdminBtocController = AdminBtocController;

@@ -15,10 +15,8 @@ class B2BRootRouter {
 
   private TravelerRouter = new BookingTravelerRouter();
   private ProfileRouter = new BookingProfileRouter();
-  private FlightBookingRouter = new flightBookingRouter();
   private TicketRouter = new ticketIssueRouter();
   private SubAgentRouter = new BtoBSubAgencyRouter();
-
   private dashboardRouter = new B2BDashboardRouter();
 
   constructor() {
@@ -39,7 +37,7 @@ class B2BRootRouter {
     // this.Router.use("/payment", new BookingPaymentRouter().router);
 
     //flight booking router
-    this.Router.use("/flight-booking", this.FlightBookingRouter.router);
+    this.Router.use("/flight-booking", new flightBookingRouter().router);
 
     //ticket router
     this.Router.use("/ticket-issue", this.TicketRouter.router);
@@ -50,11 +48,11 @@ class B2BRootRouter {
     //visa router
     this.Router.use("/visa-application", new B2BVisaRouter().router);
 
-    // b2b request
-    this.Router.use("/", new BtobRouter().router);
-
     //dashboard router
     this.Router.use("/dashboard", this.dashboardRouter.router);
+
+    // b2b request
+    this.Router.use("/", new BtobRouter().router);
   }
 }
 export default B2BRootRouter;

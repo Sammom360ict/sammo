@@ -20,6 +20,10 @@ class AdminAgencyRouter extends abstract_router_1.default {
         this.router
             .route("/deposit-request")
             .get(this.controller.getAllDepositRequestList);
+        // update deposit request
+        this.router
+            .route("/deposit-request/:id")
+            .patch(this.controller.updateDepositRequest);
         //transaction list
         this.router.route("/transaction/:id").get(this.controller.getTransaction);
         // create get

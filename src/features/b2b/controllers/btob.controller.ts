@@ -8,7 +8,7 @@ export class BtobController extends AbstractController {
   private validator = new BtobValidator();
   //create application
   public insertDeposit = this.asyncWrapper.wrap(
-    null,
+    { bodySchema: this.validator.insertDeposit },
     async (req: Request, res: Response) => {
       const { code, ...data } = await this.service.insertDeposit(req);
       res.status(code).json(data);

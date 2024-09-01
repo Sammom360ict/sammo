@@ -47,6 +47,59 @@ export class AdminAgencyService extends AbstractServices {
     };
   }
 
+  //get list
+  public async updateDepositRequest(req: Request) {
+    const { id } = req.params;
+    const { status: bdy_status } = req.body;
+    const model = this.Model.agencyModel();
+
+    // get single deposit
+    const data = await model.getSingleDeposit({
+      id: parseInt(req.params.id),
+    });
+
+    if (!data.length) {
+      return {
+        success: false,
+        code: this.StatusCode.HTTP_NOT_FOUND,
+        message: this.ResMsg.HTTP_NOT_FOUND,
+      };
+    }
+
+    const { status, amount, agency_id } = data[0];
+    console.log({ data });
+
+    if (status == "pending" && bdy_status == "approved") {
+      console.log("first");
+      await model.insertAgencyDeposit({
+        type: "credit",
+        amount,
+        agency_id,
+        created_by: req.admin.id,
+      });
+
+      await model.updateAgencyDepositRequest(
+        {
+          status: bdy_status,
+        },
+        { id: parseInt(id), agency_id }
+      );
+    } else {
+      await model.updateAgencyDepositRequest(
+        {
+          status: bdy_status,
+        },
+        { id: parseInt(id), agency_id }
+      );
+    }
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      message: "Updated Succesfully",
+    };
+  }
+
   //get transaction
   public async getTransaction(req: Request) {
     const { id } = req.params;

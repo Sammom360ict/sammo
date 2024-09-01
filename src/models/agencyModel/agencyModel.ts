@@ -155,6 +155,18 @@ export class AgencyModel extends Schema {
       .insert(payload, "id");
   }
 
+  //update agency deposit request
+  public async updateAgencyDepositRequest(
+    payload: any,
+    { id, agency_id }: { id: number; agency_id: number }
+  ) {
+    return await this.db("agency_deposit_request")
+      .withSchema(this.BTOB_SCHEMA)
+      .update(payload)
+      .where({ id })
+      .andWhere({ agency_id });
+  }
+
   //get agency deposit request
   public async getAllAgencyDepositRequest({
     agency_id,
@@ -189,9 +201,9 @@ export class AgencyModel extends Schema {
       .offset(skip || 0)
       .orderBy("adr.id", "desc");
 
-    const total = await this.db("agency_deposit_request")
+    const total = await this.db("agency_deposit_request as adr")
       .withSchema(this.BTOB_SCHEMA)
-      .count("* as total")
+      .count("adr.id as total")
       .where(function () {
         if (agency_id) {
           this.andWhere("adr.agency_id", agency_id);
@@ -203,6 +215,20 @@ export class AgencyModel extends Schema {
       });
 
     return { data, total: parseInt(total[0].total as string) };
+  }
+
+  // get single deposit
+  public async getSingleDeposit({ id }: { id: number }) {
+    return await this.db("agency_deposit_request as adr")
+      .withSchema(this.BTOB_SCHEMA)
+      .select(
+        "adr.*",
+        "ai.agency_name",
+        "ai.agency_logo",
+        "ai.phone as agency_phone"
+      )
+      .join("agency_info as ai", "adr.agency_id", "ai.id")
+      .where("adr.id", id);
   }
 
   //insert agency deposit

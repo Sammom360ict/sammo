@@ -70,7 +70,7 @@ class flightBookingService extends abstract_service_1.default {
                     };
                 }
                 if (((_b = (_a = response === null || response === void 0 ? void 0 : response.CreatePassengerNameRecordRS) === null || _a === void 0 ? void 0 : _a.ApplicationResults) === null || _b === void 0 ? void 0 : _b.status) !==
-                    'Complete') {
+                    "Complete") {
                     return {
                         success: false,
                         code: this.StatusCode.HTTP_BAD_REQUEST,
@@ -85,7 +85,9 @@ class flightBookingService extends abstract_service_1.default {
                 const traveler_promises = body.passengers.map((element) => __awaiter(this, void 0, void 0, function* () {
                     if (element.save_information) {
                         const { mid_name, save_information, country, passport_expire_date } = element, rest = __rest(element, ["mid_name", "save_information", "country", "passport_expire_date"]);
-                        return travelersModel.insertTraveler(Object.assign(Object.assign({ first_name: mid_name }, rest), { agency_id, country_id: country ? Number(country) : undefined, passport_expire_date: passport_expire_date ? passport_expire_date.split("T")[0] : undefined }));
+                        return travelersModel.insertTraveler(Object.assign(Object.assign({ first_name: mid_name }, rest), { agency_id, country_id: country ? Number(country) : undefined, passport_expire_date: passport_expire_date
+                                ? passport_expire_date.split("T")[0]
+                                : undefined }));
                     }
                 }));
                 yield Promise.all(traveler_promises);
@@ -100,15 +102,16 @@ class flightBookingService extends abstract_service_1.default {
                 const payable_amount = data.fare.payable;
                 let ticket_issue_last_time = undefined;
                 if (data.ticket_last_date && data.ticket_last_time) {
-                    ticket_issue_last_time = String(data.ticket_last_date) + " " + String(data.ticket_last_time);
+                    ticket_issue_last_time =
+                        String(data.ticket_last_date) + " " + String(data.ticket_last_time);
                 }
                 const { passengers, flights, leg_descriptions } = data;
-                let journey_type = 'One way';
+                let journey_type = "One way";
                 if (leg_descriptions.length == 2) {
-                    journey_type = 'Round Trip';
+                    journey_type = "Round Trip";
                 }
                 if (leg_descriptions.length > 2) {
-                    journey_type = 'Multi City';
+                    journey_type = "Multi City";
                 }
                 //insert flight booking
                 const res = yield flightBookingModel.insertFlightBooking({
@@ -125,11 +128,11 @@ class flightBookingService extends abstract_service_1.default {
                     ticket_price,
                     total_tax,
                     ait,
-                    discount
+                    discount,
                 });
                 //insert segment
-                let flight_class = '';
-                let baggage = '';
+                let flight_class = "";
+                let baggage = "";
                 passengers.forEach((item) => {
                     flight_class = `${item.availability[0].segments[0].cabin_type}(${item.availability[0].segments[0].booking_code})`;
                     baggage = `${item.availability[0].baggage.count} ${item.availability[0].baggage.unit}`;
@@ -149,18 +152,18 @@ class flightBookingService extends abstract_service_1.default {
                             baggage,
                             class: flight_class,
                             destination: option.arrival.airport +
-                                ' (' +
+                                " (" +
                                 option.arrival.city +
-                                '-' +
+                                "-" +
                                 option.arrival.city_code +
-                                ')',
+                                ")",
                             flight_number: `${option.carrier.carrier_marketing_code} ${option.carrier.carrier_marketing_flight_number}`,
                             origin: option.departure.airport +
-                                ' (' +
+                                " (" +
                                 option.departure.city +
-                                '-' +
+                                "-" +
                                 option.departure.city_code +
-                                ')',
+                                ")",
                         });
                     });
                 });
@@ -169,13 +172,17 @@ class flightBookingService extends abstract_service_1.default {
                 let travelerBody = [];
                 travelerBody = traveler.map((obj) => {
                     const { save_information, passport_expire_date } = obj, rest = __rest(obj, ["save_information", "passport_expire_date"]);
-                    return Object.assign(Object.assign({}, rest), { flight_booking_id: res[0].id, passport_expiry_date: passport_expire_date ? passport_expire_date.split("T")[0] : undefined });
+                    return Object.assign(Object.assign({}, rest), { flight_booking_id: res[0].id, passport_expiry_date: passport_expire_date
+                            ? passport_expire_date.split("T")[0]
+                            : undefined });
                 });
                 yield flightBookingModel.insertFlightTraveler(travelerBody);
                 return {
                     success: true,
-                    message: 'Pnr has been created successfully',
-                    ticketLastDateTime: ticket_issue_last_time ? ticket_issue_last_time : null,
+                    message: "Pnr has been created successfully",
+                    ticketLastDateTime: ticket_issue_last_time
+                        ? ticket_issue_last_time
+                        : null,
                     booking_id: res[0].id,
                     data: formattedResponse,
                     response,
@@ -195,7 +202,7 @@ class flightBookingService extends abstract_service_1.default {
                 user_id: user_id,
                 status: status,
                 from_date: from_date,
-                to_date: to_date
+                to_date: to_date,
             });
             return {
                 success: true,
@@ -225,11 +232,11 @@ class flightBookingService extends abstract_service_1.default {
             const getSegments = yield model.getFlightSegment(Number(id));
             const getTraveler = yield model.getFlightTraveler(Number(id));
             getTraveler.forEach((item) => {
-                if (item.gender === 'M') {
-                    item.gender = 'Male';
+                if (item.gender === "M") {
+                    item.gender = "Male";
                 }
-                if (item.gender === 'F') {
-                    item.gender = 'Female';
+                if (item.gender === "F") {
+                    item.gender = "Female";
                 }
             });
             // const sabre_response:any = await postRequest(GET_BOOKING_ENDPOINT, {
@@ -241,7 +248,9 @@ class flightBookingService extends abstract_service_1.default {
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
-                data: Object.assign(Object.assign({}, checkBooking[0]), { segments: getSegments, traveler: getTraveler, ticket: ticket_issue_data.length ? { ticket_issue_data, ticket_issue_segment_data } : null }),
+                data: Object.assign(Object.assign({}, checkBooking[0]), { segments: getSegments, traveler: getTraveler, ticket: ticket_issue_data.length
+                        ? { ticket_issue_data, ticket_issue_segment_data }
+                        : null }),
             };
         });
     }
@@ -255,7 +264,7 @@ class flightBookingService extends abstract_service_1.default {
             const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
                 user_id,
                 id: Number(booking_id),
-                status: 'pending',
+                status: "pending",
             });
             if (!checkFlightBooking.length) {
                 return {
@@ -273,17 +282,17 @@ class flightBookingService extends abstract_service_1.default {
                 const requestBody = this.RequestFormatter.cancelBookingReqBody(pnr_code);
                 const response = yield this.request.postRequest(sabreApiEndpoints_1.CANCEL_BOOKING_ENDPOINT, requestBody);
                 if (!response.errors) {
-                    yield flightBookingModel.updateBooking({ status: 'cancelled', cancelled_by: user_id }, parseInt(booking_id));
+                    yield flightBookingModel.updateBooking({ status: "cancelled", cancelled_by: user_id }, parseInt(booking_id));
                     return {
                         success: true,
-                        message: 'Booking successfully canceled',
+                        message: "Booking successfully canceled",
                         code: this.StatusCode.HTTP_OK,
                     };
                 }
                 else {
                     return {
                         success: false,
-                        message: 'PNR is not valid for cancel',
+                        message: "PNR is not valid for cancel",
                         code: this.StatusCode.HTTP_NOT_FOUND,
                     };
                 }
@@ -291,7 +300,7 @@ class flightBookingService extends abstract_service_1.default {
             else {
                 return {
                     success: false,
-                    message: this.ResMsg.HTTP_BAD_REQUEST,
+                    message: "The ticket cancellation time has already passed",
                     code: this.StatusCode.HTTP_BAD_REQUEST,
                 };
             }

@@ -63,7 +63,10 @@ class UserModel extends Schema {
   }
 
   //list
-  public async list(query: IGetUserListFilter, is_total: boolean = false) {
+  public async getAllUser(
+    query: IGetUserListFilter,
+    is_total: boolean = false
+  ) {
     const data = await this.db("users")
       .withSchema(this.BTOC_SCHEMA)
       .select(
@@ -74,7 +77,8 @@ class UserModel extends Schema {
         "email",
         "photo",
         "status",
-        "phone_number"
+        "phone_number",
+        "created_at"
       )
       .where((qb) => {
         if (query.status !== undefined) {

@@ -39,13 +39,6 @@ class AdministrationRouter extends abstract_router_1.default {
             .patch(this.uploader.cloudUploadRaw(this.fileFolders.ADMIN_FILES), this.AdministrationController.updateAdmin);
         //create city
         this.router.route("/city").post(this.AdministrationController.createCity);
-        //get users
-        this.router.route("/users").get(this.AdministrationController.getUsers);
-        //get user single
-        this.router
-            .route("/users/:id")
-            .get(this.AdministrationController.getSingleUser)
-            .patch(this.uploader.cloudUploadRaw(this.fileFolders.USER_FILES), this.AdministrationController.editUserProfile);
     }
 }
 exports.default = AdministrationRouter;

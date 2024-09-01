@@ -48,17 +48,6 @@ class AdministrationRouter extends AbstractRouter {
 
     //create city
     this.router.route("/city").post(this.AdministrationController.createCity);
-
-    //get users
-    this.router.route("/users").get(this.AdministrationController.getUsers);
-    //get user single
-    this.router
-      .route("/users/:id")
-      .get(this.AdministrationController.getSingleUser)
-      .patch(
-        this.uploader.cloudUploadRaw(this.fileFolders.USER_FILES),
-        this.AdministrationController.editUserProfile
-      );
   }
 }
 

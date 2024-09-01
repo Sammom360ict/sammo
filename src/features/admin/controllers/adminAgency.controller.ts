@@ -24,13 +24,22 @@ export class AdminAgencyController extends AbstractController {
     }
   );
 
-  //get applications
+  //get deposit request
   public getAllDepositRequestList = this.asyncWrapper.wrap(
     null,
     async (req: Request, res: Response) => {
       const { code, ...data } = await this.services.getAllDepositRequestList(
         req
       );
+      res.status(code).json(data);
+    }
+  );
+
+  //update deposit request
+  public updateDepositRequest = this.asyncWrapper.wrap(
+    { paramSchema: this.commonValidator.singleParamValidator },
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.services.updateDepositRequest(req);
       res.status(code).json(data);
     }
   );

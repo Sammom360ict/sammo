@@ -86,27 +86,9 @@ class AdministrationController extends abstract_controller_1.default {
             const _k = yield this.AdministrationService.updateAdmin(req), { code } = _k, data = __rest(_k, ["code"]);
             res.status(code).json(data);
         }));
-        //get users
-        this.getUsers = this.asyncWrapper.wrap({ querySchema: this.AdministrationValidator.getUsersFilterValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _l = yield this.AdministrationService.getUsers(req), { code } = _l, data = __rest(_l, ["code"]);
-            res.status(code).json(data);
-        }));
-        //get user single
-        this.getSingleUser = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _m = yield this.AdministrationService.getSingleUser(req), { code } = _m, data = __rest(_m, ["code"]);
-            res.status(code).json(data);
-        }));
-        //edit user profile
-        this.editUserProfile = this.asyncWrapper.wrap({
-            paramSchema: this.commonValidator.singleParamValidator,
-            bodySchema: this.AdministrationValidator.editUserProfileValidator,
-        }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _o = yield this.AdministrationService.editUserProfile(req), { code } = _o, data = __rest(_o, ["code"]);
-            res.status(code).json(data);
-        }));
         //create city
         this.createCity = this.asyncWrapper.wrap({ bodySchema: this.AdministrationValidator.createCityValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _p = yield this.AdministrationService.createCity(req), { code } = _p, data = __rest(_p, ["code"]);
+            const _l = yield this.AdministrationService.createCity(req), { code } = _l, data = __rest(_l, ["code"]);
             res.status(code).json(data);
         }));
     }

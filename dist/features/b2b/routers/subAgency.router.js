@@ -16,11 +16,11 @@ class BtoBSubAgencyRouter extends abstract_router_1.default {
     callRouter() {
         // create get
         this.router
-            .route('/')
-            .post(this.uploader.cloudUploadRaw('agency-user'), this.controller.create)
+            .route("/")
+            .post(this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER), this.controller.create)
             .get(this.controller.get);
         // update, get single
-        this.router.route('/:id').get(this.controller.getSingle);
+        this.router.route("/:id").get(this.controller.getSingle);
     }
 }
 exports.BtoBSubAgencyRouter = BtoBSubAgencyRouter;

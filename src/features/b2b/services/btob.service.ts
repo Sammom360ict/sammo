@@ -7,7 +7,7 @@ export class BtobService extends AbstractServices {
     const files = (req.files as Express.Multer.File[]) || [];
 
     if (files.length) {
-      req.body["doc"] = files[0].filename;
+      req.body["docs"] = files[0].filename;
     }
 
     await this.Model.agencyModel().insertAgencyDepositRequest({
