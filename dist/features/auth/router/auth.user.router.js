@@ -16,6 +16,14 @@ class UserAuthRouter extends abstract_router_1.default {
         this.router
             .route("/registration")
             .post(this.uploader.cloudUploadRaw(this.fileFolders.USER_FILES), this.UserAuthController.registration);
+        // Google login route
+        this.router
+            .route("/google-login")
+            .post(this.UserAuthController.loginWithGoogle);
+        // Google login route
+        this.router
+            .route("/facebook-login")
+            .post(this.UserAuthController.loginWithFB);
         //login
         this.router.route("/login").post(this.UserAuthController.login);
         //forget password

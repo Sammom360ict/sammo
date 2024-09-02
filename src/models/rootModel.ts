@@ -16,6 +16,8 @@ import FlightTicketModel from "./flightModel/flightTicketModel";
 import { AgencyModel } from "./agencyModel/agencyModel";
 import B2BFlightBookingModel from "./agencyModel/b2bFlightBookingModel";
 import B2BFlightTicketModel from "./agencyModel/b2bFlightTicketModel";
+import { BtoBBookingServiceModel } from "./bookingServiceModel/BtoBBookingServiceModel";
+import { AuditTrailModel } from "./auditTrailModel/auditTrailModel";
 
 class Models {
   //booking request models
@@ -79,9 +81,20 @@ class Models {
   public b2bFlightBookingModel(trx?: Knex.Transaction) {
     return new B2BFlightBookingModel(trx || db);
   }
+
   //B2B Ticket issue model
   public b2bTicketIssueModel(trx?: Knex.Transaction) {
     return new B2BFlightTicketModel(trx || db);
+  }
+
+  //B2B booking support model
+  public btobBookingSupportModel(trx?: Knex.Transaction) {
+    return new BtoBBookingServiceModel(trx || db);
+  }
+
+  //B2B Ticket issue model
+  public auditTrailModel(trx?: Knex.Transaction) {
+    return new AuditTrailModel(trx || db);
   }
 }
 export default Models;

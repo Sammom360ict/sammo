@@ -35,17 +35,22 @@ class AirportController extends abstract_controller_1.default {
             const _a = yield this.services.insertAirport(req), { code } = _a, data = __rest(_a, ["code"]);
             res.status(code).json(data);
         }));
+        //get all airport
+        this.getAllAirport = this.asyncWrapper.wrap({ bodySchema: this.commonValidator.airportFilterSchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _b = yield this.services.getAllAirport(req), { code } = _b, data = __rest(_b, ["code"]);
+            res.status(code).json(data);
+        }));
         //update airport
         this.updateAirport = this.asyncWrapper.wrap({
             bodySchema: this.commonValidator.updateAirportSchema,
             paramSchema: this.commonValidator.singleParamValidator,
         }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _b = yield this.services.updateAirport(req), { code } = _b, data = __rest(_b, ["code"]);
+            const _c = yield this.services.updateAirport(req), { code } = _c, data = __rest(_c, ["code"]);
             res.status(code).json(data);
         }));
         //delete airport
         this.deleteAirport = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _c = yield this.services.deleteAirport(req), { code } = _c, data = __rest(_c, ["code"]);
+            const _d = yield this.services.deleteAirport(req), { code } = _d, data = __rest(_d, ["code"]);
             res.status(code).json(data);
         }));
     }

@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import { AirportService } from '../services/airport.service';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import { AirportService } from "../services/airport.service";
 
 export class AirportController extends AbstractController {
   private services = new AirportService();
@@ -8,11 +8,20 @@ export class AirportController extends AbstractController {
     super();
   }
 
- //insert airport
- public insertAirport = this.asyncWrapper.wrap(
+  //insert airport
+  public insertAirport = this.asyncWrapper.wrap(
     { bodySchema: this.commonValidator.createAirportSchema },
     async (req: Request, res: Response) => {
       const { code, ...data } = await this.services.insertAirport(req);
+      res.status(code).json(data);
+    }
+  );
+
+  //get all airport
+  public getAllAirport = this.asyncWrapper.wrap(
+    { bodySchema: this.commonValidator.airportFilterSchema },
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.services.getAllAirport(req);
       res.status(code).json(data);
     }
   );

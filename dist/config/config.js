@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 // Parsing the env file.
-dotenv_1.default.config({ path: path_1.default.resolve(__dirname, '../../.env') });
+dotenv_1.default.config({ path: path_1.default.resolve(__dirname, "../../.env") });
 // Loading process.env as  ENV interface
 const getConfig = () => {
     return {
@@ -21,6 +21,8 @@ const getConfig = () => {
         JWT_SECRET_AGENT: process.env.JWT_SECRET_AGENT,
         EMAIL_SEND_EMAIL_ID: process.env.EMAIL_SEND_EMAIL_ID,
         EMAIL_SEND_PASSWORD: process.env.EMAIL_SEND_PASSWORD,
+        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
         AWS_S3_BUCKET: process.env.AWS_S3_BUCKET,
         AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY,
         AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY,

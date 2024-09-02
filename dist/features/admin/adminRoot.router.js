@@ -17,6 +17,7 @@ const flightBooking_router_1 = __importDefault(require("./routers/flightBooking.
 const adminAgency_router_1 = require("./routers/adminAgency.router");
 const b2bFlightBooking_router_1 = __importDefault(require("./routers/b2bFlightBooking.router"));
 const admin_btoc_router_1 = require("./routers/admin.btoc.router");
+const admin_b2bBookingService_router_1 = require("./routers/admin.b2bBookingService.router");
 class AdminRootRouter {
     constructor() {
         this.Router = (0, express_1.Router)();
@@ -24,7 +25,6 @@ class AdminRootRouter {
         this.ArticleRouter = new article_router_1.default();
         this.AirlinesCommissionRouter = new airlineCommision_router_1.AirlineCommissionRouter();
         this.AirlineRouter = new airline_router_1.AirlineRouter();
-        this.AirportRouter = new airport_router_1.AirportRouter();
         this.BookingRequestRouter = new bookingRequest_router_1.BookingRequestRouter();
         this.VisaRouter = new visa_router_1.AdminVisaRouter();
         this.DashBoardRouter = new dashboard_router_1.default();
@@ -42,7 +42,7 @@ class AdminRootRouter {
         //airline router
         this.Router.use("/airlines", this.AirlineRouter.router);
         //airport router
-        this.Router.use("/airport", this.AirportRouter.router);
+        this.Router.use("/airport", new airport_router_1.AirportRouter().router);
         // //booking request router
         // this.Router.use('/booking-request', this.BookingRequestRouter.router);
         // //visa router
@@ -55,6 +55,8 @@ class AdminRootRouter {
         this.Router.use("/b2c/flight-booking", new flightBooking_router_1.default().router);
         //b2b flight booking router
         this.Router.use("/b2b/flight-booking", new b2bFlightBooking_router_1.default().router);
+        //agency router
+        this.Router.use("/booking-service", new admin_b2bBookingService_router_1.AdminBtoBBookingServiceRouter().router);
         //agency router
         this.Router.use("/agency", new adminAgency_router_1.AdminAgencyRouter().router);
     }

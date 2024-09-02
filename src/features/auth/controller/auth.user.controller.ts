@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import AdminAuthService from '../services/auth.admin.service';
-import UserAuthService from '../services/auth.user.service';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import AdminAuthService from "../services/auth.admin.service";
+import UserAuthService from "../services/auth.user.service";
 
 class UserAuthController extends AbstractController {
   private UserAuthService = new UserAuthService();
@@ -16,6 +16,24 @@ class UserAuthController extends AbstractController {
       const { code, ...data } = await this.UserAuthService.registrationService(
         req
       );
+      res.status(code).json(data);
+    }
+  );
+
+  //register
+  public loginWithGoogle = this.asyncWrapper.wrap(
+    { bodySchema: this.commonValidator.loginWithGoogleValidator },
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.UserAuthService.loginWithGoogle(req);
+      res.status(code).json(data);
+    }
+  );
+
+  //register
+  public loginWithFB = this.asyncWrapper.wrap(
+    { bodySchema: this.commonValidator.loginWithGoogleValidator },
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.UserAuthService.loginWithGoogle(req);
       res.status(code).json(data);
     }
   );

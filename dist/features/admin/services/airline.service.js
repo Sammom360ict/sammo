@@ -54,21 +54,12 @@ class AirlinesService extends abstract_service_1.default {
             }
             const body = req.body;
             const model = this.Model.commonModel();
-            const update_airline = yield model.updateAirlines(body, Number(airlines_id));
-            if (update_airline > 0) {
-                return {
-                    success: true,
-                    code: this.StatusCode.HTTP_OK,
-                    message: this.ResMsg.HTTP_OK,
-                };
-            }
-            else {
-                return {
-                    success: false,
-                    code: this.StatusCode.HTTP_BAD_REQUEST,
-                    message: this.ResMsg.HTTP_BAD_REQUEST,
-                };
-            }
+            yield model.updateAirlines(body, Number(airlines_id));
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                message: this.ResMsg.HTTP_OK,
+            };
         });
     }
     //delete airline

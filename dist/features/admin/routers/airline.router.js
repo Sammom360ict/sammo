@@ -16,11 +16,11 @@ class AirlineRouter extends abstract_router_1.default {
     callRouter() {
         //insert airlines, get airlines
         this.router
-            .route('/')
+            .route("/")
             .post(this.uploader.cloudUploadRaw(this.fileFolders.COMMON_FILES), this.controller.insertAirlines);
         //update, delete airlines
         this.router
-            .route('/:id')
+            .route("/:id")
             .patch(this.uploader.cloudUploadRaw(this.fileFolders.COMMON_FILES), this.controller.updateAirlines)
             .delete(this.controller.deleteAirlines);
     }

@@ -24,11 +24,12 @@ class AirportService extends abstract_service_1.default {
             const body = req.body;
             const model = this.Model.commonModel();
             const checkAirport = yield model.getAllAirport({ code: body.iata_code }, false);
+            console.log({ body });
             if (checkAirport.data.length) {
                 return {
                     success: false,
                     code: this.StatusCode.HTTP_CONFLICT,
-                    message: 'Airport code already exist.',
+                    message: "Airport code already exist.",
                 };
             }
             yield model.insertAirport(body);
@@ -36,6 +37,21 @@ class AirportService extends abstract_service_1.default {
                 success: true,
                 code: this.StatusCode.HTTP_SUCCESSFUL,
                 message: this.ResMsg.HTTP_SUCCESSFUL,
+            };
+        });
+    }
+    //get all airport
+    getAllAirport(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { country_id, name, limit, skip } = req.query;
+            const model = this.Model.commonModel();
+            const get_airport = yield model.getAllAirport({ country_id, name, limit, skip }, true);
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                message: this.ResMsg.HTTP_OK,
+                total: parseInt(get_airport.total),
+                data: get_airport.data,
             };
         });
     }

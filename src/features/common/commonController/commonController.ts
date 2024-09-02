@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import commonService from '../commonService/commonService';
-import CommonValidator from '../commonUtils/validators/commonValidator';
-import migrateDataService from '../commonService/migrateDataService';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import commonService from "../commonService/commonService";
+import CommonValidator from "../commonUtils/validators/commonValidator";
+import migrateDataService from "../commonService/migrateDataService";
 
 class CommonController extends AbstractController {
   private commonService = new commonService();
@@ -51,7 +51,6 @@ class CommonController extends AbstractController {
     }
   );
 
-
   //get all airport
   public getAllAirport = this.asyncWrapper.wrap(
     { bodySchema: this.commonValidator.airportFilterSchema },
@@ -60,7 +59,6 @@ class CommonController extends AbstractController {
       res.status(code).json(data);
     }
   );
-
 
   //airlines list
   public getAllAirlines = this.asyncWrapper.wrap(
@@ -88,7 +86,6 @@ class CommonController extends AbstractController {
       res.status(code).json(data);
     }
   );
-
 
   //migrate data
   public dataMigrate = this.asyncWrapper.wrap(

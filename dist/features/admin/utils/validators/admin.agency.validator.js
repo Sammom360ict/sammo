@@ -23,6 +23,7 @@ class AdminAgencyValidator {
             email: joi_1.default.string().email().lowercase().optional(),
             phone: joi_1.default.string().min(11).max(14).optional(),
             agency_name: joi_1.default.string().optional(),
+            commission: joi_1.default.number().min(0).optional(),
             status: joi_1.default.number().valid("true", "false").optional(),
         });
         // create agency user schema

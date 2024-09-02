@@ -209,7 +209,6 @@ class CommonModel extends schema_1.default {
                 .limit(params.limit ? params.limit : 100)
                 .offset(params.skip ? params.skip : 0)
                 .orderBy("air.id", "asc");
-            console.log({ data });
             let count = [];
             if (total) {
                 count = yield this.db("airport as air")

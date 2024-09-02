@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi from "joi";
 
 export class AdminAgencyValidator {
   // create agency schema
@@ -18,6 +18,7 @@ export class AdminAgencyValidator {
     email: Joi.string().email().lowercase().optional(),
     phone: Joi.string().min(11).max(14).optional(),
     agency_name: Joi.string().optional(),
+    commission: Joi.number().min(0).optional(),
     status: Joi.number().valid("true", "false").optional(),
   });
 

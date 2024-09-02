@@ -1,28 +1,18 @@
 import { Request } from "express";
 import AbstractServices from "../../../abstract/abstract.service";
-import ResponseFormatter from "../../../utils/lib/responseFormatter";
-import {
-  CANCEL_BOOKING_ENDPOINT,
-  FLIGHT_BOOKING_ENDPOINT,
-  GET_BOOKING_ENDPOINT,
-} from "../../../utils/miscellaneous/sabreApiEndpoints";
-import CustomError from "../../../utils/lib/customError";
-import { IFlightOption } from "../../../utils/interfaces/flight/flightSearchInterface";
-import BookingFlightService from "./bookinglight.service";
-import RequestFormatter from "../../../utils/lib/requestFomatter";
-import { IPnrRequestBody } from "../utils/types/pnr.types";
 import {
   IInsertFlightSegmentPayload,
   IInsertFlightTravelerPayload,
 } from "../../../utils/interfaces/flight/flightBookingInterface";
-import {
-  offerPriceEndPoint,
-  orderCancelEndPoint,
-  orderCreateEndPoint,
-  orderSellEndPoint,
-} from "../../../utils/miscellaneous/bdFareApiEndpoints";
-import { getRedis } from "../../../app/redis";
+import { IFlightOption } from "../../../utils/interfaces/flight/flightSearchInterface";
+import RequestFormatter from "../../../utils/lib/requestFomatter";
+import ResponseFormatter from "../../../utils/lib/responseFormatter";
 import SabreRequests from "../../../utils/lib/sabreRequest";
+import {
+  CANCEL_BOOKING_ENDPOINT,
+  FLIGHT_BOOKING_ENDPOINT,
+} from "../../../utils/miscellaneous/sabreApiEndpoints";
+import BookingFlightService from "./bookinglight.service";
 
 class flightBookingService extends AbstractServices {
   private ResFormatter = new ResponseFormatter();

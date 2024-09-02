@@ -13,6 +13,7 @@ const subAgency_router_1 = require("./routers/subAgency.router");
 const bookingVisa_router_1 = require("./routers/bookingVisa.router");
 const dashboard_router_1 = require("./routers/dashboard.router");
 const btob_router_1 = require("./routers/btob.router");
+const bookingService_router_1 = __importDefault(require("./routers/bookingService.router"));
 class B2BRootRouter {
     constructor() {
         this.Router = (0, express_1.Router)();
@@ -42,6 +43,8 @@ class B2BRootRouter {
         this.Router.use("/visa-application", new bookingVisa_router_1.B2BVisaRouter().router);
         //dashboard router
         this.Router.use("/dashboard", this.dashboardRouter.router);
+        //booking service
+        this.Router.use("/booking-service", new bookingService_router_1.default().router);
         // b2b request
         this.Router.use("/", new btob_router_1.BtobRouter().router);
     }

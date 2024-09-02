@@ -26,6 +26,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_service_1 = __importDefault(require("../../../abstract/abstract.service"));
 const lib_1 = __importDefault(require("../../../utils/lib/lib"));
 const config_1 = __importDefault(require("../../../config/config"));
+const googleAuth_1 = __importDefault(require("../../../utils/other/googleAuth"));
+const fbAuth_1 = require("../../../utils/other/fbAuth");
 class UserAuthService extends abstract_service_1.default {
     //registration service
     registrationService(req) {
@@ -104,6 +106,104 @@ class UserAuthService extends abstract_service_1.default {
                         message: this.ResMsg.HTTP_BAD_REQUEST,
                     };
                 }
+            }));
+        });
+    }
+    //registration service
+    loginWithGoogle(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
+                const { accessToken, name, email, image } = req.body; // Assuming the token is sent in the request body
+                if (!accessToken) {
+                    return {
+                        success: false,
+                        code: this.StatusCode.HTTP_UNAUTHORIZED,
+                        message: "Access token required",
+                    };
+                }
+                // Verify Google access token
+                const user = yield new googleAuth_1.default().verifyAccessToken(accessToken);
+                const model = this.Model.userModel(trx);
+                //check users email and phone number and username
+                const check_user = yield model.getProfileDetails({
+                    email,
+                });
+                let userId = check_user.length && check_user[0].id;
+                if (!check_user.length) {
+                    //register user
+                    const registration = yield model.registerUser({
+                        first_name: name,
+                        email,
+                    });
+                    userId = registration[0].id;
+                }
+                //retrieve token data
+                const tokenData = {
+                    id: userId,
+                    first_name: name,
+                    email,
+                    photo: check_user.length ? check_user[0].photo : null,
+                    is_verified: true,
+                    status: true,
+                    create_date: new Date(),
+                };
+                const token = lib_1.default.createToken(tokenData, config_1.default.JWT_SECRET_USER, "48h");
+                return {
+                    success: true,
+                    code: this.StatusCode.HTTP_OK,
+                    message: this.ResMsg.HTTP_OK,
+                    data: tokenData,
+                    token,
+                };
+            }));
+        });
+    }
+    //registration service
+    loginWithFB(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
+                const { accessToken, name, email, image } = req.body; // Assuming the token is sent in the request body
+                if (!accessToken) {
+                    return {
+                        success: false,
+                        code: this.StatusCode.HTTP_UNAUTHORIZED,
+                        message: "Access token required",
+                    };
+                }
+                // Verify Google access token
+                const user = yield (0, fbAuth_1.verifyFacebookToken)(accessToken);
+                console.log({ user });
+                const model = this.Model.userModel(trx);
+                //check users email and phone number and username
+                const check_user = yield model.getProfileDetails({
+                    email: user.email,
+                });
+                let userId = check_user.length && check_user[0].id;
+                if (!check_user.length) {
+                    //register user
+                    const registration = yield model.registerUser({
+                        first_name: name,
+                        email,
+                    });
+                    userId = registration[0].id;
+                }
+                //retrieve token data
+                const tokenData = {
+                    id: userId,
+                    first_name: name,
+                    email,
+                    photo: check_user.length ? check_user[0].photo : null,
+                    is_verified: true,
+                    status: true,
+                };
+                const token = lib_1.default.createToken(tokenData, config_1.default.JWT_SECRET_USER, "48h");
+                return {
+                    success: true,
+                    code: this.StatusCode.HTTP_OK,
+                    message: this.ResMsg.HTTP_OK,
+                    token,
+                    data: tokenData,
+                };
             }));
         });
     }

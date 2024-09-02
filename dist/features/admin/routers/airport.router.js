@@ -16,11 +16,12 @@ class AirportRouter extends abstract_router_1.default {
     callRouter() {
         //insert airport, get airport
         this.router
-            .route('/')
-            .post(this.controller.insertAirport);
+            .route("/")
+            .post(this.controller.insertAirport)
+            .get(this.controller.getAllAirport);
         //update, delete airport
         this.router
-            .route('/:id')
+            .route("/:id")
             .patch(this.controller.updateAirport)
             .delete(this.controller.deleteAirport);
     }

@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
-import path from 'path';
+import dotenv from "dotenv";
+import path from "path";
 
 // Parsing the env file.
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 // Env types
 interface ENV {
@@ -17,6 +17,8 @@ interface ENV {
   JWT_SECRET_AGENT: string | undefined;
   EMAIL_SEND_EMAIL_ID: string | undefined;
   EMAIL_SEND_PASSWORD: string | undefined;
+  GOOGLE_CLIENT_SECRET: string | undefined;
+  GOOGLE_CLIENT_ID: string | undefined;
   AWS_S3_BUCKET: string | undefined;
   AWS_S3_ACCESS_KEY: string | undefined;
   AWS_S3_SECRET_KEY: string | undefined;
@@ -43,6 +45,8 @@ interface Config {
   EMAIL_SEND_EMAIL_ID: string;
   EMAIL_SEND_PASSWORD: string;
   AWS_S3_BUCKET: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
   AWS_S3_ACCESS_KEY: string;
   AWS_S3_SECRET_KEY: string;
   SSL_URL: string;
@@ -65,9 +69,11 @@ const getConfig = (): ENV => {
     DB_PORT: process.env.DB_PORT,
     JWT_SECRET_ADMIN: process.env.JWT_SECRET_ADMIN,
     JWT_SECRET_USER: process.env.JWT_SECRET_USER,
-    JWT_SECRET_AGENT:process.env.JWT_SECRET_AGENT,
+    JWT_SECRET_AGENT: process.env.JWT_SECRET_AGENT,
     EMAIL_SEND_EMAIL_ID: process.env.EMAIL_SEND_EMAIL_ID,
     EMAIL_SEND_PASSWORD: process.env.EMAIL_SEND_PASSWORD,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     AWS_S3_BUCKET: process.env.AWS_S3_BUCKET,
     AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY,
     AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY,

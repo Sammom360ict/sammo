@@ -72,7 +72,7 @@ class FlightBookingModel extends schema_1.default {
     // get single booking
     getSingleFlightBooking(wherePayload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { pnr_code, id, status, user_id } = wherePayload;
+            const { pnr_code, id, status, user_id, agency_id } = wherePayload;
             return yield this.db("flight_booking as fb")
                 .withSchema(this.BTOC_SCHEMA)
                 .select("fb.id as booking_id", "us.username as created_by", "fb.pnr_code", "fb.total_passenger", "fb.ticket_issue_last_time", "fb.status", "fb.ticket_price", "fb.base_fare", "fb.total_tax", "fb.commission", "fb.payable_amount", "fb.ait", "fb.discount", "fb.journey_type", "fb.created_at")
@@ -87,6 +87,9 @@ class FlightBookingModel extends schema_1.default {
                 }
                 if (user_id) {
                     this.andWhere({ "fb.created_by": user_id });
+                }
+                if (agency_id) {
+                    this.andWhere({ "fb.agency_id": agency_id });
                 }
             });
         });

@@ -9,6 +9,7 @@ import { BtoBSubAgencyRouter } from "./routers/subAgency.router";
 import { B2BVisaRouter } from "./routers/bookingVisa.router";
 import { B2BDashboardRouter } from "./routers/dashboard.router";
 import { BtobRouter } from "./routers/btob.router";
+import BtoBBookingServiceRouter from "./routers/bookingService.router";
 
 class B2BRootRouter {
   public Router = Router();
@@ -50,6 +51,9 @@ class B2BRootRouter {
 
     //dashboard router
     this.Router.use("/dashboard", this.dashboardRouter.router);
+
+    //booking service
+    this.Router.use("/booking-service", new BtoBBookingServiceRouter().router);
 
     // b2b request
     this.Router.use("/", new BtobRouter().router);

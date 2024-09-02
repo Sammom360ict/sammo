@@ -34,14 +34,24 @@ class UserAuthController extends abstract_controller_1.default {
             const _a = yield this.UserAuthService.registrationService(req), { code } = _a, data = __rest(_a, ["code"]);
             res.status(code).json(data);
         }));
+        //register
+        this.loginWithGoogle = this.asyncWrapper.wrap({ bodySchema: this.commonValidator.loginWithGoogleValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _b = yield this.UserAuthService.loginWithGoogle(req), { code } = _b, data = __rest(_b, ["code"]);
+            res.status(code).json(data);
+        }));
+        //register
+        this.loginWithFB = this.asyncWrapper.wrap({ bodySchema: this.commonValidator.loginWithGoogleValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _c = yield this.UserAuthService.loginWithGoogle(req), { code } = _c, data = __rest(_c, ["code"]);
+            res.status(code).json(data);
+        }));
         // login
         this.login = this.asyncWrapper.wrap({ bodySchema: this.commonValidator.loginValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _b = yield this.UserAuthService.loginService(req), { code } = _b, data = __rest(_b, ["code"]);
+            const _d = yield this.UserAuthService.loginService(req), { code } = _d, data = __rest(_d, ["code"]);
             res.status(code).json(data);
         }));
         // forget pass
         this.forgetPassword = this.asyncWrapper.wrap({ bodySchema: this.commonValidator.commonForgetPassInputValidation }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _c = yield this.UserAuthService.forgetPassword(req), { code } = _c, data = __rest(_c, ["code"]);
+            const _e = yield this.UserAuthService.forgetPassword(req), { code } = _e, data = __rest(_e, ["code"]);
             res.status(code).json(data);
         }));
     }

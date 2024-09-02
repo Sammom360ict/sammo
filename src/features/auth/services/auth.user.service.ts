@@ -6,6 +6,8 @@ import {
   ILoginPayload,
   IForgetPasswordPayload,
 } from "../../common/commonUtils/types/commonTypes";
+import GoogleAuth from "../../../utils/other/googleAuth";
+import { verifyFacebookToken } from "../../../utils/other/fbAuth";
 
 class UserAuthService extends AbstractServices {
   //registration service
@@ -88,6 +90,117 @@ class UserAuthService extends AbstractServices {
           message: this.ResMsg.HTTP_BAD_REQUEST,
         };
       }
+    });
+  }
+
+  //registration service
+  public async loginWithGoogle(req: Request) {
+    return this.db.transaction(async (trx) => {
+      const { accessToken, name, email, image } = req.body; // Assuming the token is sent in the request body
+
+      if (!accessToken) {
+        return {
+          success: false,
+          code: this.StatusCode.HTTP_UNAUTHORIZED,
+          message: "Access token required",
+        };
+      }
+
+      // Verify Google access token
+      const user = await new GoogleAuth().verifyAccessToken(accessToken);
+
+      const model = this.Model.userModel(trx);
+      //check users email and phone number and username
+      const check_user = await model.getProfileDetails({
+        email,
+      });
+
+      let userId = check_user.length && check_user[0].id;
+      if (!check_user.length) {
+        //register user
+        const registration = await model.registerUser({
+          first_name: name,
+          email,
+        });
+        userId = registration[0].id;
+      }
+
+      //retrieve token data
+      const tokenData = {
+        id: userId,
+        first_name: name,
+        email,
+        photo: check_user.length ? check_user[0].photo : null,
+        is_verified: true,
+        status: true,
+        create_date: new Date(),
+      };
+
+      const token = Lib.createToken(tokenData, config.JWT_SECRET_USER, "48h");
+
+      return {
+        success: true,
+        code: this.StatusCode.HTTP_OK,
+        message: this.ResMsg.HTTP_OK,
+        data: tokenData,
+        token,
+      };
+    });
+  }
+
+  //registration service
+  public async loginWithFB(req: Request) {
+    return this.db.transaction(async (trx) => {
+      const { accessToken, name, email, image } = req.body; // Assuming the token is sent in the request body
+
+      if (!accessToken) {
+        return {
+          success: false,
+          code: this.StatusCode.HTTP_UNAUTHORIZED,
+          message: "Access token required",
+        };
+      }
+
+      // Verify Google access token
+      const user = await verifyFacebookToken(accessToken);
+
+      console.log({ user });
+
+      const model = this.Model.userModel(trx);
+      //check users email and phone number and username
+      const check_user = await model.getProfileDetails({
+        email: user.email,
+      });
+
+      let userId = check_user.length && check_user[0].id;
+      if (!check_user.length) {
+        //register user
+        const registration = await model.registerUser({
+          first_name: name,
+          email,
+        });
+        userId = registration[0].id;
+      }
+
+      //retrieve token data
+      const tokenData = {
+        id: userId,
+        first_name: name,
+        email,
+        photo: check_user.length ? check_user[0].photo : null,
+        is_verified: true,
+        status: true,
+      };
+
+      const token = Lib.createToken(tokenData, config.JWT_SECRET_USER, "48h");
+
+      return {
+        success: true,
+        code: this.StatusCode.HTTP_OK,
+        message: this.ResMsg.HTTP_OK,
+        token,
+        data: tokenData,
+      };
     });
   }
 

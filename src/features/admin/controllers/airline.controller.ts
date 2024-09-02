@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import { AirlinesService } from '../services/airline.service';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import { AirlinesService } from "../services/airline.service";
 
 export class AirlineController extends AbstractController {
   private services = new AirlinesService();
@@ -8,15 +8,14 @@ export class AirlineController extends AbstractController {
     super();
   }
 
- //insert airlines
- public insertAirlines = this.asyncWrapper.wrap(
+  //insert airlines
+  public insertAirlines = this.asyncWrapper.wrap(
     { bodySchema: this.commonValidator.insertAirlines },
     async (req: Request, res: Response) => {
       const { code, ...data } = await this.services.insertAirlines(req);
       res.status(code).json(data);
     }
   );
-
 
   //update airlines
   public updateAirlines = this.asyncWrapper.wrap(

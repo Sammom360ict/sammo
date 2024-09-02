@@ -24,11 +24,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_service_1 = __importDefault(require("../../../abstract/abstract.service"));
+const requestFomatter_1 = __importDefault(require("../../../utils/lib/requestFomatter"));
 const responseFormatter_1 = __importDefault(require("../../../utils/lib/responseFormatter"));
+const sabreRequest_1 = __importDefault(require("../../../utils/lib/sabreRequest"));
 const sabreApiEndpoints_1 = require("../../../utils/miscellaneous/sabreApiEndpoints");
 const bookinglight_service_1 = __importDefault(require("./bookinglight.service"));
-const requestFomatter_1 = __importDefault(require("../../../utils/lib/requestFomatter"));
-const sabreRequest_1 = __importDefault(require("../../../utils/lib/sabreRequest"));
 class flightBookingService extends abstract_service_1.default {
     constructor() {
         super();

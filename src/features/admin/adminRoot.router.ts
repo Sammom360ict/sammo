@@ -12,6 +12,7 @@ import adminFlightBookingRouter from "./routers/flightBooking.router";
 import { AdminAgencyRouter } from "./routers/adminAgency.router";
 import adminB2BFlightBookingRouter from "./routers/b2bFlightBooking.router";
 import { AdminBtocRouter } from "./routers/admin.btoc.router";
+import { AdminBtoBBookingServiceRouter } from "./routers/admin.b2bBookingService.router";
 class AdminRootRouter {
   public Router = Router();
   private ProfileRouter = new AdminProfileRouter();
@@ -19,7 +20,7 @@ class AdminRootRouter {
   private ArticleRouter = new AdminArticleRouter();
   private AirlinesCommissionRouter = new AirlineCommissionRouter();
   private AirlineRouter = new AirlineRouter();
-  private AirportRouter = new AirportRouter();
+
   private BookingRequestRouter = new BookingRequestRouter();
   private VisaRouter = new AdminVisaRouter();
   private DashBoardRouter = new AdminDashboardRouter();
@@ -47,7 +48,7 @@ class AdminRootRouter {
     this.Router.use("/airlines", this.AirlineRouter.router);
 
     //airport router
-    this.Router.use("/airport", this.AirportRouter.router);
+    this.Router.use("/airport", new AirportRouter().router);
 
     // //booking request router
     // this.Router.use('/booking-request', this.BookingRequestRouter.router);
@@ -70,6 +71,13 @@ class AdminRootRouter {
       "/b2b/flight-booking",
       new adminB2BFlightBookingRouter().router
     );
+
+    //agency router
+    this.Router.use(
+      "/booking-service",
+      new AdminBtoBBookingServiceRouter().router
+    );
+
     //agency router
     this.Router.use("/agency", new AdminAgencyRouter().router);
   }

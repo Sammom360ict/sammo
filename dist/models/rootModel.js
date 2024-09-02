@@ -20,6 +20,8 @@ const flightTicketModel_1 = __importDefault(require("./flightModel/flightTicketM
 const agencyModel_1 = require("./agencyModel/agencyModel");
 const b2bFlightBookingModel_1 = __importDefault(require("./agencyModel/b2bFlightBookingModel"));
 const b2bFlightTicketModel_1 = __importDefault(require("./agencyModel/b2bFlightTicketModel"));
+const BtoBBookingServiceModel_1 = require("./bookingServiceModel/BtoBBookingServiceModel");
+const auditTrailModel_1 = require("./auditTrailModel/auditTrailModel");
 class Models {
     //booking request models
     bookingRequestModel(trx) {
@@ -84,6 +86,14 @@ class Models {
     //B2B Ticket issue model
     b2bTicketIssueModel(trx) {
         return new b2bFlightTicketModel_1.default(trx || database_1.db);
+    }
+    //B2B booking support model
+    btobBookingSupportModel(trx) {
+        return new BtoBBookingServiceModel_1.BtoBBookingServiceModel(trx || database_1.db);
+    }
+    //B2B Ticket issue model
+    auditTrailModel(trx) {
+        return new auditTrailModel_1.AuditTrailModel(trx || database_1.db);
     }
 }
 exports.default = Models;

@@ -227,7 +227,6 @@ class CommonModel extends Schema {
       .offset(params.skip ? params.skip : 0)
       .orderBy("air.id", "asc");
 
-    console.log({ data });
     let count: any[] = [];
     if (total) {
       count = await this.db("airport as air")

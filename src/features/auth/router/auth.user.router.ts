@@ -1,5 +1,4 @@
 import AbstractRouter from "../../../abstract/abstract.router";
-import AdminAuthController from "../controller/auth.admin.controller";
 import UserAuthController from "../controller/auth.user.controller";
 
 class UserAuthRouter extends AbstractRouter {
@@ -17,6 +16,16 @@ class UserAuthRouter extends AbstractRouter {
         this.uploader.cloudUploadRaw(this.fileFolders.USER_FILES),
         this.UserAuthController.registration
       );
+
+    // Google login route
+    this.router
+      .route("/google-login")
+      .post(this.UserAuthController.loginWithGoogle);
+
+    // Google login route
+    this.router
+      .route("/facebook-login")
+      .post(this.UserAuthController.loginWithFB);
 
     //login
     this.router.route("/login").post(this.UserAuthController.login);

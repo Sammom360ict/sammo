@@ -102,8 +102,9 @@ class FlightBookingModel extends Schema {
     id: number;
     status?: string;
     user_id?: number;
+    agency_id?: number;
   }) {
-    const { pnr_code, id, status, user_id } = wherePayload;
+    const { pnr_code, id, status, user_id, agency_id } = wherePayload;
     return await this.db("flight_booking as fb")
       .withSchema(this.BTOC_SCHEMA)
       .select(
@@ -134,6 +135,9 @@ class FlightBookingModel extends Schema {
         }
         if (user_id) {
           this.andWhere({ "fb.created_by": user_id });
+        }
+        if (agency_id) {
+          this.andWhere({ "fb.agency_id": agency_id });
         }
       });
   }
