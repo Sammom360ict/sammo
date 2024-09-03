@@ -132,8 +132,6 @@ class UserAuthService extends AbstractServices {
         userId = registration[0].id;
       }
 
-      console.log({ userId });
-
       //retrieve token data
       const tokenData = {
         id: userId,
@@ -171,8 +169,6 @@ class UserAuthService extends AbstractServices {
 
       // Verify Google access token
       const user = await verifyFacebookToken(accessToken);
-
-      console.log({ user });
 
       const model = this.Model.userModel(trx);
       //check users email and phone number and username

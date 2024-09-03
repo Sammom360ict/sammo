@@ -26,15 +26,15 @@ class flightBookingService extends AbstractServices {
   public async flightBooking(req: Request) {
     const body = req.body;
 
-    const clientIP = req.ip as string;
-    console.log({ clientIP });
+    const search_id = req.query.search_id as string;
+
     // const flight_id = body.flight_id;
     const { flight_id, passengers: traveler } = req.body;
     const { id: user_id } = req.user;
     const commission_per = 5;
     // const data = await revalidateFlight(clientIP, flight_id);
     const data = await this.BookingFlightService.subRevalidate(
-      clientIP,
+      search_id,
       flight_id
       // agency_commission
     );

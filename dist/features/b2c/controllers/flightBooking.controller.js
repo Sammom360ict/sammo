@@ -32,7 +32,10 @@ class flightBookingController extends abstract_controller_1.default {
         this.service = new flightBooking_service_1.default();
         this.flightValidator = new flightBooking_validator_1.default();
         // Flight booking controller
-        this.flightBooking = this.asyncWrapper.wrap({ bodySchema: this.flightValidator.pnrCreateSchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.flightBooking = this.asyncWrapper.wrap({
+            bodySchema: this.flightValidator.pnrCreateSchema,
+            querySchema: this.flightValidator.flightBookingQuerySchema,
+        }, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _a = yield this.service.flightBooking(req), { code } = _a, rest = __rest(_a, ["code"]);
             res.status(code).json(rest);
         }));

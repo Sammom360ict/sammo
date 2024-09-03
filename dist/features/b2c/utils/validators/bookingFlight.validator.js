@@ -9,51 +9,51 @@ class BookingFlightValidator {
         // dependent schema start ==============================================================================
         // Cabin Pref Schema
         this.cabinPrefSchema = joi_1.default.object({
-            Cabin: joi_1.default.string().valid('P', 'F', 'J', 'C', 'S', 'Y').required(),
+            Cabin: joi_1.default.string().valid("P", "F", "J", "C", "S", "Y").required(),
             PreferLevel: joi_1.default.string().required(),
         });
         // Location schema
         this.locationSchema = joi_1.default.object({
             LocationCode: joi_1.default.string().required().uppercase().messages({
-                'any.required': 'Provide valid location',
+                "any.required": "Provide valid location",
             }),
         });
         /// TPA Schema
         this.tpaSchema = joi_1.default.object({
             CabinPref: this.cabinPrefSchema.required().messages({
-                'any.required': 'CabinPref is required',
+                "any.required": "CabinPref is required",
             }),
         });
         // Origin Destination Schema
         this.originDestSchema = joi_1.default.object({
             RPH: joi_1.default.string().required().messages({
-                'any.required': 'Provide valid RPH',
+                "any.required": "Provide valid RPH",
             }),
             DepartureDateTime: joi_1.default.string()
                 .pattern(new RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/))
                 .required()
                 .messages({
-                'any.required': 'Provide valid Departure date time',
-                'string.pattern.base': 'Invalid departure timestamp',
+                "any.required": "Provide valid Departure date time",
+                "string.pattern.base": "Invalid departure timestamp",
             }),
             OriginLocation: this.locationSchema.required().messages({
-                'any.required': 'Provide valid origin location',
+                "any.required": "Provide valid origin location",
             }),
             DestinationLocation: this.locationSchema.required().messages({
-                'any.required': 'Provide valid destination location',
+                "any.required": "Provide valid destination location",
             }),
             TPA_Extensions: this.tpaSchema.required().messages({
-                'any.required': 'TPA Extensions is required',
+                "any.required": "TPA Extensions is required",
             }),
         });
         // Passenger Type Schema
         this.passengerTypeSchema = joi_1.default.object({
             Code: joi_1.default.string().required().messages({
-                'any.required': 'Provide valid passenger',
+                "any.required": "Provide valid passenger",
             }),
             Quantity: joi_1.default.number().integer().required().messages({
-                'any.required': 'Provide valid quantity',
-                'number.integer': 'Quantity must be an integer',
+                "any.required": "Provide valid quantity",
+                "number.integer": "Quantity must be an integer",
             }),
         });
         // dependent schema end ==============================================================================
@@ -63,13 +63,13 @@ class BookingFlightValidator {
                 .items(this.originDestSchema.required())
                 .required()
                 .messages({
-                'any.required': 'Provide valid Origin destination data',
+                "any.required": "Provide valid Origin destination data",
             }),
             PassengerTypeQuantity: joi_1.default.array()
                 .items(this.passengerTypeSchema.required())
                 .required()
                 .messages({
-                'any.required': 'Provide valid passenger code and quantity data',
+                "any.required": "Provide valid passenger code and quantity data",
             }),
         });
         // Flight filter schema
@@ -78,6 +78,7 @@ class BookingFlightValidator {
             min_price: joi_1.default.number().optional(),
             max_price: joi_1.default.number().optional(),
             page: joi_1.default.number().optional(),
+            search_id: joi_1.default.string().required(),
             size: joi_1.default.number().optional(),
             refundable: joi_1.default.string().optional(),
             stoppage: joi_1.default.string().optional(),
@@ -104,23 +105,27 @@ class BookingFlightValidator {
             carrier_marketing_code: joi_1.default.string().required(),
             carrier_operating_code: joi_1.default.string().required(),
         });
-        //ORIGIN DESTINATION INFORMATION SCHEMA FOR REVALIDATE 
+        //ORIGIN DESTINATION INFORMATION SCHEMA FOR REVALIDATE
         this.originDestinationInfoSchema = joi_1.default.object({
             RPH: joi_1.default.string().required(),
-            DepartureDateTime: joi_1.default.string().pattern(new RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/)).required(),
+            DepartureDateTime: joi_1.default.string()
+                .pattern(new RegExp(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/))
+                .required(),
             OriginLocation: this.locationSchema.required(),
             DestinationLocation: this.locationSchema.required(),
             flight: joi_1.default.array().items(this.flightInfoSchema.required()).required(),
             TPA_Extensions: this.tpaSchema.optional().messages({
-                'any.required': 'TPA Extensions is required',
+                "any.required": "TPA Extensions is required",
             }),
         });
         //FLIGHT REVALIDATE SCHEMA V2
         this.flightRevalidateSchemaV2 = joi_1.default.object({
-            OriginDestinationInformation: joi_1.default.array().items(this.originDestinationInfoSchema.required()).required(),
+            OriginDestinationInformation: joi_1.default.array()
+                .items(this.originDestinationInfoSchema.required())
+                .required(),
             PassengerTypeQuantity: joi_1.default.array()
                 .items(this.passengerTypeSchema.required())
-                .required()
+                .required(),
         });
     }
 }

@@ -41,11 +41,8 @@ class flightBookingService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const body = req.body;
             const search_id = req.query.search_id;
-            // const flight_id = body.flight_id;
             const { flight_id, passengers: traveler } = req.body;
             const { agency_id, id: user_id } = req.agency;
-            const commission_per = 5;
-            // const data = await revalidateFlight(clientIP, flight_id);
             const data = yield this.BookingFlightService.subRevalidate(search_id, flight_id
             // agency_commission
             );
@@ -123,7 +120,6 @@ class flightBookingService extends abstract_service_1.default {
                     base_fare,
                     commission,
                     journey_type,
-                    commission_per,
                     payable_amount,
                     ticket_price,
                     total_tax,

@@ -145,7 +145,6 @@ class TicketIssueService extends abstract_service_1.default {
             const { ticket_issue_last_time, payable_amount, pnr_code } = checkFlightBooking[0];
             // Convert the database timestamp string to a Date object in UTC
             const databaseUTCTimestamp = Date.parse(ticket_issue_last_time);
-            console.log({ checkFlightBooking });
             // Get the current UTC timestamp
             const currentUTCTimestamp = Date.now();
             if (currentUTCTimestamp < databaseUTCTimestamp) {

@@ -40,14 +40,13 @@ class flightBookingService extends abstract_service_1.default {
     flightBooking(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const body = req.body;
-            const clientIP = req.ip;
-            console.log({ clientIP });
+            const search_id = req.query.search_id;
             // const flight_id = body.flight_id;
             const { flight_id, passengers: traveler } = req.body;
             const { id: user_id } = req.user;
             const commission_per = 5;
             // const data = await revalidateFlight(clientIP, flight_id);
-            const data = yield this.BookingFlightService.subRevalidate(clientIP, flight_id
+            const data = yield this.BookingFlightService.subRevalidate(search_id, flight_id
             // agency_commission
             );
             console.log({ data });
