@@ -1,7 +1,7 @@
-import AbstractController from '../../../abstract/abstract.controller';
-import { Request, Response } from 'express';
-import BookingFlightService from '../services/bookinglight.service';
-import BookingFlightValidator from '../utils/validators/bookingFlight.validator';
+import AbstractController from "../../../abstract/abstract.controller";
+import { Request, Response } from "express";
+import BookingFlightService from "../services/bookinglight.service";
+import BookingFlightValidator from "../utils/validators/bookingFlight.validator";
 
 export default class BookingFlightController extends AbstractController {
   private service = new BookingFlightService();
@@ -9,8 +9,6 @@ export default class BookingFlightController extends AbstractController {
   constructor() {
     super();
   }
-
-
 
   // Search flight
   public flightSearch = this.asyncWrapper.wrap(
@@ -22,7 +20,6 @@ export default class BookingFlightController extends AbstractController {
     }
   );
 
-
   // Filter flight
   public flightFilter = this.asyncWrapper.wrap(
     { querySchema: this.validator.flightFilterSchema },
@@ -32,8 +29,6 @@ export default class BookingFlightController extends AbstractController {
       res.status(code).json(rest);
     }
   );
-
-
 
   // revalidate flight
   public revalidate = this.asyncWrapper.wrap(
@@ -54,6 +49,4 @@ export default class BookingFlightController extends AbstractController {
       res.status(code).json(rest);
     }
   );
-
-
 }

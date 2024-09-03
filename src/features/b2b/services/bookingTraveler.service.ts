@@ -1,6 +1,6 @@
-import { Request } from 'express';
-import AbstractServices from '../../../abstract/abstract.service';
-import CustomError from '../../../utils/lib/customError';
+import { Request } from "express";
+import AbstractServices from "../../../abstract/abstract.service";
+import CustomError from "../../../utils/lib/customError";
 
 export default class BookingTravelerService extends AbstractServices {
   constructor() {
@@ -11,8 +11,6 @@ export default class BookingTravelerService extends AbstractServices {
   public async create(req: Request) {
     const body = req.body;
     const { id } = req.agency;
-
-
 
     const model = this.Model.agencyModel();
     const traveler_body = {
@@ -30,8 +28,8 @@ export default class BookingTravelerService extends AbstractServices {
       frequent_flyer_airline: body.frequent_flyer_airline,
       frequent_flyer_number: body.frequent_flyer_number,
       gender: body.gender,
-      country_id: body.country
-    }
+      country_id: body.country,
+    };
 
     await model.insertTraveler(traveler_body);
 
@@ -47,11 +45,15 @@ export default class BookingTravelerService extends AbstractServices {
     const query = req.query;
     const { id } = req.agency;
 
+    console.log({ id });
+
     const model = this.Model.agencyModel();
 
-    const { data, total } = await model.getAllTravelers(
-      { ...query, deleted: false, agency_id: id }
-    );
+    const { data, total } = await model.getAllTravelers({
+      ...query,
+      deleted: false,
+      agency_id: id,
+    });
 
     return {
       success: true,
@@ -65,13 +67,11 @@ export default class BookingTravelerService extends AbstractServices {
   // get single traveler service
   public async getSingle(req: Request) {
     const { id } = req.params;
-    const { id: user_id , agency_id} = req.agency;
+    const { id: user_id, agency_id } = req.agency;
 
     const model = this.Model.agencyModel();
 
-    const data = await model.getSingleTravelers(
-      agency_id, Number(id)
-    );
+    const data = await model.getSingleTravelers(agency_id, Number(id));
 
     if (!data.length) {
       return {
@@ -93,7 +93,7 @@ export default class BookingTravelerService extends AbstractServices {
   public async update(req: Request) {
     const body = req.body;
     const { id } = req.params;
-    const { id: user_id,agency_id } = req.agency;
+    const { id: user_id, agency_id } = req.agency;
 
     // const files = (req.files as Express.Multer.File[]) || [];
 
@@ -107,9 +107,7 @@ export default class BookingTravelerService extends AbstractServices {
 
     const model = this.Model.agencyModel();
 
-    const check = await model.getSingleTravelers(
-      agency_id, Number(id)
-    );
+    const check = await model.getSingleTravelers(agency_id, Number(id));
 
     if (!check.length) {
       return {
@@ -134,10 +132,10 @@ export default class BookingTravelerService extends AbstractServices {
       frequent_flyer_number: body.frequent_flyer_number,
       gender: body.gender,
       status: body.status,
-      country_id: body.country
-    }
+      country_id: body.country,
+    };
 
-    await model.updateTravelers(agency_id,Number(id), traveler_body);
+    await model.updateTravelers(agency_id, Number(id), traveler_body);
 
     return {
       success: true,
@@ -149,7 +147,7 @@ export default class BookingTravelerService extends AbstractServices {
   //delete traveler service
   public async delete(req: Request) {
     const { id } = req.params;
-    const { id: user_id , agency_id} = req.agency;
+    const { id: user_id, agency_id } = req.agency;
     const model = this.Model.agencyModel();
 
     const check = await model.getSingleTravelers(agency_id, Number(id));

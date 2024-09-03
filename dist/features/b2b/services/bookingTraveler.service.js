@@ -38,7 +38,7 @@ class BookingTravelerService extends abstract_service_1.default {
                 frequent_flyer_airline: body.frequent_flyer_airline,
                 frequent_flyer_number: body.frequent_flyer_number,
                 gender: body.gender,
-                country_id: body.country
+                country_id: body.country,
             };
             yield model.insertTraveler(traveler_body);
             return {
@@ -53,6 +53,7 @@ class BookingTravelerService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const query = req.query;
             const { id } = req.agency;
+            console.log({ id });
             const model = this.Model.agencyModel();
             const { data, total } = yield model.getAllTravelers(Object.assign(Object.assign({}, query), { deleted: false, agency_id: id }));
             return {
@@ -124,7 +125,7 @@ class BookingTravelerService extends abstract_service_1.default {
                 frequent_flyer_number: body.frequent_flyer_number,
                 gender: body.gender,
                 status: body.status,
-                country_id: body.country
+                country_id: body.country,
             };
             yield model.updateTravelers(agency_id, Number(id), traveler_body);
             return {

@@ -98,6 +98,8 @@ class UserAuthService extends AbstractServices {
     return this.db.transaction(async (trx) => {
       const { accessToken, name, email, image } = req.body; // Assuming the token is sent in the request body
 
+      console.log({ accessToken });
+
       if (!accessToken) {
         return {
           success: false,
@@ -109,21 +111,28 @@ class UserAuthService extends AbstractServices {
       // Verify Google access token
       const user = await new GoogleAuth().verifyAccessToken(accessToken);
 
+      console.log({ user });
+
       const model = this.Model.userModel(trx);
       //check users email and phone number and username
       const check_user = await model.getProfileDetails({
         email,
       });
 
-      let userId = check_user.length && check_user[0].id;
+      let userId = check_user.length ? check_user[0].id : 0;
+
       if (!check_user.length) {
         //register user
         const registration = await model.registerUser({
           first_name: name,
           email,
         });
+
+        console.log({ registration });
         userId = registration[0].id;
       }
+
+      console.log({ userId });
 
       //retrieve token data
       const tokenData = {
@@ -133,7 +142,6 @@ class UserAuthService extends AbstractServices {
         photo: check_user.length ? check_user[0].photo : null,
         is_verified: true,
         status: true,
-        create_date: new Date(),
       };
 
       const token = Lib.createToken(tokenData, config.JWT_SECRET_USER, "48h");

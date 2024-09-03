@@ -114,6 +114,7 @@ class UserAuthService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             return this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
                 const { accessToken, name, email, image } = req.body; // Assuming the token is sent in the request body
+                console.log({ accessToken });
                 if (!accessToken) {
                     return {
                         success: false,
@@ -123,20 +124,23 @@ class UserAuthService extends abstract_service_1.default {
                 }
                 // Verify Google access token
                 const user = yield new googleAuth_1.default().verifyAccessToken(accessToken);
+                console.log({ user });
                 const model = this.Model.userModel(trx);
                 //check users email and phone number and username
                 const check_user = yield model.getProfileDetails({
                     email,
                 });
-                let userId = check_user.length && check_user[0].id;
+                let userId = check_user.length ? check_user[0].id : 0;
                 if (!check_user.length) {
                     //register user
                     const registration = yield model.registerUser({
                         first_name: name,
                         email,
                     });
+                    console.log({ registration });
                     userId = registration[0].id;
                 }
+                console.log({ userId });
                 //retrieve token data
                 const tokenData = {
                     id: userId,
@@ -145,7 +149,6 @@ class UserAuthService extends abstract_service_1.default {
                     photo: check_user.length ? check_user[0].photo : null,
                     is_verified: true,
                     status: true,
-                    create_date: new Date(),
                 };
                 const token = lib_1.default.createToken(tokenData, config_1.default.JWT_SECRET_USER, "48h");
                 return {

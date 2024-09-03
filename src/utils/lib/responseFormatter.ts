@@ -1002,7 +1002,7 @@ export default class ResponseFormatter {
       new_fare["total_tax"] = fare.totalFare.totalTaxAmount;
 
       const itinery: IItinerary = {
-        flight_id: uuidv4(),
+        // flight_id: uuidv4(),
         fare: new_fare,
         refundable,
         carrier_code: fare.validatingCarrierCode,

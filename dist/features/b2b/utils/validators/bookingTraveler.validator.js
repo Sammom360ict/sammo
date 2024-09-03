@@ -9,10 +9,10 @@ class BookingTravelerValidator {
         // create traveler schema
         this.create = joi_1.default.object({
             type: joi_1.default.string()
-                .valid('ADT', 'INF', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11')
+                .valid("ADT", "INF", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11")
                 .required(),
             reference: joi_1.default.string()
-                .valid('MISS', 'MASTER', 'MS', 'MR', 'MRS')
+                .valid("MISS", "MASTER", "MS", "MR", "MRS")
                 .required(),
             mid_name: joi_1.default.string().required(),
             sur_name: joi_1.default.string().required(),
@@ -32,29 +32,29 @@ class BookingTravelerValidator {
             limit: joi_1.default.number().optional(),
             skip: joi_1.default.number().optional(),
             name: joi_1.default.string().optional(),
-            status: joi_1.default.number().optional()
+            status: joi_1.default.number().optional(),
         });
         // update traveler schema
         this.update = joi_1.default.object({
             type: joi_1.default.string()
-                .valid('ADT', 'INF', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10', 'C11')
+                .valid("ADT", "INF", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11")
                 .optional(),
             reference: joi_1.default.string()
-                .valid('MISS', 'MASTER', 'MS', 'MR', 'MRS')
+                .valid("MISS", "MASTER", "MS", "MR", "MRS")
                 .optional(),
-            mid_name: joi_1.default.string().optional(),
-            sur_name: joi_1.default.string().optional(),
+            mid_name: joi_1.default.string().allow("").optional(),
+            sur_name: joi_1.default.string().allow("").optional(),
             date_of_birth: joi_1.default.date().optional(),
-            passport_number: joi_1.default.string().optional(),
+            passport_number: joi_1.default.string().allow("").optional(),
             passport_expire_date: joi_1.default.date().optional(),
-            city: joi_1.default.string().optional(),
+            city: joi_1.default.string().allow("").optional(),
             country: joi_1.default.number().optional(),
             email: joi_1.default.string().email().lowercase().optional(),
             phone: joi_1.default.string().optional(),
-            frequent_flyer_airline: joi_1.default.string().optional(),
-            frequent_flyer_number: joi_1.default.string().optional(),
+            frequent_flyer_airline: joi_1.default.string().allow("").optional(),
+            frequent_flyer_number: joi_1.default.string().allow("").optional(),
             gender: joi_1.default.string().optional(),
-            status: joi_1.default.number().valid(1, 0).optional()
+            status: joi_1.default.number().valid(1, 0).optional(),
         });
     }
 }

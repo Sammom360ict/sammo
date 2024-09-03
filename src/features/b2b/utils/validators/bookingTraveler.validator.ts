@@ -1,27 +1,26 @@
-import Joi from 'joi';
+import Joi from "joi";
 
 export default class BookingTravelerValidator {
-
   // create traveler schema
   public create = Joi.object({
     type: Joi.string()
       .valid(
-        'ADT',
-        'INF',
-        'C02',
-        'C03',
-        'C04',
-        'C05',
-        'C06',
-        'C07',
-        'C08',
-        'C09',
-        'C10',
-        'C11'
+        "ADT",
+        "INF",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10",
+        "C11"
       )
       .required(),
     reference: Joi.string()
-      .valid('MISS', 'MASTER', 'MS', 'MR', 'MRS')
+      .valid("MISS", "MASTER", "MS", "MR", "MRS")
       .required(),
     mid_name: Joi.string().required(),
     sur_name: Joi.string().required(),
@@ -42,43 +41,42 @@ export default class BookingTravelerValidator {
     limit: Joi.number().optional(),
     skip: Joi.number().optional(),
     name: Joi.string().optional(),
-    status: Joi.number().optional()
+    status: Joi.number().optional(),
   });
-
 
   // update traveler schema
   public update = Joi.object({
     type: Joi.string()
       .valid(
-        'ADT',
-        'INF',
-        'C02',
-        'C03',
-        'C04',
-        'C05',
-        'C06',
-        'C07',
-        'C08',
-        'C09',
-        'C10',
-        'C11'
+        "ADT",
+        "INF",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10",
+        "C11"
       )
       .optional(),
     reference: Joi.string()
-      .valid('MISS', 'MASTER', 'MS', 'MR', 'MRS')
+      .valid("MISS", "MASTER", "MS", "MR", "MRS")
       .optional(),
-    mid_name: Joi.string().optional(),
-    sur_name: Joi.string().optional(),
+    mid_name: Joi.string().allow("").optional(),
+    sur_name: Joi.string().allow("").optional(),
     date_of_birth: Joi.date().optional(),
-    passport_number: Joi.string().optional(),
+    passport_number: Joi.string().allow("").optional(),
     passport_expire_date: Joi.date().optional(),
-    city: Joi.string().optional(),
+    city: Joi.string().allow("").optional(),
     country: Joi.number().optional(),
     email: Joi.string().email().lowercase().optional(),
     phone: Joi.string().optional(),
-    frequent_flyer_airline: Joi.string().optional(),
-    frequent_flyer_number: Joi.string().optional(),
+    frequent_flyer_airline: Joi.string().allow("").optional(),
+    frequent_flyer_number: Joi.string().allow("").optional(),
     gender: Joi.string().optional(),
-    status: Joi.number().valid(1,0).optional()
+    status: Joi.number().valid(1, 0).optional(),
   });
 }

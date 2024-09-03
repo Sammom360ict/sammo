@@ -13,7 +13,10 @@ class flightBookingController extends AbstractController {
 
   // Flight booking controller
   public flightBooking = this.asyncWrapper.wrap(
-    { bodySchema: this.flightValidator.pnrCreateSchema },
+    {
+      bodySchema: this.flightValidator.pnrCreateSchema,
+      querySchema: this.flightValidator.flightBookingQuerySchema,
+    },
     async (req: Request, res: Response) => {
       const { code, ...rest } = await this.service.flightBooking(req);
 

@@ -7,6 +7,7 @@ import {
   FLIGHT_REVALIDATE_ENDPOINT,
   FLIGHT_SEARCH_ENDPOINT,
 } from "../../../utils/miscellaneous/sabreApiEndpoints";
+
 import {
   IFlightFilterQuery,
   IFlightSearchReqBody,
@@ -14,6 +15,7 @@ import {
 import ResponseFormatter from "../../../utils/lib/responseFormatter";
 import CustomError from "../../../utils/lib/customError";
 import SabreRequests from "../../../utils/lib/sabreRequest";
+import { v4 as uuidv4 } from "uuid";
 
 export default class BookingFlightService extends AbstractServices {
   private ReqFormatter = new RequestFormatter();
@@ -27,14 +29,15 @@ export default class BookingFlightService extends AbstractServices {
 
   // search flight service
   public async flightSearch(req: Request) {
-    // const {id} = req.user;
-    // return{code:200,data:req.user}
     const query = req.query;
-    const clientIP = req.ip as string;
+
+    const uid_val = uuidv4();
+
+    const search_id = "btob" + uid_val;
 
     const body = req.body as IFlightSearchReqBody;
 
-    const retrievedData = await getRedis(clientIP);
+    const retrievedData = await getRedis(search_id);
 
     const retrievedReqBody = retrievedData?.reqBody;
 
@@ -49,7 +52,7 @@ export default class BookingFlightService extends AbstractServices {
 
       return {
         success: true,
-        clientIP,
+        search_id,
         message: this.ResMsg.HTTP_OK,
         data: retrieveResponse,
         count: retrievedData.count,
@@ -90,7 +93,7 @@ export default class BookingFlightService extends AbstractServices {
         count,
       };
 
-      await setRedis(clientIP, dataForStore);
+      await setRedis(search_id, dataForStore);
       if (query.carrier_operating) {
         const filter_data = await this.flightFilter(req);
         return filter_data;
@@ -106,6 +109,7 @@ export default class BookingFlightService extends AbstractServices {
         success: true,
         message: this.ResMsg.HTTP_OK,
         count,
+        search_id,
         data,
         code: this.StatusCode.HTTP_OK,
       };
@@ -115,10 +119,9 @@ export default class BookingFlightService extends AbstractServices {
   // filter flight service
   public async flightFilter(req: Request) {
     const query = req.query as IFlightFilterQuery;
-    const clientIP = req.ip as string;
-    console.log({ clientIP });
+    const { search_id } = req.query;
 
-    const retrievedData = await getRedis(clientIP);
+    const retrievedData = await getRedis(search_id as string);
 
     const retrieveResponse = retrievedData?.response;
 
@@ -136,7 +139,7 @@ export default class BookingFlightService extends AbstractServices {
     );
     return {
       success: true,
-      clientIP,
+      search_id,
       message: this.ResMsg.HTTP_OK,
       ...sortedResponse,
       code: this.StatusCode.HTTP_OK,
@@ -145,13 +148,13 @@ export default class BookingFlightService extends AbstractServices {
 
   // revalidate flight service
   public async revalidate(req: Request) {
-    const clientIP = req.ip as string;
+    const search_id = req.query.search_id as string;
     const flightId = req.params.flight_id;
     // const commonModel = this.Model.commonModel();
 
     // const flight_commission = await commonModel.getEnv(FLIGHT_COMMISSION);
     const data = await this.subRevalidate(
-      clientIP,
+      search_id,
       flightId
       // Number(flight_commission)
     );
@@ -173,9 +176,10 @@ export default class BookingFlightService extends AbstractServices {
   }
 
   // revalidate flight sub service
-  public async subRevalidate(clientIP: string, flightId: string) {
-    const retrievedData = await getRedis(clientIP);
+  public async subRevalidate(search_id: string, flightId: string) {
+    const retrievedData = await getRedis(search_id);
 
+    console.log({ retrievedData });
     if (!retrievedData) {
       return null;
     }
@@ -188,10 +192,13 @@ export default class BookingFlightService extends AbstractServices {
       }[];
     };
 
+    console.log({ retrieveResponse });
+
     const foundItem = retrieveResponse.results.find(
       (item) => item.flight_id === flightId
     );
 
+    console.log({ foundItem });
     if (!foundItem) {
       return null;
     }
@@ -205,6 +212,8 @@ export default class BookingFlightService extends AbstractServices {
       FLIGHT_REVALIDATE_ENDPOINT,
       formattedReqBody
     );
+
+    console.log({ response });
 
     if (response.groupedItineraryResponse?.statistics.itineraryCount === 0) {
       throw new CustomError(
@@ -242,10 +251,7 @@ export default class BookingFlightService extends AbstractServices {
     console.log({ response });
 
     if (response.groupedItineraryResponse?.statistics.itineraryCount === 0) {
-      throw new CustomError(
-        "Cannot revalidate flight with this flight id",
-        400
-      );
+      throw new CustomError("Error during Processing", 400);
     }
 
     const data = await this.ResFormatter.revalidate(

@@ -1,4 +1,4 @@
-import { ILegDescription } from './flightSearchResInterface';
+import { ILegDescription } from "./flightSearchResInterface";
 
 export interface IFlightFilterQuery {
   carrier_operating?: string | undefined;
@@ -25,7 +25,7 @@ export interface IFlightSearchReqBody {
   PassengerTypeQuantity: PassengerTypeQuantity[];
 }
 
-interface IFlightReqBody{
+interface IFlightReqBody {
   departure_time: string;
   departure_date: string;
   arrival_time: string;
@@ -37,16 +37,16 @@ interface IFlightReqBody{
   carrier_operating_code: string;
 }
 
-interface IOriginDestinationInformationReqBody{
+interface IOriginDestinationInformationReqBody {
   RPH: string;
   DepartureDateTime: string;
   OriginLocation: OriginLocation;
   DestinationLocation: DestinationLocation;
-  flight : IFlightReqBody[];
+  flight: IFlightReqBody[];
 }
 
-export interface IFlightRevalidateReqBody{
-  OriginDestinationInformation : IOriginDestinationInformationReqBody[];
+export interface IFlightRevalidateReqBody {
+  OriginDestinationInformation: IOriginDestinationInformationReqBody[];
   PassengerTypeQuantity: PassengerTypeQuantity[];
 }
 
@@ -384,7 +384,7 @@ export interface ISecureFlight {
 export interface IContactNumber {
   NameNumber: string;
   Phone: string;
-  PhoneUseType: 'H';
+  PhoneUseType: "H";
 }
 
 // insert flight search =======================================================
@@ -513,7 +513,7 @@ export interface INewPassenger {
 }
 
 export interface IItinerary {
-  flight_id: string;
+  flight_id?: string;
   fare: INewFare;
   carrier_code: string;
   carrier_name: string;

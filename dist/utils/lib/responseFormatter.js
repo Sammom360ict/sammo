@@ -390,7 +390,7 @@ class ResponseFormatter {
                 new_fare["total_price"] = fare.totalFare.totalPrice + ait;
                 new_fare["total_tax"] = fare.totalFare.totalTaxAmount;
                 const itinery = {
-                    flight_id: (0, uuid_1.v4)(),
+                    // flight_id: uuidv4(),
                     fare: new_fare,
                     refundable,
                     carrier_code: fare.validatingCarrierCode,
