@@ -20,6 +20,7 @@ class RootRouter {
   private callV1Router() {
     //common
     this.v1Router.use("/common", this.commonRouter.router);
+
     //payment
     this.v1Router.use("/payment", new PaymentRouter().router);
 

@@ -1,11 +1,11 @@
-import { Request } from 'express';
-import AbstractServices from '../../../abstract/abstract.service';
-import Lib from '../../../utils/lib/lib';
-import config from '../../../config/config';
+import { Request } from "express";
+import AbstractServices from "../../../abstract/abstract.service";
+import Lib from "../../../utils/lib/lib";
+import config from "../../../config/config";
 import {
   ILoginPayload,
   IForgetPasswordPayload,
-} from '../../common/commonUtils/types/commonTypes';
+} from "../../common/commonUtils/types/commonTypes";
 
 class AdminAuthService extends AbstractServices {
   //login
@@ -22,7 +22,7 @@ class AdminAuthService extends AbstractServices {
       };
     }
 
-    const { password_hash: hashPass, ...rest } = checkUser[0];
+    const { password_hash: hashPass, role_id, ...rest } = checkUser[0];
     const checkPass = await Lib.compare(password, hashPass);
 
     if (!checkPass) {
@@ -37,9 +37,15 @@ class AdminAuthService extends AbstractServices {
       return {
         success: false,
         code: this.StatusCode.HTTP_FORBIDDEN,
-        message: "Your account has been disabled"
-      }
+        message: "Your account has been disabled",
+      };
     }
+
+    const admModel = this.Model.administrationModel();
+
+    const role_permission = await admModel.getSingleRole({
+      id: parseInt(role_id),
+    });
 
     const token_data = {
       id: rest.id,
@@ -53,12 +59,15 @@ class AdminAuthService extends AbstractServices {
       status: rest.status,
       email: rest.email,
     };
-    const token = Lib.createToken(token_data, config.JWT_SECRET_ADMIN, '48h');
+    const token = Lib.createToken(token_data, config.JWT_SECRET_ADMIN, "48h");
     return {
       success: true,
       code: this.StatusCode.HTTP_OK,
       message: this.ResMsg.LOGIN_SUCCESSFUL,
-      data: rest,
+      data: {
+        ...rest,
+        permissions: role_permission.length ? role_permission[0] : [],
+      },
       token,
     };
   }

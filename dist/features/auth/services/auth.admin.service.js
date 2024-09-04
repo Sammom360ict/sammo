@@ -41,7 +41,7 @@ class AdminAuthService extends abstract_service_1.default {
                     message: this.ResMsg.WRONG_CREDENTIALS,
                 };
             }
-            const _a = checkUser[0], { password_hash: hashPass } = _a, rest = __rest(_a, ["password_hash"]);
+            const _a = checkUser[0], { password_hash: hashPass, role_id } = _a, rest = __rest(_a, ["password_hash", "role_id"]);
             const checkPass = yield lib_1.default.compare(password, hashPass);
             if (!checkPass) {
                 return {
@@ -54,9 +54,13 @@ class AdminAuthService extends abstract_service_1.default {
                 return {
                     success: false,
                     code: this.StatusCode.HTTP_FORBIDDEN,
-                    message: "Your account has been disabled"
+                    message: "Your account has been disabled",
                 };
             }
+            const admModel = this.Model.administrationModel();
+            const role_permission = yield admModel.getSingleRole({
+                id: parseInt(role_id),
+            });
             const token_data = {
                 id: rest.id,
                 username: rest.username,
@@ -69,12 +73,12 @@ class AdminAuthService extends abstract_service_1.default {
                 status: rest.status,
                 email: rest.email,
             };
-            const token = lib_1.default.createToken(token_data, config_1.default.JWT_SECRET_ADMIN, '48h');
+            const token = lib_1.default.createToken(token_data, config_1.default.JWT_SECRET_ADMIN, "48h");
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 message: this.ResMsg.LOGIN_SUCCESSFUL,
-                data: rest,
+                data: Object.assign(Object.assign({}, rest), { permissions: role_permission.length ? role_permission[0] : [] }),
                 token,
             };
         });

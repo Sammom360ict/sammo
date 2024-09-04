@@ -1,7 +1,7 @@
 import AbstractRouter from "../../../abstract/abstract.router";
 import flightBookingController from "../controllers/flightBooking.controller";
 
-class flightBookingRouter extends AbstractRouter {
+class BtobFlightBookingRouter extends AbstractRouter {
   private controller = new flightBookingController();
   constructor() {
     super();
@@ -22,4 +22,4 @@ class flightBookingRouter extends AbstractRouter {
       .delete(this.controller.cancelFlightBooking);
   }
 }
-export default flightBookingRouter;
+export default BtobFlightBookingRouter;

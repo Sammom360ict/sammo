@@ -18,7 +18,7 @@ class AdminModel extends Schema {
   //get single admin
   public async getSingleAdmin(payload: IAdminSearchQuery) {
     return await this.db("user_admin as ua")
-      .select("ua.*", "rl.name as role")
+      .select("ua.*", "rl.name as role", "rl.id as role_id")
       .withSchema(this.ADMIN_SCHEMA)
       .leftJoin("roles as rl", "rl.id", "ua.role_id")
       .where((qb) => {

@@ -22,7 +22,7 @@ class AdminModel extends schema_1.default {
     getSingleAdmin(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db("user_admin as ua")
-                .select("ua.*", "rl.name as role")
+                .select("ua.*", "rl.name as role", "rl.id as role_id")
                 .withSchema(this.ADMIN_SCHEMA)
                 .leftJoin("roles as rl", "rl.id", "ua.role_id")
                 .where((qb) => {

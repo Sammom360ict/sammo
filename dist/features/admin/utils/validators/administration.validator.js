@@ -8,7 +8,16 @@ class AdministrationValidator {
     constructor() {
         //Role validation
         this.createRole = joi_1.default.object({
-            role_name: joi_1.default.string().min(1).max(150).required(),
+            role_name: joi_1.default.string().required(),
+            permissions: joi_1.default.array()
+                .items({
+                permission_id: joi_1.default.number().required(),
+                read: joi_1.default.number().valid(0, 1).required(),
+                update: joi_1.default.number().valid(0, 1).required(),
+                write: joi_1.default.number().valid(0, 1).required(),
+                delete: joi_1.default.number().valid(0, 1).required(),
+            })
+                .required(),
         });
         //Permission validation
         this.createPermission = joi_1.default.object({
@@ -16,8 +25,31 @@ class AdministrationValidator {
         });
         //Update role permissions validator
         this.updateRolePermissions = joi_1.default.object({
-            add_permissions: joi_1.default.array().items(joi_1.default.number().integer()),
-            remove_permissions: joi_1.default.array().items(joi_1.default.number().integer()),
+            role_name: joi_1.default.string().optional(),
+            status: joi_1.default.number().valid(0, 1).optional(),
+            add_permissions: joi_1.default.array()
+                .items({
+                permission_id: joi_1.default.number().required(),
+                read: joi_1.default.number().valid(0, 1).required(),
+                update: joi_1.default.number().valid(0, 1).required(),
+                write: joi_1.default.number().valid(0, 1).required(),
+                delete: joi_1.default.number().valid(0, 1).required(),
+            })
+                .optional(),
+            // remove_permissions: Joi.array()
+            //   .items({
+            //     permission_id: Joi.number().required(),
+            //   })
+            //   .optional(),
+            // update_permissions: Joi.array()
+            //   .items({
+            //     permission_id: Joi.number().required(),
+            //     read: Joi.number().valid(0, 1).optional(),
+            //     update: Joi.number().valid(0, 1).optional(),
+            //     write: Joi.number().valid(0, 1).optional(),
+            //     delete: Joi.number().valid(0, 1).optional(),
+            //   })
+            //   .optional(),
         });
         //create admin
         this.createAdmin = joi_1.default.object({

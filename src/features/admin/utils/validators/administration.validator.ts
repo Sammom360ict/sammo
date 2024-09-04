@@ -3,7 +3,16 @@ import Joi from "joi";
 class AdministrationValidator {
   //Role validation
   public createRole = Joi.object({
-    role_name: Joi.string().min(1).max(150).required(),
+    role_name: Joi.string().required(),
+    permissions: Joi.array()
+      .items({
+        permission_id: Joi.number().required(),
+        read: Joi.number().valid(0, 1).required(),
+        update: Joi.number().valid(0, 1).required(),
+        write: Joi.number().valid(0, 1).required(),
+        delete: Joi.number().valid(0, 1).required(),
+      })
+      .required(),
   });
 
   //Permission validation
@@ -13,8 +22,31 @@ class AdministrationValidator {
 
   //Update role permissions validator
   public updateRolePermissions = Joi.object({
-    add_permissions: Joi.array().items(Joi.number().integer()),
-    remove_permissions: Joi.array().items(Joi.number().integer()),
+    role_name: Joi.string().optional(),
+    status: Joi.number().valid(0, 1).optional(),
+    add_permissions: Joi.array()
+      .items({
+        permission_id: Joi.number().required(),
+        read: Joi.number().valid(0, 1).required(),
+        update: Joi.number().valid(0, 1).required(),
+        write: Joi.number().valid(0, 1).required(),
+        delete: Joi.number().valid(0, 1).required(),
+      })
+      .optional(),
+    // remove_permissions: Joi.array()
+    //   .items({
+    //     permission_id: Joi.number().required(),
+    //   })
+    //   .optional(),
+    // update_permissions: Joi.array()
+    //   .items({
+    //     permission_id: Joi.number().required(),
+    //     read: Joi.number().valid(0, 1).optional(),
+    //     update: Joi.number().valid(0, 1).optional(),
+    //     write: Joi.number().valid(0, 1).optional(),
+    //     delete: Joi.number().valid(0, 1).optional(),
+    //   })
+    //   .optional(),
   });
 
   //create admin

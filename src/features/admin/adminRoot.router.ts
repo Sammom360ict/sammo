@@ -1,18 +1,18 @@
 import { Router } from "express";
-import AdminProfileRouter from "./routers/profile.router";
+import { AdminBtoBBookingServiceRouter } from "./routers/admin.b2bBookingService.router";
+import { AdminBtocRouter } from "./routers/admin.btoc.router";
+import { AdminAgencyRouter } from "./routers/adminAgency.router";
 import AdministrationRouter from "./routers/administration.router";
-import AdminArticleRouter from "./routers/article.router";
-import { AirlineCommissionRouter } from "./routers/airlineCommision.router";
 import { AirlineRouter } from "./routers/airline.router";
+import { AirlineCommissionRouter } from "./routers/airlineCommision.router";
 import { AirportRouter } from "./routers/airport.router";
+import AdminArticleRouter from "./routers/article.router";
+import adminB2BFlightBookingRouter from "./routers/b2bFlightBooking.router";
 import { BookingRequestRouter } from "./routers/bookingRequest.router";
-import { AdminVisaRouter } from "./routers/visa.router";
 import AdminDashboardRouter from "./routers/dashboard.router";
 import adminFlightBookingRouter from "./routers/flightBooking.router";
-import { AdminAgencyRouter } from "./routers/adminAgency.router";
-import adminB2BFlightBookingRouter from "./routers/b2bFlightBooking.router";
-import { AdminBtocRouter } from "./routers/admin.btoc.router";
-import { AdminBtoBBookingServiceRouter } from "./routers/admin.b2bBookingService.router";
+import AdminProfileRouter from "./routers/profile.router";
+import { AdminVisaRouter } from "./routers/visa.router";
 class AdminRootRouter {
   public Router = Router();
   private ProfileRouter = new AdminProfileRouter();

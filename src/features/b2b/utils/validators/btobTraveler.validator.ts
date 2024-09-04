@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export default class BookingTravelerValidator {
+export default class BtobTravelerValidator {
   // create traveler schema
   public create = Joi.object({
     type: Joi.string()

@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import AdminAuthService from '../services/auth.admin.service';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import AdminAuthService from "../services/auth.admin.service";
 
 class AdminAuthController extends AbstractController {
   private adminAuthService = new AdminAuthService();

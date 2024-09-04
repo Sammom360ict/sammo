@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
-import AbstractController from '../../../abstract/abstract.controller';
-import BookingTravelerService from '../services/bookingTraveler.service';
-import BookingTravelerValidator from '../utils/validators/bookingTraveler.validator';
+import { Request, Response } from "express";
+import AbstractController from "../../../abstract/abstract.controller";
+import BtobTravelerService from "../services/btobTraveler.service";
+import BtobTravelerValidator from "../utils/validators/btobTraveler.validator";
 
-export default class BookingTravelerController extends AbstractController {
-  private service = new BookingTravelerService();
-  private validator = new BookingTravelerValidator();
+export default class BtobTravelerController extends AbstractController {
+  private service = new BtobTravelerService();
+  private validator = new BtobTravelerValidator();
   constructor() {
     super();
   }

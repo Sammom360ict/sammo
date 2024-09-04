@@ -1,20 +1,18 @@
-import BookingTravelerRouter from "./routers/bookingTraveler.router";
-import BookingFlightRouter from "./routers/bookingFlight.router";
 import { Router } from "express";
 import BookingProfileRouter from "./routers/bookingProfile.router";
-import { BookingPaymentRouter } from "./routers/bookingPayment.router";
-import flightBookingRouter from "./routers/flightBooking.router";
-import ticketIssueRouter from "./routers/ticketIssue.router";
-import { BtoBSubAgencyRouter } from "./routers/subAgency.router";
-import { B2BVisaRouter } from "./routers/bookingVisa.router";
-import { B2BDashboardRouter } from "./routers/dashboard.router";
-import { BtobRouter } from "./routers/btob.router";
 import BtoBBookingServiceRouter from "./routers/bookingService.router";
+import { B2BVisaRouter } from "./routers/bookingVisa.router";
+import { BtobRouter } from "./routers/btob.router";
+import BtobFlightRouter from "./routers/btobFlight.router";
+import BtobFlightBookingRouter from "./routers/btobFlightBooking.router";
+import BtobTravelerRouter from "./routers/btobTraveler.router";
+import { B2BDashboardRouter } from "./routers/dashboard.router";
+import { BtoBSubAgencyRouter } from "./routers/subAgency.router";
+import ticketIssueRouter from "./routers/ticketIssue.router";
 
 class B2BRootRouter {
   public Router = Router();
 
-  private TravelerRouter = new BookingTravelerRouter();
   private ProfileRouter = new BookingProfileRouter();
   private TicketRouter = new ticketIssueRouter();
   private SubAgentRouter = new BtoBSubAgencyRouter();
@@ -26,10 +24,10 @@ class B2BRootRouter {
 
   private callRouter() {
     // flight router
-    this.Router.use("/flight", new BookingFlightRouter().router);
+    this.Router.use("/flight", new BtobFlightRouter().router);
 
     // traveler router
-    this.Router.use("/travelers", this.TravelerRouter.router);
+    this.Router.use("/travelers", new BtobTravelerRouter().router);
 
     //profile
     this.Router.use("/profile", this.ProfileRouter.router);
@@ -38,7 +36,7 @@ class B2BRootRouter {
     // this.Router.use("/payment", new BookingPaymentRouter().router);
 
     //flight booking router
-    this.Router.use("/flight-booking", new flightBookingRouter().router);
+    this.Router.use("/flight-booking", new BtobFlightBookingRouter().router);
 
     //ticket router
     this.Router.use("/ticket-issue", this.TicketRouter.router);
@@ -55,8 +53,8 @@ class B2BRootRouter {
     //booking service
     this.Router.use("/booking-service", new BtoBBookingServiceRouter().router);
 
-    // b2b request
-    this.Router.use("/", new BtobRouter().router);
+    // b2b deposit request
+    this.Router.use("/deposit-request", new BtobRouter().router);
   }
 }
 export default B2BRootRouter;

@@ -15,7 +15,7 @@ class BtobRouter extends abstract_router_1.default {
     callRouter() {
         //insert deposit request, list
         this.router
-            .route("/deposit-request")
+            .route("/")
             .post(this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER), this.controller.insertDeposit)
             .get(this.controller.getAllDepositRequestList);
         //single application

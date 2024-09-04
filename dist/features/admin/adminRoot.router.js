@@ -4,20 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const profile_router_1 = __importDefault(require("./routers/profile.router"));
+const admin_b2bBookingService_router_1 = require("./routers/admin.b2bBookingService.router");
+const admin_btoc_router_1 = require("./routers/admin.btoc.router");
+const adminAgency_router_1 = require("./routers/adminAgency.router");
 const administration_router_1 = __importDefault(require("./routers/administration.router"));
-const article_router_1 = __importDefault(require("./routers/article.router"));
-const airlineCommision_router_1 = require("./routers/airlineCommision.router");
 const airline_router_1 = require("./routers/airline.router");
+const airlineCommision_router_1 = require("./routers/airlineCommision.router");
 const airport_router_1 = require("./routers/airport.router");
+const article_router_1 = __importDefault(require("./routers/article.router"));
+const b2bFlightBooking_router_1 = __importDefault(require("./routers/b2bFlightBooking.router"));
 const bookingRequest_router_1 = require("./routers/bookingRequest.router");
-const visa_router_1 = require("./routers/visa.router");
 const dashboard_router_1 = __importDefault(require("./routers/dashboard.router"));
 const flightBooking_router_1 = __importDefault(require("./routers/flightBooking.router"));
-const adminAgency_router_1 = require("./routers/adminAgency.router");
-const b2bFlightBooking_router_1 = __importDefault(require("./routers/b2bFlightBooking.router"));
-const admin_btoc_router_1 = require("./routers/admin.btoc.router");
-const admin_b2bBookingService_router_1 = require("./routers/admin.b2bBookingService.router");
+const profile_router_1 = __importDefault(require("./routers/profile.router"));
+const visa_router_1 = require("./routers/visa.router");
 class AdminRootRouter {
     constructor() {
         this.Router = (0, express_1.Router)();

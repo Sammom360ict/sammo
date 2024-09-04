@@ -32,13 +32,16 @@ class AdminProfileService extends abstract_service_1.default {
             const { id } = req.admin;
             const model = this.Model.adminModel();
             const profile = yield model.getSingleAdmin({ id });
-            const _a = profile[0], { password_hash, created_by } = _a, rest = __rest(_a, ["password_hash", "created_by"]);
-            console.log(rest);
+            const _a = profile[0], { password_hash, created_by, role_id } = _a, rest = __rest(_a, ["password_hash", "created_by", "role_id"]);
+            const admModel = this.Model.administrationModel();
+            const role_permission = yield admModel.getSingleRole({
+                id: parseInt(role_id),
+            });
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 message: this.ResMsg.HTTP_OK,
-                data: rest,
+                data: Object.assign(Object.assign({}, rest), { permissions: role_permission.length ? role_permission[0] : [] }),
             };
         });
     }
@@ -53,7 +56,9 @@ class AdminProfileService extends abstract_service_1.default {
             const { username, first_name, last_name, gender, photo } = req.body;
             const model = this.Model.adminModel();
             if (req.body.username) {
-                const check_username = yield model.getSingleAdmin({ username: req.body.username });
+                const check_username = yield model.getSingleAdmin({
+                    username: req.body.username,
+                });
                 console.log(check_username);
                 if (check_username.length) {
                     if (Number(check_username[0].id) !== Number(id)) {

@@ -1,7 +1,7 @@
 import BookingFlightController from "../controllers/bookinglight.controller";
 import AbstractRouter from "../../../abstract/abstract.router";
 
-export default class BookingFlightRouter extends AbstractRouter {
+export default class BtobFlightRouter extends AbstractRouter {
   private controller = new BookingFlightController();
 
   constructor() {

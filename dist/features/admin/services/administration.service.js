@@ -26,38 +26,57 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_service_1 = __importDefault(require("../../../abstract/abstract.service"));
 const lib_1 = __importDefault(require("../../../utils/lib/lib"));
 class AdministrationService extends abstract_service_1.default {
-    //create role
     createRole(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.admin;
-            const model = this.Model.administrationModel();
-            const { role_name } = req.body;
-            const check_name = yield model.getSingleRole(undefined, role_name);
-            if (check_name.length) {
-                return {
-                    success: false,
-                    code: this.StatusCode.HTTP_CONFLICT,
-                    message: this.ResMsg.ROLE_NAME_EXIST,
-                };
-            }
-            const create_role = yield model.createRole({
-                name: role_name,
-                created_by: id,
-            });
-            if (create_role.length) {
+            return yield this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
+                const { id } = req.admin;
+                const model = this.Model.administrationModel(trx);
+                const { role_name, permissions } = req.body;
+                const check_name = yield model.getSingleRole({ name: role_name });
+                if (check_name.length) {
+                    return {
+                        success: false,
+                        code: this.StatusCode.HTTP_CONFLICT,
+                        message: `Role already exists with this name`,
+                    };
+                }
+                const role_res = yield model.createRole({
+                    name: role_name,
+                    created_by: id,
+                });
+                const uniquePermission = [];
+                for (let i = 0; i < permissions.length; i++) {
+                    let found = false;
+                    for (let j = 0; j < uniquePermission.length; j++) {
+                        if (permissions[i].permission_id == uniquePermission[j].permission_id) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        uniquePermission.push(permissions[i]);
+                    }
+                }
+                if (uniquePermission.length) {
+                    const permission_body = uniquePermission.map((element) => {
+                        return {
+                            role_id: role_res[0].id,
+                            permission_id: element.permission_id,
+                            read: element.read,
+                            write: element.write,
+                            update: element.update,
+                            delete: element.delete,
+                            created_by: id,
+                        };
+                    });
+                    yield model.createRolePermission(permission_body);
+                }
                 return {
                     success: true,
                     code: this.StatusCode.HTTP_SUCCESSFUL,
                     message: this.ResMsg.HTTP_SUCCESSFUL,
                 };
-            }
-            else {
-                return {
-                    success: false,
-                    code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
-                    message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR,
-                };
-            }
+            }));
         });
     }
     //role list
@@ -114,7 +133,10 @@ class AdministrationService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const { limit, skip } = req.query;
             const model = this.Model.administrationModel();
-            const permission_list = yield model.permissionsList({ limit: Number(limit), skip: Number(skip) }, true);
+            const permission_list = yield model.permissionsList({
+                limit: Number(limit),
+                skip: Number(skip),
+            });
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
@@ -128,12 +150,21 @@ class AdministrationService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const role_id = req.params.id;
             const model = this.Model.administrationModel();
-            const role_permission = yield model.getSingleRole(Number(role_id));
+            const role_permission = yield model.getSingleRole({
+                id: parseInt(role_id),
+            });
+            if (!role_permission.length) {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_NOT_FOUND,
+                    message: this.ResMsg.HTTP_NOT_FOUND,
+                };
+            }
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 message: this.ResMsg.HTTP_OK,
-                data: role_permission,
+                data: role_permission[0],
             };
         });
     }
@@ -141,42 +172,129 @@ class AdministrationService extends abstract_service_1.default {
     updateRolePermissions(req) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
-                const role_id = req.params.id;
+                const { id: admin_id } = req.admin;
                 const model = this.Model.administrationModel(trx);
-                const { add_permissions, remove_permissions } = req.body;
-                if (add_permissions && add_permissions.length) {
-                    for (const add_permission of add_permissions) {
-                        const check_role_permission = yield model.getRolePermissions(Number(role_id), Number(add_permission));
-                        console.log(check_role_permission);
-                        if (check_role_permission.length) {
-                            yield trx.rollback({
+                const { id: role_id } = req.params;
+                const check_role = yield model.getSingleRole({
+                    id: Number(role_id),
+                });
+                if (!check_role.length) {
+                    return {
+                        success: false,
+                        code: this.StatusCode.HTTP_NOT_FOUND,
+                        message: this.ResMsg.HTTP_NOT_FOUND,
+                    };
+                }
+                const { add_permissions, role_name, status,
+                // remove_permissions,
+                // update_permissions,
+                 } = req.body;
+                if (role_name || status) {
+                    if (role_name) {
+                        const check_name = yield model.getSingleRole({ name: role_name });
+                        if (check_name.length) {
+                            return {
                                 success: false,
                                 code: this.StatusCode.HTTP_CONFLICT,
-                                message: this.ResMsg.PERMISSION_EXISTS_FOR_ROLE,
-                            });
+                                message: `Role with this name already exist`,
+                            };
                         }
-                        yield model.createRolePermission({
-                            role_id: Number(role_id),
-                            permission_id: add_permission,
-                        });
+                    }
+                    yield model.updateRole({ name: role_name, status }, Number(role_id));
+                }
+                if (add_permissions) {
+                    const { data: getAllPermission } = yield model.permissionsList({});
+                    const add_permissionsValidataion = [];
+                    for (let i = 0; i < add_permissions.length; i++) {
+                        for (let j = 0; j < (getAllPermission === null || getAllPermission === void 0 ? void 0 : getAllPermission.length); j++) {
+                            if (add_permissions[i].permission_id ==
+                                getAllPermission[j].permission_id) {
+                                add_permissionsValidataion.push(add_permissions[i]);
+                            }
+                        }
+                    }
+                    // get single role permission
+                    const { permissions } = check_role[0];
+                    const insertPermissionVal = [];
+                    const haveToUpdateVal = [];
+                    for (let i = 0; i < add_permissionsValidataion.length; i++) {
+                        let found = false;
+                        for (let j = 0; j < permissions.length; j++) {
+                            if (add_permissionsValidataion[i].permission_id ==
+                                permissions[j].permission_id) {
+                                found = true;
+                                haveToUpdateVal.push(add_permissionsValidataion[i]);
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            insertPermissionVal.push(add_permissions[i]);
+                        }
+                    }
+                    // insert permission
+                    const add_permission_body = insertPermissionVal.map((element) => {
+                        return {
+                            role_id,
+                            permission_id: element.permission_id,
+                            read: element.read,
+                            write: element.write,
+                            update: element.update,
+                            delete: element.delete,
+                            created_by: admin_id,
+                        };
+                    });
+                    if (add_permission_body.length) {
+                        yield model.createRolePermission(add_permission_body);
+                    }
+                    // update section
+                    if (haveToUpdateVal.length) {
+                        const update_permission_res = haveToUpdateVal.map((element) => __awaiter(this, void 0, void 0, function* () {
+                            yield model.updateRolePermission({
+                                read: element.read,
+                                update: element.update,
+                                write: element.write,
+                                delete: element.delete,
+                                updated_by: admin_id,
+                            }, element.permission_id, parseInt(role_id));
+                        }));
+                        yield Promise.all(update_permission_res);
                     }
                 }
-                if (remove_permissions && remove_permissions.length) {
-                    for (const remove_permission of remove_permissions) {
-                        const check_role_permission = yield model.getRolePermissions(Number(role_id), Number(remove_permission));
-                        if (!check_role_permission.length) {
-                            yield trx.rollback({
-                                success: false,
-                                code: this.StatusCode.HTTP_NOT_FOUND,
-                                message: this.ResMsg.PERMISSION_NOT_FOUND_FOR_ROLE,
-                            });
-                        }
-                        yield model.deleteRolePermission({
-                            role_id: Number(role_id),
-                            permission_id: remove_permission,
-                        });
-                    }
-                }
+                // if (remove_permissions) {
+                //   const remove_permission_res = remove_permissions.map(
+                //     async (element: any) => {
+                //       await model.deleteRolePermission({
+                //         role_id: parseInt(role_id),
+                //         permission_id: element.permission_id,
+                //       });
+                //     }
+                //   );
+                //   await Promise.all(remove_permission_res);
+                // }
+                // if (update_permissions) {
+                //   const update_permission_res = update_permissions.map(
+                //     async (element: {
+                //       read: 0 | 1;
+                //       write: 0 | 1;
+                //       update: 0 | 1;
+                //       delete: 0 | 1;
+                //       permission_id: number;
+                //     }) => {
+                //       await model.updateRolePermission(
+                //         {
+                //           read: element.read,
+                //           update: element.update,
+                //           write: element.write,
+                //           delete: element.delete,
+                //           updated_by: admin_id,
+                //         },
+                //         element.permission_id,
+                //         parseInt(role_id)
+                //       );
+                //     }
+                //   );
+                //   await Promise.all(update_permission_res);
+                // }
                 return {
                     success: true,
                     code: this.StatusCode.HTTP_OK,

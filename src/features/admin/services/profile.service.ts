@@ -1,7 +1,10 @@
-import { IChangePasswordPayload, IProfile } from '../utils/types/profile.interfaces';
-import AbstractServices from '../../../abstract/abstract.service';
-import { Request } from 'express';
-import Lib from '../../../utils/lib/lib';
+import {
+  IChangePasswordPayload,
+  IProfile,
+} from "../utils/types/profile.interfaces";
+import AbstractServices from "../../../abstract/abstract.service";
+import { Request } from "express";
+import Lib from "../../../utils/lib/lib";
 
 class AdminProfileService extends AbstractServices {
   //get profile
@@ -9,13 +12,22 @@ class AdminProfileService extends AbstractServices {
     const { id } = req.admin;
     const model = this.Model.adminModel();
     const profile = await model.getSingleAdmin({ id });
-    const { password_hash, created_by, ...rest } = profile[0];
-    console.log(rest);
+    const { password_hash, created_by, role_id, ...rest } = profile[0];
+
+    const admModel = this.Model.administrationModel();
+
+    const role_permission = await admModel.getSingleRole({
+      id: parseInt(role_id),
+    });
+
     return {
       success: true,
       code: this.StatusCode.HTTP_OK,
       message: this.ResMsg.HTTP_OK,
-      data: rest,
+      data: {
+        ...rest,
+        permissions: role_permission.length ? role_permission[0] : [],
+      },
     };
   }
 
@@ -30,15 +42,17 @@ class AdminProfileService extends AbstractServices {
       req.body as IProfile;
     const model = this.Model.adminModel();
     if (req.body.username) {
-      const check_username = await model.getSingleAdmin({ username: req.body.username });
+      const check_username = await model.getSingleAdmin({
+        username: req.body.username,
+      });
       console.log(check_username);
-      if(check_username.length){
+      if (check_username.length) {
         if (Number(check_username[0].id) !== Number(id)) {
           return {
             success: false,
             code: this.StatusCode.HTTP_CONFLICT,
             message: this.ResMsg.USERNAME_EXISTS,
-          }
+          };
         }
       }
     }

@@ -13,12 +13,10 @@ class AdminAuthRouter extends abstract_router_1.default {
     }
     callRouter() {
         //login
-        this.router
-            .route('/login')
-            .post(this.AdminAuthController.login);
+        this.router.route("/login").post(this.AdminAuthController.login);
         //forget password
         this.router
-            .route('/forget-password')
+            .route("/forget-password")
             .post(this.AdminAuthController.forgetPassword);
     }
 }

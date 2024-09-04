@@ -14,6 +14,7 @@ export const origin: string[] = [
   "http://192.168.0.215:3000",
   "http://192.168.0.215:3001",
   "http://192.168.0.215:5173",
+  "http://192.168.0.236:3001",
   "http://192.168.0.215:5174",
   "https://smartrip.app",
   "https://www.smartrip.app",

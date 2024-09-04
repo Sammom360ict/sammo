@@ -1,8 +1,7 @@
 import { Request } from "express";
 import AbstractServices from "../../../abstract/abstract.service";
-import CustomError from "../../../utils/lib/customError";
 
-export default class BookingTravelerService extends AbstractServices {
+export default class BtobTravelerService extends AbstractServices {
   constructor() {
     super();
   }
