@@ -25,28 +25,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_controller_1 = __importDefault(require("../../../abstract/abstract.controller"));
 const b2bFlightBooking_service_1 = __importDefault(require("../services/b2bFlightBooking.service"));
+const bookingRequest_validator_1 = __importDefault(require("../utils/validators/bookingRequest.validator"));
 class adminB2BFlightBookingController extends abstract_controller_1.default {
     constructor() {
         super();
         this.service = new b2bFlightBooking_service_1.default();
+        this.validator = new bookingRequest_validator_1.default();
         // get all flight booking
         this.getAllFlightBooking = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _a = yield this.service.getAllFlightBooking(req), { code } = _a, rest = __rest(_a, ["code"]);
             res.status(code).json(rest);
         }));
         // get single flight booking
-        this.getSingleFlightBooking = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamStringValidator('id') }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getSingleFlightBooking = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamStringValidator("id") }, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _b = yield this.service.getSingleFlightBooking(req), { code } = _b, rest = __rest(_b, ["code"]);
             res.status(code).json(rest);
         }));
         // issue ticket
-        this.issueTicket = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamStringValidator('id') }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.issueTicket = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamStringValidator("id") }, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _c = yield this.service.ticketIssue(req), { code } = _c, rest = __rest(_c, ["code"]);
             res.status(code).json(rest);
         }));
+        // issue ticket
+        this.manualIssueTicket = this.asyncWrapper.wrap({
+            paramSchema: this.commonValidator.singleParamStringValidator("id"),
+            bodySchema: this.validator.manualTicketIssueValidator,
+        }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _d = yield this.service.manualIssueTicket(req), { code } = _d, rest = __rest(_d, ["code"]);
+            res.status(code).json(rest);
+        }));
         // cancel flight booking
-        this.cancelFlightBooking = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamStringValidator('id') }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _d = yield this.service.cancelFlightBooking(req), { code } = _d, rest = __rest(_d, ["code"]);
+        this.cancelFlightBooking = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamStringValidator("id") }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _e = yield this.service.cancelFlightBooking(req), { code } = _e, rest = __rest(_e, ["code"]);
             res.status(code).json(rest);
         }));
     }

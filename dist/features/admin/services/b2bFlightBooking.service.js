@@ -35,7 +35,7 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
                 status: status,
                 from_date: from_date,
                 to_date: to_date,
-                filter: filter
+                filter: filter,
             });
             return {
                 success: true,
@@ -69,7 +69,7 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
             //     item.arrival_date = item.arrival_date.split(" ")[0] + "T" + item.arrival_time;
             //   }
             // });
-            const getTraveler = yield model.getFlightTraveler(Number(id));
+            const getTraveler = yield model.getFlightBookingTraveler(Number(id));
             // getTraveler.forEach((item) => {
             //   if (item.gender === 'M') {
             //     item.gender = 'Male';
@@ -87,7 +87,9 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
-                data: Object.assign(Object.assign({}, checkBooking[0]), { segments: getSegments, traveler: getTraveler, ticket: ticket_issue_data.length ? { ticket_issue_data, ticket_issue_segment_data } : null }),
+                data: Object.assign(Object.assign({}, checkBooking[0]), { segments: getSegments, traveler: getTraveler, ticket: ticket_issue_data.length
+                        ? { ticket_issue_data, ticket_issue_segment_data }
+                        : null }),
             };
         });
     }
@@ -99,7 +101,7 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
             let { id } = req.admin;
             const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
                 id: Number(booking_id),
-                status: 'pending'
+                status: "pending",
             });
             if (!checkFlightBooking.length) {
                 return {
@@ -120,14 +122,14 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
                     return {
                         success: false,
                         code: this.StatusCode.HTTP_BAD_REQUEST,
-                        message: "Booking cannot be cancelled. Something went wrong"
+                        message: "Booking cannot be cancelled. Something went wrong",
                     };
                 }
-                yield flightBookingModel.updateBooking({ status: 'cancelled' }, Number(id));
+                yield flightBookingModel.updateBooking({ status: "cancelled" }, Number(id));
                 return {
                     success: true,
                     code: this.StatusCode.HTTP_OK,
-                    message: 'Booking has been cancelled'
+                    message: "Booking has been cancelled",
                 };
             }
             else {
@@ -149,7 +151,7 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
             let { id } = req.admin;
             const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
                 id: Number(booking_id),
-                status: 'pending'
+                status: "pending",
             });
             if (!checkFlightBooking.length) {
                 return {
@@ -166,9 +168,9 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
             if (currentUTCTimestamp < databaseUTCTimestamp) {
                 const ticketReqBody = this.requestFormatter.ticketIssueReqBody(pnr_code);
                 const response = yield this.sabreRequest.postRequest(sabreApiEndpoints_1.TICKET_ISSUE_ENDPOINT, ticketReqBody);
-                if (((_b = (_a = response === null || response === void 0 ? void 0 : response.AirTicketRS) === null || _a === void 0 ? void 0 : _a.ApplicationResults) === null || _b === void 0 ? void 0 : _b.status) === 'Complete') {
+                if (((_b = (_a = response === null || response === void 0 ? void 0 : response.AirTicketRS) === null || _a === void 0 ? void 0 : _a.ApplicationResults) === null || _b === void 0 ? void 0 : _b.status) === "Complete") {
                     //update booking
-                    yield flightBookingModel.updateBooking({ status: 'issued' }, Number(booking_id));
+                    yield flightBookingModel.updateBooking({ status: "issued" }, Number(booking_id));
                     //get booking details from sabre
                     const sabre_response = yield this.SabreRequest.postRequest(sabreApiEndpoints_1.GET_BOOKING_ENDPOINT, {
                         confirmationId: pnr_code,
@@ -200,30 +202,47 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
                         });
                     }
                     let bags;
-                    if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.maximumPieces) {
-                        bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.maximumPieces + "pcs";
+                    if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                        .maximumPieces) {
+                        bags =
+                            sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                                .maximumPieces + "pcs";
                     }
-                    else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInPounds) {
-                        bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInPounds + "lb";
+                    else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                        .totalWeightInPounds) {
+                        bags =
+                            sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                                .totalWeightInPounds + "lb";
                     }
-                    else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInKilograms) {
-                        bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInKilograms + "k";
+                    else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                        .totalWeightInKilograms) {
+                        bags =
+                            sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+                                .totalWeightInKilograms + "k";
                     }
                     const flight_segment_data = yield flightBookingModel.getFlightSegment(Number(booking_id));
                     //flight segment insertion
                     for (let i = 0; i < sabre_response.flights.length; i++) {
-                        let departure_data = flight_segment_data[i] ? flight_segment_data[i].origin : null;
+                        let departure_data = flight_segment_data[i]
+                            ? flight_segment_data[i].origin
+                            : null;
                         if (departure_data) {
-                            const part1 = departure_data.split('(')[1].split(')')[0];
-                            const part2 = part1.split('-').slice(0, 2).join('-').trim();
-                            const [city, country] = part2.split(' - ').map((part) => part.trim().toUpperCase());
+                            const part1 = departure_data.split("(")[1].split(")")[0];
+                            const part2 = part1.split("-").slice(0, 2).join("-").trim();
+                            const [city, country] = part2
+                                .split(" - ")
+                                .map((part) => part.trim().toUpperCase());
                             departure_data = `${city}, ${country}`;
                         }
-                        let arrival_data = flight_segment_data[i] ? flight_segment_data[i].destination : null;
+                        let arrival_data = flight_segment_data[i]
+                            ? flight_segment_data[i].destination
+                            : null;
                         if (arrival_data) {
-                            const part1 = arrival_data.split('(')[1].split(')')[0];
-                            const part2 = part1.split('-').slice(0, 2).join('-').trim();
-                            const [city, country] = part2.split(' - ').map((part) => part.trim().toUpperCase());
+                            const part1 = arrival_data.split("(")[1].split(")")[0];
+                            const part2 = part1.split("-").slice(0, 2).join("-").trim();
+                            const [city, country] = part2
+                                .split(" - ")
+                                .map((part) => part.trim().toUpperCase());
                             arrival_data = `${city}, ${country}`;
                         }
                         yield ticketModel.createFlightTicketSegment({
@@ -251,7 +270,7 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
                         success: true,
                         code: this.StatusCode.HTTP_SUCCESSFUL,
                         message: `Ticket has been issued`,
-                        data: response
+                        data: response,
                     };
                 }
                 else {
@@ -259,17 +278,64 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
                         success: false,
                         code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
                         message: `Ticket cannot be issued now. Please try again letter`,
-                        data: response
+                        data: response,
                     };
                 }
             }
             else {
                 return {
                     success: false,
-                    message: this.ResMsg.HTTP_BAD_REQUEST,
                     code: this.StatusCode.HTTP_BAD_REQUEST,
+                    message: "Ticket issue time has been expired",
                 };
             }
+        });
+    }
+    //manual ticket issue
+    manualIssueTicket(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
+                const flightBookingModel = this.Model.b2bFlightBookingModel(trx);
+                const ticketModel = this.Model.b2bTicketIssueModel(trx);
+                const { id: booking_id } = req.params;
+                const { pax_ticket } = req.body;
+                console.log({ pax_ticket });
+                const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
+                    id: Number(booking_id),
+                    status: "pending",
+                });
+                console.log({ checkFlightBooking });
+                if (!checkFlightBooking.length) {
+                    return {
+                        success: false,
+                        message: this.ResMsg.HTTP_NOT_FOUND,
+                        code: this.StatusCode.HTTP_NOT_FOUND,
+                    };
+                }
+                const { ticket_issue_last_time, pnr_code } = checkFlightBooking[0];
+                const travelerIds = pax_ticket.map((item) => item.traveler_id);
+                // get flight booking traveler
+                const bookingTraveler = yield flightBookingModel.getFlightBookingTraveler(parseInt(booking_id), travelerIds);
+                console.log({ bookingTraveler });
+                if (bookingTraveler.length !== travelerIds.length) {
+                    return {
+                        success: false,
+                        code: this.StatusCode.HTTP_NOT_FOUND,
+                        message: "Invalid Traveler",
+                    };
+                }
+                // update booking traveler with ticket
+                Promise.all(pax_ticket.map((item) => __awaiter(this, void 0, void 0, function* () {
+                    return yield flightBookingModel.updateFlightBookingTraveler({ ticket_number: item.ticket_number }, item.traveler_id);
+                })));
+                //update booking
+                yield flightBookingModel.updateBooking({ status: "issued" }, Number(booking_id));
+                return {
+                    success: true,
+                    code: this.StatusCode.HTTP_SUCCESSFUL,
+                    message: `Ticket has been issued`,
+                };
+            }));
         });
     }
 }

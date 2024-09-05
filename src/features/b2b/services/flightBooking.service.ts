@@ -274,7 +274,7 @@ class flightBookingService extends AbstractServices {
 
     const getSegments = await model.getFlightSegment(Number(id));
 
-    const getTraveler = await model.getFlightTraveler(Number(id));
+    const getTraveler = await model.getFlightBookingTraveler(Number(id));
     getTraveler.forEach((item) => {
       if (item.gender === "M") {
         item.gender = "Male";

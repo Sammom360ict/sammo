@@ -71,6 +71,7 @@ class AdministrationModel extends Schema {
       .select(
         "rol.id as role_id",
         "rol.name as role_name",
+        "rol.status",
         this.db.raw(`
       case when exists (
         select 1

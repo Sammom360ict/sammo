@@ -178,17 +178,10 @@ class AdministrationService extends AbstractServices {
       } = req.body;
 
       if (role_name || status) {
-        if (role_name) {
-          const check_name = await model.getSingleRole({ name: role_name });
-          if (check_name.length) {
-            return {
-              success: false,
-              code: this.StatusCode.HTTP_CONFLICT,
-              message: `Role with this name already exist`,
-            };
-          }
+        const check_name = await model.getSingleRole({ name: role_name });
+        if (!check_name.length) {
+          await model.updateRole({ name: role_name, status }, Number(role_id));
         }
-        await model.updateRole({ name: role_name, status }, Number(role_id));
       }
 
       if (add_permissions) {

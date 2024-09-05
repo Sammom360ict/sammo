@@ -8,8 +8,15 @@ class AdminBookingRequestValidator {
     constructor() {
         //update validator
         this.updateBookingRequestApplication = joi_1.default.object({
-            status: joi_1.default.string().valid('Approved', 'Cancelled').required(),
+            status: joi_1.default.string().valid("Approved", "Cancelled").required(),
             note: joi_1.default.string().optional(),
+        });
+        // manual issue ticket validator
+        this.manualTicketIssueValidator = joi_1.default.object({
+            pax_ticket: joi_1.default.array().items(joi_1.default.object({
+                traveler_id: joi_1.default.number().required(),
+                ticket_number: joi_1.default.string().required(),
+            }).required()),
         });
     }
 }

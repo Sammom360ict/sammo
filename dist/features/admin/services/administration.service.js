@@ -190,17 +190,10 @@ class AdministrationService extends abstract_service_1.default {
                 // update_permissions,
                  } = req.body;
                 if (role_name || status) {
-                    if (role_name) {
-                        const check_name = yield model.getSingleRole({ name: role_name });
-                        if (check_name.length) {
-                            return {
-                                success: false,
-                                code: this.StatusCode.HTTP_CONFLICT,
-                                message: `Role with this name already exist`,
-                            };
-                        }
+                    const check_name = yield model.getSingleRole({ name: role_name });
+                    if (!check_name.length) {
+                        yield model.updateRole({ name: role_name, status }, Number(role_id));
                     }
-                    yield model.updateRole({ name: role_name, status }, Number(role_id));
                 }
                 if (add_permissions) {
                     const { data: getAllPermission } = yield model.permissionsList({});

@@ -75,7 +75,7 @@ class B2BFlightBookingModel extends schema_1.default {
     // get single booking
     getSingleFlightBooking(wherePayload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { pnr_code, id, status, user_id } = wherePayload;
+            const { pnr_code, id, status, user_id, agency_id } = wherePayload;
             return yield this.db("b2b.flight_booking as fb")
                 .select("fb.id as booking_id", "us.name as created_by", "ai.agency_name", this.db.raw("CONCAT(fb.contact_country_dialing_code,fb.contact_phone_number) as contact_number"), "fb.contact_email", "fb.pnr_code", "fb.order_reference", "fb.total_passenger", "fb.created_at as booking_created_at", "fb.status as booking_status", "fb.ticket_issue_last_time", "fb.payable_amount", "fb.ticket_price", "fb.base_fare", "fb.total_tax", "fb.ait", "fb.discount", "fb.journey_type")
                 .leftJoin("b2b.btob_user as us", "us.id", "fb.created_by")
@@ -91,6 +91,9 @@ class B2BFlightBookingModel extends schema_1.default {
                 if (user_id) {
                     this.andWhere({ "fb.created_by": user_id });
                 }
+                if (agency_id) {
+                    this.andWhere({ "fb.agency_id": agency_id });
+                }
             });
         });
     }
@@ -104,11 +107,16 @@ class B2BFlightBookingModel extends schema_1.default {
         });
     }
     //get fight travelers
-    getFlightTraveler(flight_booking_id) {
+    getFlightBookingTraveler(flight_booking_id, traveler_ids) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db("b2b.flight_booking_traveler as fb")
                 .select("fb.*")
-                .where({ flight_booking_id });
+                .where({ flight_booking_id })
+                .andWhere(function () {
+                if (traveler_ids === null || traveler_ids === void 0 ? void 0 : traveler_ids.length) {
+                    this.whereIn("id", traveler_ids);
+                }
+            });
         });
     }
     // insert flight booking
@@ -133,6 +141,15 @@ class B2BFlightBookingModel extends schema_1.default {
             return yield this.db("flight_booking_traveler")
                 .withSchema(this.BTOB_SCHEMA)
                 .insert(payload);
+        });
+    }
+    // update flight booking traveler
+    updateFlightBookingTraveler(payload, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db("flight_booking_traveler")
+                .withSchema(this.BTOB_SCHEMA)
+                .update(payload)
+                .where({ id });
         });
     }
     //update booking

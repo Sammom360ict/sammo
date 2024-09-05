@@ -21,10 +21,10 @@ class BtobTravelerService extends abstract_service_1.default {
     create(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const body = req.body;
-            const { id } = req.agency;
+            const { agency_id } = req.agency;
             const model = this.Model.agencyModel();
             const traveler_body = {
-                agency_id: id,
+                agency_id,
                 type: body.type,
                 reference: body.reference,
                 first_name: body.mid_name,
@@ -52,10 +52,9 @@ class BtobTravelerService extends abstract_service_1.default {
     get(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const query = req.query;
-            const { id } = req.agency;
-            console.log({ id });
+            const { agency_id } = req.agency;
             const model = this.Model.agencyModel();
-            const { data, total } = yield model.getAllTravelers(Object.assign(Object.assign({}, query), { deleted: false, agency_id: id }));
+            const { data, total } = yield model.getAllTravelers(Object.assign(Object.assign({}, query), { deleted: false, agency_id }));
             return {
                 success: true,
                 data,
@@ -69,7 +68,7 @@ class BtobTravelerService extends abstract_service_1.default {
     getSingle(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            const { id: user_id, agency_id } = req.agency;
+            const { agency_id } = req.agency;
             const model = this.Model.agencyModel();
             const data = yield model.getSingleTravelers(agency_id, Number(id));
             if (!data.length) {
@@ -81,7 +80,7 @@ class BtobTravelerService extends abstract_service_1.default {
             }
             return {
                 success: true,
-                data,
+                data: data[0],
                 code: this.StatusCode.HTTP_OK,
                 message: this.ResMsg.HTTP_OK,
             };
@@ -92,7 +91,7 @@ class BtobTravelerService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const body = req.body;
             const { id } = req.params;
-            const { id: user_id, agency_id } = req.agency;
+            const { agency_id } = req.agency;
             // const files = (req.files as Express.Multer.File[]) || [];
             // files.forEach((file) => {
             //   if (file.fieldname === 'passport_file') {

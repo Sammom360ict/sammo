@@ -9,11 +9,11 @@ export default class BtobTravelerService extends AbstractServices {
   // create traveler service
   public async create(req: Request) {
     const body = req.body;
-    const { id } = req.agency;
+    const { agency_id } = req.agency;
 
     const model = this.Model.agencyModel();
     const traveler_body = {
-      agency_id: id,
+      agency_id,
       type: body.type,
       reference: body.reference,
       first_name: body.mid_name,
@@ -42,16 +42,14 @@ export default class BtobTravelerService extends AbstractServices {
   // get traveler service
   public async get(req: Request) {
     const query = req.query;
-    const { id } = req.agency;
-
-    console.log({ id });
+    const { agency_id } = req.agency;
 
     const model = this.Model.agencyModel();
 
     const { data, total } = await model.getAllTravelers({
       ...query,
       deleted: false,
-      agency_id: id,
+      agency_id,
     });
 
     return {
@@ -66,7 +64,7 @@ export default class BtobTravelerService extends AbstractServices {
   // get single traveler service
   public async getSingle(req: Request) {
     const { id } = req.params;
-    const { id: user_id, agency_id } = req.agency;
+    const { agency_id } = req.agency;
 
     const model = this.Model.agencyModel();
 
@@ -82,7 +80,7 @@ export default class BtobTravelerService extends AbstractServices {
 
     return {
       success: true,
-      data,
+      data: data[0],
       code: this.StatusCode.HTTP_OK,
       message: this.ResMsg.HTTP_OK,
     };
@@ -92,7 +90,7 @@ export default class BtobTravelerService extends AbstractServices {
   public async update(req: Request) {
     const body = req.body;
     const { id } = req.params;
-    const { id: user_id, agency_id } = req.agency;
+    const { agency_id } = req.agency;
 
     // const files = (req.files as Express.Multer.File[]) || [];
 

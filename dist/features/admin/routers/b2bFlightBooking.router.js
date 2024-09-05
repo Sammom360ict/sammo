@@ -13,13 +13,17 @@ class adminB2BFlightBookingRouter extends abstract_router_1.default {
     }
     callRouter() {
         // Get all flight booking
-        this.router
-            .route('/')
-            .get(this.controller.getAllFlightBooking);
+        this.router.route("/").get(this.controller.getAllFlightBooking);
         // // ticket booking cancel
         // this.router.route('/cancel').post(this.controller.cancelFlightBooking);
+        // ticket issue manual
+        this.router
+            .route("/issue-manual/:id")
+            .post(this.controller.manualIssueTicket);
         // Get single flight booking
-        this.router.route('/:id').get(this.controller.getSingleFlightBooking)
+        this.router
+            .route("/:id")
+            .get(this.controller.getSingleFlightBooking)
             .post(this.controller.issueTicket)
             .delete(this.controller.cancelFlightBooking);
     }

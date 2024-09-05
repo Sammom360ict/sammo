@@ -9,12 +9,13 @@ export class BtoBBookingServiceService extends AbstractServices {
     const { id, agency_id } = req.agency;
     const { booking_id, support_type, ticket_number, message } = req.body;
 
-    const booking_model = this.Model.flightBookingModel();
+    const booking_model = this.Model.b2bFlightBookingModel();
 
     const booking_data = await booking_model.getSingleFlightBooking({
       id: Number(booking_id),
       agency_id,
     });
+
     if (!booking_data.length) {
       return {
         success: false,
@@ -28,20 +29,23 @@ export class BtoBBookingServiceService extends AbstractServices {
     // insert support
     const support_res = await support_model.insertSupport({
       booking_id: Number(booking_id),
+      agency_id,
       support_type,
       created_by: id,
     });
 
-    const ticket_body = ticket_number.map((element: any) => {
+    const ticket_body = ticket_number?.map((element: any) => {
       return {
-        support_id: support_res[0],
+        support_id: support_res[0].id,
         traveler_id: element.traveler_id,
         ticket_number: element.ticket_number,
       };
     });
 
-    // insert support ticket
-    await support_model.insertSupportTicket(ticket_body);
+    if (ticket_body.length) {
+      // insert support ticket
+      await support_model.insertSupportTicket(ticket_body);
+    }
 
     const files = (req.files as Express.Multer.File[]) || [];
     const attachments: { type: string; file: string }[] = [];
@@ -59,38 +63,30 @@ export class BtoBBookingServiceService extends AbstractServices {
 
     // insert support message
     await support_model.insertSupportMessage({
-      support_id: support_res[0],
+      support_id: support_res[0].id,
       message,
       attachment: attachmentsJSON,
       sender: "agent",
       sender_id: id,
     });
 
-    // audit trail
-    const auditTrailModel = this.Model.auditTrailModel();
-    await auditTrailModel.createBtoBAudit({
-      agency_id: agency_id,
-      created_by: id,
-      type: "create",
-      details: `created a ${support_type} support of pnr: ${booking_data[0].pnr_code}`,
-    });
     return {
       success: true,
       code: this.StatusCode.HTTP_SUCCESSFUL,
       message: this.ResMsg.HTTP_SUCCESSFUL,
-      data: { id: support_res[0], attachmentsJSON },
+      data: { id: support_res[0].id, attachmentsJSON },
     };
   }
   //get list
   public async getList(req: Request) {
-    const { id, agency_id } = req.agency;
+    const { agency_id } = req.agency;
     const { limit, skip, status } = req.query as unknown as {
       limit: number;
       skip: number;
       status: string;
     };
     const model = this.Model.btobBookingSupportModel();
-    const data = await model.getList(id, status, limit, skip);
+    const data = await model.getList(agency_id, status, limit, skip);
     return {
       success: true,
       code: this.StatusCode.HTTP_OK,
@@ -100,17 +96,19 @@ export class BtoBBookingServiceService extends AbstractServices {
   }
   //get details
   public async getDetails(req: Request) {
-    const { id: user_id, agency_id } = req.agency;
+    const { agency_id } = req.agency;
     const { limit, skip } = req.query as unknown as {
       limit: number;
       skip: number;
     };
     const { id: support_id } = req.params;
     const model = this.Model.btobBookingSupportModel();
+
     const support_data = await model.getSingleSupport({
       id: Number(support_id),
-      agent_id: user_id,
+      agency_id,
     });
+
     if (!support_data.length) {
       return {
         success: false,
@@ -142,7 +140,7 @@ export class BtoBBookingServiceService extends AbstractServices {
     const model = this.Model.btobBookingSupportModel();
     const support_data = await model.getSingleSupport({
       id: Number(support_id),
-      agent_id: id,
+      agency_id,
       notStatus: "closed",
     });
     if (!support_data.length) {
@@ -177,13 +175,7 @@ export class BtoBBookingServiceService extends AbstractServices {
       { last_message_at: new Date() },
       Number(support_id)
     );
-    const auditTrailModel = this.Model.auditTrailModel();
-    await auditTrailModel.createBtoBAudit({
-      agency_id: agency_id,
-      created_by: id,
-      type: "create",
-      details: `created a message in support id ${support_id}`,
-    });
+
     return {
       success: true,
       code: this.StatusCode.HTTP_SUCCESSFUL,

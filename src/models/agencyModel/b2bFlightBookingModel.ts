@@ -100,8 +100,9 @@ class B2BFlightBookingModel extends Schema {
     id: number;
     status?: string;
     user_id?: number;
+    agency_id?: number;
   }) {
-    const { pnr_code, id, status, user_id } = wherePayload;
+    const { pnr_code, id, status, user_id, agency_id } = wherePayload;
     return await this.db("b2b.flight_booking as fb")
       .select(
         "fb.id as booking_id",
@@ -138,6 +139,9 @@ class B2BFlightBookingModel extends Schema {
         if (user_id) {
           this.andWhere({ "fb.created_by": user_id });
         }
+        if (agency_id) {
+          this.andWhere({ "fb.agency_id": agency_id });
+        }
       });
   }
 
@@ -150,10 +154,18 @@ class B2BFlightBookingModel extends Schema {
   }
 
   //get fight travelers
-  public async getFlightTraveler(flight_booking_id: number) {
+  public async getFlightBookingTraveler(
+    flight_booking_id: number,
+    traveler_ids?: number[]
+  ) {
     return await this.db("b2b.flight_booking_traveler as fb")
       .select("fb.*")
-      .where({ flight_booking_id });
+      .where({ flight_booking_id })
+      .andWhere(function () {
+        if (traveler_ids?.length) {
+          this.whereIn("id", traveler_ids);
+        }
+      });
   }
 
   // insert flight booking
@@ -178,6 +190,17 @@ class B2BFlightBookingModel extends Schema {
     return await this.db("flight_booking_traveler")
       .withSchema(this.BTOB_SCHEMA)
       .insert(payload);
+  }
+
+  // update flight booking traveler
+  public async updateFlightBookingTraveler(
+    payload: { ticket_number: string },
+    id: number
+  ) {
+    return await this.db("flight_booking_traveler")
+      .withSchema(this.BTOB_SCHEMA)
+      .update(payload)
+      .where({ id });
   }
 
   //update booking

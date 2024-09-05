@@ -23,7 +23,7 @@ class BtoBBookingServiceService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const { id, agency_id } = req.agency;
             const { booking_id, support_type, ticket_number, message } = req.body;
-            const booking_model = this.Model.flightBookingModel();
+            const booking_model = this.Model.b2bFlightBookingModel();
             const booking_data = yield booking_model.getSingleFlightBooking({
                 id: Number(booking_id),
                 agency_id,
@@ -39,18 +39,21 @@ class BtoBBookingServiceService extends abstract_service_1.default {
             // insert support
             const support_res = yield support_model.insertSupport({
                 booking_id: Number(booking_id),
+                agency_id,
                 support_type,
                 created_by: id,
             });
-            const ticket_body = ticket_number.map((element) => {
+            const ticket_body = ticket_number === null || ticket_number === void 0 ? void 0 : ticket_number.map((element) => {
                 return {
-                    support_id: support_res[0],
+                    support_id: support_res[0].id,
                     traveler_id: element.traveler_id,
                     ticket_number: element.ticket_number,
                 };
             });
-            // insert support ticket
-            yield support_model.insertSupportTicket(ticket_body);
+            if (ticket_body.length) {
+                // insert support ticket
+                yield support_model.insertSupportTicket(ticket_body);
+            }
             const files = req.files || [];
             const attachments = [];
             if (files === null || files === void 0 ? void 0 : files.length) {
@@ -66,35 +69,27 @@ class BtoBBookingServiceService extends abstract_service_1.default {
             const attachmentsJSON = JSON.stringify(attachments);
             // insert support message
             yield support_model.insertSupportMessage({
-                support_id: support_res[0],
+                support_id: support_res[0].id,
                 message,
                 attachment: attachmentsJSON,
                 sender: "agent",
                 sender_id: id,
             });
-            // audit trail
-            const auditTrailModel = this.Model.auditTrailModel();
-            yield auditTrailModel.createBtoBAudit({
-                agency_id: agency_id,
-                created_by: id,
-                type: "create",
-                details: `created a ${support_type} support of pnr: ${booking_data[0].pnr_code}`,
-            });
             return {
                 success: true,
                 code: this.StatusCode.HTTP_SUCCESSFUL,
                 message: this.ResMsg.HTTP_SUCCESSFUL,
-                data: { id: support_res[0], attachmentsJSON },
+                data: { id: support_res[0].id, attachmentsJSON },
             };
         });
     }
     //get list
     getList(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id, agency_id } = req.agency;
+            const { agency_id } = req.agency;
             const { limit, skip, status } = req.query;
             const model = this.Model.btobBookingSupportModel();
-            const data = yield model.getList(id, status, limit, skip);
+            const data = yield model.getList(agency_id, status, limit, skip);
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
@@ -106,13 +101,13 @@ class BtoBBookingServiceService extends abstract_service_1.default {
     //get details
     getDetails(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id: user_id, agency_id } = req.agency;
+            const { agency_id } = req.agency;
             const { limit, skip } = req.query;
             const { id: support_id } = req.params;
             const model = this.Model.btobBookingSupportModel();
             const support_data = yield model.getSingleSupport({
                 id: Number(support_id),
-                agent_id: user_id,
+                agency_id,
             });
             if (!support_data.length) {
                 return {
@@ -142,7 +137,7 @@ class BtoBBookingServiceService extends abstract_service_1.default {
             const model = this.Model.btobBookingSupportModel();
             const support_data = yield model.getSingleSupport({
                 id: Number(support_id),
-                agent_id: id,
+                agency_id,
                 notStatus: "closed",
             });
             if (!support_data.length) {
@@ -174,13 +169,6 @@ class BtoBBookingServiceService extends abstract_service_1.default {
             });
             //update last message time
             yield model.updateSupport({ last_message_at: new Date() }, Number(support_id));
-            const auditTrailModel = this.Model.auditTrailModel();
-            yield auditTrailModel.createBtoBAudit({
-                agency_id: agency_id,
-                created_by: id,
-                type: "create",
-                details: `created a message in support id ${support_id}`,
-            });
             return {
                 success: true,
                 code: this.StatusCode.HTTP_SUCCESSFUL,

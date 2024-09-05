@@ -20,21 +20,21 @@ export class BtoBBookingServiceModel extends Schema {
   }
   // insert support
   public async insertSupport(payload: ICreateSupportPayload) {
-    return await this.db("btob_booking_support")
+    return await this.db("booking_support")
       .withSchema(this.BTOB_SCHEMA)
-      .insert(payload);
+      .insert(payload, "id");
   }
   // insert support ticket
   public async insertSupportTicket(
     payload: ICreateSupportTicketsPayload | ICreateSupportTicketsPayload[]
   ) {
-    return await this.db("btob_booking_support_tickets")
+    return await this.db("booking_support_tickets")
       .withSchema(this.BTOB_SCHEMA)
       .insert(payload);
   }
   // insert support message
   public async insertSupportMessage(payload: ICreateSupportMessagePayload) {
-    return await this.db("btob_booking_support_messages")
+    return await this.db("booking_support_messages")
       .withSchema(this.BTOB_SCHEMA)
       .insert(payload);
   }
@@ -43,19 +43,19 @@ export class BtoBBookingServiceModel extends Schema {
     payload: IUpdateBookingSupportPayload,
     id: number
   ) {
-    return await this.db("btob_booking_support")
+    return await this.db("booking_support")
       .withSchema(this.BTOB_SCHEMA)
       .update(payload)
       .where({ id });
   }
   //get list
   public async getList(
-    agent_id?: number,
+    agency_id?: number,
     status?: string,
     limit?: number,
     skip?: number
   ) {
-    const data = await this.db("btob_booking_support as bs")
+    const data = await this.db("booking_support as bs")
       .withSchema(this.BTOB_SCHEMA)
       .select(
         "bs.id",
@@ -71,11 +71,7 @@ export class BtoBBookingServiceModel extends Schema {
       .join("btob_user as bu", "bu.id", "bs.created_by")
       .join("flight_booking as fb", "fb.id", "bs.booking_id")
       .joinRaw("left join admin.user_admin as ua on ua.id = bs.closed_by")
-      .leftJoin(
-        "btob_booking_support_tickets as bst",
-        "bs.id",
-        "bst.support_id"
-      )
+      .leftJoin("booking_support_tickets as bst", "bs.id", "bst.support_id")
       .groupBy(
         "bs.id",
         "bs.booking_id",
@@ -88,8 +84,8 @@ export class BtoBBookingServiceModel extends Schema {
         "ua.first_name"
       )
       .where((qb) => {
-        if (agent_id) {
-          qb.andWhere("bs.created_by", agent_id);
+        if (agency_id) {
+          qb.andWhere("bs.agency_id", agency_id);
         }
         if (status) {
           qb.andWhere("bs.status", status);
@@ -99,12 +95,12 @@ export class BtoBBookingServiceModel extends Schema {
       .limit(limit || 100)
       .offset(skip || 0);
 
-    const total = await this.db("btob_booking_support as bs")
+    const total = await this.db("booking_support as bs")
       .withSchema(this.BTOB_SCHEMA)
       .count("bs.id as total")
       .where((qb) => {
-        if (agent_id) {
-          qb.andWhere("bs.created_by", agent_id);
+        if (agency_id) {
+          qb.andWhere("bs.agency_id", agency_id);
         }
         if (status) {
           qb.andWhere("bs.status", status);
@@ -115,10 +111,11 @@ export class BtoBBookingServiceModel extends Schema {
   //get single support
   public async getSingleSupport(payload: {
     id: number;
-    agent_id?: number;
+    agency_id?: number;
     notStatus?: string;
   }) {
-    return await this.db("btob_booking_support as bs")
+    return await this.db("booking_support as bs")
+      .withSchema(this.BTOB_SCHEMA)
       .select(
         "bs.id",
         "bs.booking_id",
@@ -134,8 +131,8 @@ export class BtoBBookingServiceModel extends Schema {
       .joinRaw("left join admin.user_admin as ua on ua.id = bs.closed_by")
       .where("bs.id", payload.id)
       .andWhere((qb) => {
-        if (payload.agent_id) {
-          qb.andWhere("bs.created_by", payload.agent_id);
+        if (payload.agency_id) {
+          qb.andWhere("bs.agency_id", payload.agency_id);
         }
         if (payload.notStatus) {
           qb.andWhereNot("bs.status", payload.notStatus);
@@ -144,7 +141,8 @@ export class BtoBBookingServiceModel extends Schema {
   }
   //get tickets of a support
   public async getTickets(support_id: number) {
-    return await this.db("btob_booking_support_tickets as bst")
+    return await this.db("booking_support_tickets as bst")
+      .withSchema(this.BTOB_SCHEMA)
       .select(
         "bst.id",
         "fti.traveler_reference",
@@ -162,14 +160,15 @@ export class BtoBBookingServiceModel extends Schema {
     skip?: number;
     support_id: number;
   }) {
-    const data = await this.db("btob_booking_support_messages as bsm")
+    const data = await this.db("booking_support_messages as bsm")
       .withSchema(this.BTOB_SCHEMA)
       .select("id", "message", "attachment", "sender", "created_at")
       .where("support_id", payload.support_id)
       .limit(payload.limit || 100)
       .offset(payload.skip || 0)
       .orderBy("id", "desc");
-    const total = await this.db("btob_booking_support_messages as bsm")
+
+    const total = await this.db("booking_support_messages as bsm")
       .withSchema(this.BTOB_SCHEMA)
       .count("id as total")
       .where("support_id", payload.support_id);

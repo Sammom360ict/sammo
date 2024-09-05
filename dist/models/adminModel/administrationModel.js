@@ -59,7 +59,7 @@ class AdministrationModel extends schema_1.default {
         return __awaiter(this, arguments, void 0, function* ({ id, name, permission_id, }) {
             return yield this.db("roles as rol")
                 .withSchema(this.ADMIN_SCHEMA)
-                .select("rol.id as role_id", "rol.name as role_name", this.db.raw(`
+                .select("rol.id as role_id", "rol.name as role_name", "rol.status", this.db.raw(`
       case when exists (
         select 1
         from ${this.ADMIN_SCHEMA}.role_permissions rp

@@ -226,7 +226,7 @@ class flightBookingService extends abstract_service_1.default {
                 };
             }
             const getSegments = yield model.getFlightSegment(Number(id));
-            const getTraveler = yield model.getFlightTraveler(Number(id));
+            const getTraveler = yield model.getFlightBookingTraveler(Number(id));
             getTraveler.forEach((item) => {
                 if (item.gender === "M") {
                     item.gender = "Male";

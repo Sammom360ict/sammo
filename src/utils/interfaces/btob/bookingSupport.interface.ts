@@ -1,5 +1,6 @@
 export interface ICreateSupportPayload {
   booking_id: number;
+  agency_id: number;
   support_type: string;
   created_by: number;
 }
