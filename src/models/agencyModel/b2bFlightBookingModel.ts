@@ -21,10 +21,9 @@ class B2BFlightBookingModel extends Schema {
     status?: string;
     from_date?: string;
     to_date?: string;
-    filter?: string;
+    name?: string;
   }) {
-    const { limit, skip, status, user_id, from_date, to_date, filter } =
-      payload;
+    const { limit, skip, status, user_id, from_date, to_date, name } = payload;
 
     const data = await this.db("b2b.flight_booking as fb")
       .select(
@@ -56,11 +55,11 @@ class B2BFlightBookingModel extends Schema {
         if (from_date && to_date) {
           this.andWhereBetween("fb.created_at", [from_date, to_date]);
         }
-        if (filter) {
+        if (name) {
           this.andWhere(function () {
-            this.where("us.name", "ilike", `%${filter}%`)
-              .orWhere("ai.agency_name", "ilike", `%${filter}%`)
-              .orWhere("fb.pnr_code", "ilike", filter);
+            this.where("us.name", "ilike", `%${name}%`)
+              .orWhere("ai.agency_name", "ilike", `%${name}%`)
+              .orWhere("fb.pnr_code", "ilike", `%${name}%`);
           });
         }
       })
@@ -82,11 +81,11 @@ class B2BFlightBookingModel extends Schema {
         if (from_date && to_date) {
           this.andWhereBetween("fb.created_at", [from_date, to_date]);
         }
-        if (filter) {
+        if (name) {
           this.andWhere(function () {
-            this.where("us.name", "ilike", `%${filter}%`)
-              .orWhere("ai.agency_name", "ilike", `%${filter}%`)
-              .orWhere("fb.pnr_code", "ilike", filter);
+            this.where("us.name", "ilike", `%${name}%`)
+              .orWhere("ai.agency_name", "ilike", `%${name}%`)
+              .orWhere("fb.pnr_code", "ilike", name);
           });
         }
       });

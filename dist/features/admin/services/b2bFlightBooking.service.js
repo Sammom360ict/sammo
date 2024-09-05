@@ -27,7 +27,7 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
     // get all flight booking
     getAllFlightBooking(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { status, limit, skip, from_date, to_date, filter } = req.query;
+            const { status, limit, skip, from_date, to_date, name } = req.query;
             const flightBookingModel = this.Model.b2bFlightBookingModel();
             const { data, total } = yield flightBookingModel.getAllFlightBooking({
                 limit: limit,
@@ -35,7 +35,7 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
                 status: status,
                 from_date: from_date,
                 to_date: to_date,
-                filter: filter,
+                name: name,
             });
             return {
                 success: true,

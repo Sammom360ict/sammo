@@ -87,6 +87,8 @@ export class BtoBBookingServiceService extends AbstractServices {
     };
     const model = this.Model.btobBookingSupportModel();
     const data = await model.getList(agency_id, status, limit, skip);
+
+    console.log({ data });
     return {
       success: true,
       code: this.StatusCode.HTTP_OK,

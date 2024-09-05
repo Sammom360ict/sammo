@@ -7,6 +7,7 @@ class FlightBookingValidator {
     pnr: Joi.string().optional(),
     limit: Joi.string().optional(),
     skip: Joi.string().optional(),
+    name: Joi.string().optional(),
     from_date: Joi.string().optional(),
     to_date: Joi.string().optional(),
   });

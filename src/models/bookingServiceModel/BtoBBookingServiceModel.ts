@@ -65,7 +65,7 @@ export class BtoBBookingServiceModel extends Schema {
         "bs.status",
         "bs.created_at",
         "bu.name as created_by",
-        "ua.first_name as name as closed_by",
+        "ua.first_name as closed_by",
         this.db.raw(`string_agg(bst.ticket_number, ', ') as ticket_numbers`)
       )
       .join("btob_user as bu", "bu.id", "bs.created_by")
@@ -98,6 +98,21 @@ export class BtoBBookingServiceModel extends Schema {
     const total = await this.db("booking_support as bs")
       .withSchema(this.BTOB_SCHEMA)
       .count("bs.id as total")
+      .join("btob_user as bu", "bu.id", "bs.created_by")
+      .join("flight_booking as fb", "fb.id", "bs.booking_id")
+      .joinRaw("left join admin.user_admin as ua on ua.id = bs.closed_by")
+      .leftJoin("booking_support_tickets as bst", "bs.id", "bst.support_id")
+      .groupBy(
+        "bs.id",
+        "bs.booking_id",
+        "fb.pnr_code",
+        "bs.support_type",
+        "bs.status",
+        "bs.created_at",
+        "bu.name",
+        "bs.closed_by",
+        "ua.first_name"
+      )
       .where((qb) => {
         if (agency_id) {
           qb.andWhere("bs.agency_id", agency_id);
@@ -106,6 +121,7 @@ export class BtoBBookingServiceModel extends Schema {
           qb.andWhere("bs.status", status);
         }
       });
+
     return { data, total: total[0]?.total };
   }
   //get single support
@@ -124,7 +140,7 @@ export class BtoBBookingServiceModel extends Schema {
         "bs.status",
         "bs.created_at",
         "bu.name as created_by",
-        "ua.first_name as name as closed_by"
+        "ua.first_name as closed_by"
       )
       .join("btob_user as bu", "bu.id", "bs.created_by")
       .join("flight_booking as fb", "fb.id", "bs.booking_id")

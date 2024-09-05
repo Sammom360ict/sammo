@@ -58,7 +58,7 @@ class BtoBBookingServiceModel extends schema_1.default {
             var _a;
             const data = yield this.db("booking_support as bs")
                 .withSchema(this.BTOB_SCHEMA)
-                .select("bs.id", "bs.booking_id", "fb.pnr_code", "bs.support_type", "bs.status", "bs.created_at", "bu.name as created_by", "ua.first_name as name as closed_by", this.db.raw(`string_agg(bst.ticket_number, ', ') as ticket_numbers`))
+                .select("bs.id", "bs.booking_id", "fb.pnr_code", "bs.support_type", "bs.status", "bs.created_at", "bu.name as created_by", "ua.first_name as closed_by", this.db.raw(`string_agg(bst.ticket_number, ', ') as ticket_numbers`))
                 .join("btob_user as bu", "bu.id", "bs.created_by")
                 .join("flight_booking as fb", "fb.id", "bs.booking_id")
                 .joinRaw("left join admin.user_admin as ua on ua.id = bs.closed_by")
@@ -78,6 +78,11 @@ class BtoBBookingServiceModel extends schema_1.default {
             const total = yield this.db("booking_support as bs")
                 .withSchema(this.BTOB_SCHEMA)
                 .count("bs.id as total")
+                .join("btob_user as bu", "bu.id", "bs.created_by")
+                .join("flight_booking as fb", "fb.id", "bs.booking_id")
+                .joinRaw("left join admin.user_admin as ua on ua.id = bs.closed_by")
+                .leftJoin("booking_support_tickets as bst", "bs.id", "bst.support_id")
+                .groupBy("bs.id", "bs.booking_id", "fb.pnr_code", "bs.support_type", "bs.status", "bs.created_at", "bu.name", "bs.closed_by", "ua.first_name")
                 .where((qb) => {
                 if (agency_id) {
                     qb.andWhere("bs.agency_id", agency_id);
@@ -94,7 +99,7 @@ class BtoBBookingServiceModel extends schema_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db("booking_support as bs")
                 .withSchema(this.BTOB_SCHEMA)
-                .select("bs.id", "bs.booking_id", "fb.pnr_code", "bs.support_type", "bs.status", "bs.created_at", "bu.name as created_by", "ua.first_name as name as closed_by")
+                .select("bs.id", "bs.booking_id", "fb.pnr_code", "bs.support_type", "bs.status", "bs.created_at", "bu.name as created_by", "ua.first_name as closed_by")
                 .join("btob_user as bu", "bu.id", "bs.created_by")
                 .join("flight_booking as fb", "fb.id", "bs.booking_id")
                 .joinRaw("left join admin.user_admin as ua on ua.id = bs.closed_by")

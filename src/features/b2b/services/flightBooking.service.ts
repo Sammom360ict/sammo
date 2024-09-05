@@ -228,9 +228,9 @@ class flightBookingService extends AbstractServices {
   }
 
   public async getAllFlightBooking(req: Request) {
-    const { agency_id, id: user_id } = req.agency;
+    const { id: user_id } = req.agency;
 
-    const { status, limit, skip, from_date, to_date } = req.query;
+    const { status, limit, skip, from_date, to_date, name } = req.query;
 
     const flightBookingModel = this.Model.b2bFlightBookingModel();
 
@@ -238,6 +238,7 @@ class flightBookingService extends AbstractServices {
       limit: limit as string,
       skip: skip as string,
       user_id: user_id,
+      name: name as string,
       status: status as string,
       from_date: from_date as string,
       to_date: to_date as string,

@@ -90,6 +90,7 @@ class BtoBBookingServiceService extends abstract_service_1.default {
             const { limit, skip, status } = req.query;
             const model = this.Model.btobBookingSupportModel();
             const data = yield model.getList(agency_id, status, limit, skip);
+            console.log({ data });
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,

@@ -21,7 +21,7 @@ class B2BFlightBookingModel extends schema_1.default {
     // get all flight booking
     getAllFlightBooking(payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { limit, skip, status, user_id, from_date, to_date, filter } = payload;
+            const { limit, skip, status, user_id, from_date, to_date, name } = payload;
             const data = yield this.db("b2b.flight_booking as fb")
                 .select("fb.id as booking_id", "ai.agency_name as agency_name", "us.name as created_by", this.db.raw("CONCAT(fb.contact_country_dialing_code,fb.contact_phone_number) as contact_number"), "fb.contact_email", "fb.order_reference", "fb.pnr_code", "fb.total_passenger", "fb.created_at as booking_created_at", "fb.status as booking_status", "fb.ticket_issue_last_time", "fb.payable_amount", "fb.journey_type")
                 .leftJoin("b2b.btob_user as us", "us.id", "fb.created_by")
@@ -36,11 +36,11 @@ class B2BFlightBookingModel extends schema_1.default {
                 if (from_date && to_date) {
                     this.andWhereBetween("fb.created_at", [from_date, to_date]);
                 }
-                if (filter) {
+                if (name) {
                     this.andWhere(function () {
-                        this.where("us.name", "ilike", `%${filter}%`)
-                            .orWhere("ai.agency_name", "ilike", `%${filter}%`)
-                            .orWhere("fb.pnr_code", "ilike", filter);
+                        this.where("us.name", "ilike", `%${name}%`)
+                            .orWhere("ai.agency_name", "ilike", `%${name}%`)
+                            .orWhere("fb.pnr_code", "ilike", `%${name}%`);
                     });
                 }
             })
@@ -61,11 +61,11 @@ class B2BFlightBookingModel extends schema_1.default {
                 if (from_date && to_date) {
                     this.andWhereBetween("fb.created_at", [from_date, to_date]);
                 }
-                if (filter) {
+                if (name) {
                     this.andWhere(function () {
-                        this.where("us.name", "ilike", `%${filter}%`)
-                            .orWhere("ai.agency_name", "ilike", `%${filter}%`)
-                            .orWhere("fb.pnr_code", "ilike", filter);
+                        this.where("us.name", "ilike", `%${name}%`)
+                            .orWhere("ai.agency_name", "ilike", `%${name}%`)
+                            .orWhere("fb.pnr_code", "ilike", name);
                     });
                 }
             });
