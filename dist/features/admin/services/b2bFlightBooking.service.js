@@ -16,7 +16,7 @@ const abstract_service_1 = __importDefault(require("../../../abstract/abstract.s
 const requestFomatter_1 = __importDefault(require("../../../utils/lib/requestFomatter"));
 const sabreRequest_1 = __importDefault(require("../../../utils/lib/sabreRequest"));
 const sabreApiEndpoints_1 = require("../../../utils/miscellaneous/sabreApiEndpoints");
-class adminB2BFlightBookingService extends abstract_service_1.default {
+class AdminB2BFlightBookingService extends abstract_service_1.default {
     constructor() {
         super();
         this.requestFormatter = new requestFomatter_1.default();
@@ -296,15 +296,12 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
                 const flightBookingModel = this.Model.b2bFlightBookingModel(trx);
-                const ticketModel = this.Model.b2bTicketIssueModel(trx);
                 const { id: booking_id } = req.params;
                 const { pax_ticket } = req.body;
-                console.log({ pax_ticket });
                 const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
                     id: Number(booking_id),
                     status: "pending",
                 });
-                console.log({ checkFlightBooking });
                 if (!checkFlightBooking.length) {
                     return {
                         success: false,
@@ -316,7 +313,6 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
                 const travelerIds = pax_ticket.map((item) => item.traveler_id);
                 // get flight booking traveler
                 const bookingTraveler = yield flightBookingModel.getFlightBookingTraveler(parseInt(booking_id), travelerIds);
-                console.log({ bookingTraveler });
                 if (bookingTraveler.length !== travelerIds.length) {
                     return {
                         success: false,
@@ -325,8 +321,8 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
                     };
                 }
                 // update booking traveler with ticket
-                Promise.all(pax_ticket.map((item) => __awaiter(this, void 0, void 0, function* () {
-                    return yield flightBookingModel.updateFlightBookingTraveler({ ticket_number: item.ticket_number }, item.traveler_id);
+                yield Promise.all(pax_ticket.map((item) => __awaiter(this, void 0, void 0, function* () {
+                    yield flightBookingModel.updateFlightBookingTraveler({ ticket_number: item.ticket_number }, item.traveler_id);
                 })));
                 //update booking
                 yield flightBookingModel.updateBooking({ status: "issued" }, Number(booking_id));
@@ -339,4 +335,4 @@ class adminB2BFlightBookingService extends abstract_service_1.default {
         });
     }
 }
-exports.default = adminB2BFlightBookingService;
+exports.default = AdminB2BFlightBookingService;

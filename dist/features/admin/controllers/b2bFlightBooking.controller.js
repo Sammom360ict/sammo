@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_controller_1 = __importDefault(require("../../../abstract/abstract.controller"));
 const b2bFlightBooking_service_1 = __importDefault(require("../services/b2bFlightBooking.service"));
 const bookingRequest_validator_1 = __importDefault(require("../utils/validators/bookingRequest.validator"));
-class adminB2BFlightBookingController extends abstract_controller_1.default {
+class AdminB2BFlightBookingController extends abstract_controller_1.default {
     constructor() {
         super();
         this.service = new b2bFlightBooking_service_1.default();
@@ -61,4 +61,4 @@ class adminB2BFlightBookingController extends abstract_controller_1.default {
         }));
     }
 }
-exports.default = adminB2BFlightBookingController;
+exports.default = AdminB2BFlightBookingController;

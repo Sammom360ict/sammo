@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_router_1 = __importDefault(require("../../../abstract/abstract.router"));
 const b2bFlightBooking_controller_1 = __importDefault(require("../controllers/b2bFlightBooking.controller"));
-class adminB2BFlightBookingRouter extends abstract_router_1.default {
+class AdminB2BFlightBookingRouter extends abstract_router_1.default {
     constructor() {
         super();
         this.controller = new b2bFlightBooking_controller_1.default();
@@ -28,4 +28,4 @@ class adminB2BFlightBookingRouter extends abstract_router_1.default {
             .delete(this.controller.cancelFlightBooking);
     }
 }
-exports.default = adminB2BFlightBookingRouter;
+exports.default = AdminB2BFlightBookingRouter;

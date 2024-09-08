@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import AbstractController from "../../../abstract/abstract.controller";
-import adminB2BFlightBookingService from "../services/b2bFlightBooking.service";
+import AdminB2BFlightBookingService from "../services/b2bFlightBooking.service";
 import AdminBookingRequestValidator from "../utils/validators/bookingRequest.validator";
 
-class adminB2BFlightBookingController extends AbstractController {
-  private service = new adminB2BFlightBookingService();
+class AdminB2BFlightBookingController extends AbstractController {
+  private service = new AdminB2BFlightBookingService();
   private validator = new AdminBookingRequestValidator();
 
   constructor() {
@@ -63,4 +63,4 @@ class adminB2BFlightBookingController extends AbstractController {
     }
   );
 }
-export default adminB2BFlightBookingController;
+export default AdminB2BFlightBookingController;

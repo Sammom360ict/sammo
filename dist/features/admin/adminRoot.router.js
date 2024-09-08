@@ -18,6 +18,7 @@ const dashboard_router_1 = __importDefault(require("./routers/dashboard.router")
 const flightBooking_router_1 = __importDefault(require("./routers/flightBooking.router"));
 const profile_router_1 = __importDefault(require("./routers/profile.router"));
 const visa_router_1 = require("./routers/visa.router");
+const adminPromotional_router_1 = require("./routers/adminPromotional.router");
 class AdminRootRouter {
     constructor() {
         this.Router = (0, express_1.Router)();
@@ -43,9 +44,9 @@ class AdminRootRouter {
         this.Router.use("/airlines", this.AirlineRouter.router);
         //airport router
         this.Router.use("/airport", new airport_router_1.AirportRouter().router);
-        // //booking request router
+        //booking request router
         // this.Router.use('/booking-request', this.BookingRequestRouter.router);
-        // //visa router
+        //visa router
         this.Router.use("/visa", this.VisaRouter.router);
         //dashboard router
         this.Router.use("/dashboard", this.DashBoardRouter.router);
@@ -57,6 +58,8 @@ class AdminRootRouter {
         this.Router.use("/b2b/flight-booking", new b2bFlightBooking_router_1.default().router);
         //agency router
         this.Router.use("/booking-service", new admin_b2bBookingService_router_1.AdminBtoBBookingServiceRouter().router);
+        //promotional router
+        this.Router.use("/promotional", new adminPromotional_router_1.AdminPromotionalRouter().router);
         //agency router
         this.Router.use("/agency", new adminAgency_router_1.AdminAgencyRouter().router);
     }

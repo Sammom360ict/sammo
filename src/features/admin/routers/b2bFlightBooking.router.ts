@@ -1,8 +1,8 @@
 import AbstractRouter from "../../../abstract/abstract.router";
-import adminB2BFlightBookingController from "../controllers/b2bFlightBooking.controller";
+import AdminB2BFlightBookingController from "../controllers/b2bFlightBooking.controller";
 
-class adminB2BFlightBookingRouter extends AbstractRouter {
-  private controller = new adminB2BFlightBookingController();
+class AdminB2BFlightBookingRouter extends AbstractRouter {
+  private controller = new AdminB2BFlightBookingController();
   constructor() {
     super();
     this.callRouter();
@@ -28,4 +28,4 @@ class adminB2BFlightBookingRouter extends AbstractRouter {
       .delete(this.controller.cancelFlightBooking);
   }
 }
-export default adminB2BFlightBookingRouter;
+export default AdminB2BFlightBookingRouter;

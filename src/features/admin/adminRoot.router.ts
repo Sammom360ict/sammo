@@ -7,12 +7,13 @@ import { AirlineRouter } from "./routers/airline.router";
 import { AirlineCommissionRouter } from "./routers/airlineCommision.router";
 import { AirportRouter } from "./routers/airport.router";
 import AdminArticleRouter from "./routers/article.router";
-import adminB2BFlightBookingRouter from "./routers/b2bFlightBooking.router";
+import AdminB2BFlightBookingRouter from "./routers/b2bFlightBooking.router";
 import { BookingRequestRouter } from "./routers/bookingRequest.router";
 import AdminDashboardRouter from "./routers/dashboard.router";
 import adminFlightBookingRouter from "./routers/flightBooking.router";
 import AdminProfileRouter from "./routers/profile.router";
 import { AdminVisaRouter } from "./routers/visa.router";
+import { AdminPromotionalRouter } from "./routers/adminPromotional.router";
 class AdminRootRouter {
   public Router = Router();
   private ProfileRouter = new AdminProfileRouter();
@@ -44,15 +45,17 @@ class AdminRootRouter {
       "/airlines-commission",
       this.AirlinesCommissionRouter.router
     );
+
     //airline router
     this.Router.use("/airlines", this.AirlineRouter.router);
 
     //airport router
     this.Router.use("/airport", new AirportRouter().router);
 
-    // //booking request router
+    //booking request router
     // this.Router.use('/booking-request', this.BookingRequestRouter.router);
-    // //visa router
+
+    //visa router
     this.Router.use("/visa", this.VisaRouter.router);
 
     //dashboard router
@@ -66,10 +69,11 @@ class AdminRootRouter {
       "/b2c/flight-booking",
       new adminFlightBookingRouter().router
     );
+
     //b2b flight booking router
     this.Router.use(
       "/b2b/flight-booking",
-      new adminB2BFlightBookingRouter().router
+      new AdminB2BFlightBookingRouter().router
     );
 
     //agency router
@@ -77,6 +81,9 @@ class AdminRootRouter {
       "/booking-service",
       new AdminBtoBBookingServiceRouter().router
     );
+
+    //promotional router
+    this.Router.use("/promotional", new AdminPromotionalRouter().router);
 
     //agency router
     this.Router.use("/agency", new AdminAgencyRouter().router);

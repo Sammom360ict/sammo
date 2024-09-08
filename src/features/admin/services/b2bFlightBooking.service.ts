@@ -1,20 +1,14 @@
 import { Request } from "express";
 import AbstractServices from "../../../abstract/abstract.service";
-import {
-  orderCancelEndPoint,
-  orderChangeEndPoint,
-  orderReshopEndPoint,
-} from "../../../utils/miscellaneous/bdFareApiEndpoints";
 import RequestFormatter from "../../../utils/lib/requestFomatter";
 import SabreRequests from "../../../utils/lib/sabreRequest";
-import TicketIssueService from "../../b2b/services/ticketIssue.service";
 import {
   CANCEL_BOOKING_ENDPOINT,
   GET_BOOKING_ENDPOINT,
   TICKET_ISSUE_ENDPOINT,
 } from "../../../utils/miscellaneous/sabreApiEndpoints";
 
-class adminB2BFlightBookingService extends AbstractServices {
+class AdminB2BFlightBookingService extends AbstractServices {
   private requestFormatter = new RequestFormatter();
   private sabreRequest = new SabreRequests();
   private RequestFormatter = new RequestFormatter();
@@ -347,20 +341,15 @@ class adminB2BFlightBookingService extends AbstractServices {
   public async manualIssueTicket(req: Request) {
     return await this.db.transaction(async (trx) => {
       const flightBookingModel = this.Model.b2bFlightBookingModel(trx);
-      const ticketModel = this.Model.b2bTicketIssueModel(trx);
+
       const { id: booking_id } = req.params;
-
       const { pax_ticket } = req.body;
-
-      console.log({ pax_ticket });
 
       const checkFlightBooking =
         await flightBookingModel.getSingleFlightBooking({
           id: Number(booking_id),
           status: "pending",
         });
-
-      console.log({ checkFlightBooking });
 
       if (!checkFlightBooking.length) {
         return {
@@ -379,7 +368,6 @@ class adminB2BFlightBookingService extends AbstractServices {
         travelerIds
       );
 
-      console.log({ bookingTraveler });
       if (bookingTraveler.length !== travelerIds.length) {
         return {
           success: false,
@@ -389,9 +377,9 @@ class adminB2BFlightBookingService extends AbstractServices {
       }
 
       // update booking traveler with ticket
-      Promise.all(
+      await Promise.all(
         pax_ticket.map(async (item: any) => {
-          return await flightBookingModel.updateFlightBookingTraveler(
+          await flightBookingModel.updateFlightBookingTraveler(
             { ticket_number: item.ticket_number },
             item.traveler_id
           );
@@ -413,4 +401,4 @@ class adminB2BFlightBookingService extends AbstractServices {
   }
 }
 
-export default adminB2BFlightBookingService;
+export default AdminB2BFlightBookingService;

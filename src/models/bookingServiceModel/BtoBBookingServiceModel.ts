@@ -91,13 +91,13 @@ export class BtoBBookingServiceModel extends Schema {
           qb.andWhere("bs.status", status);
         }
       })
-      .orderBy("bs.created_at", "desc")
       .limit(limit || 100)
-      .offset(skip || 0);
+      .offset(skip || 0)
+      .orderBy("bs.created_at", "desc");
 
     const total = await this.db("booking_support as bs")
       .withSchema(this.BTOB_SCHEMA)
-      .count("bs.id as total")
+      .count("* as total")
       .join("btob_user as bu", "bu.id", "bs.created_by")
       .join("flight_booking as fb", "fb.id", "bs.booking_id")
       .joinRaw("left join admin.user_admin as ua on ua.id = bs.closed_by")

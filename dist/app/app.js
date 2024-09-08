@@ -39,7 +39,7 @@ class App {
     runCron() {
         return __awaiter(this, void 0, void 0, function* () {
             const services = new commonService_1.default();
-            node_cron_1.default.schedule('0 0 */3 * *', () => __awaiter(this, void 0, void 0, function* () {
+            node_cron_1.default.schedule("0 0 */3 * *", () => __awaiter(this, void 0, void 0, function* () {
                 yield services.getSabreToken();
             }));
         });
@@ -54,7 +54,7 @@ class App {
     initMiddleware() {
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.urlencoded({ extended: true }));
-        this.app.use((0, morgan_1.default)('dev'));
+        this.app.use((0, morgan_1.default)("dev"));
         this.app.use((0, cors_1.default)({ origin: this.origin, credentials: true }));
     }
     // socket connection
@@ -62,28 +62,28 @@ class App {
         socket_1.io.use((socket, next) => {
             var _a;
             if (!((_a = socket.handshake.auth) === null || _a === void 0 ? void 0 : _a.id)) {
-                next(new Error('Provide id into auth.'));
+                next(new Error("Provide id into auth."));
             }
             else {
                 next();
             }
         });
-        socket_1.io.on('connection', (socket) => __awaiter(this, void 0, void 0, function* () {
+        socket_1.io.on("connection", (socket) => __awaiter(this, void 0, void 0, function* () {
             const { id } = socket.handshake.auth;
-            console.log(socket.id, '-', id, 'is connected ⚡');
+            console.log(socket.id, "-", id, "is connected ⚡");
         }));
     }
     // init routers
     initRouters() {
-        this.app.get('/', (_req, res) => {
+        this.app.get("/", (_req, res) => {
             res.send(`Travel trip bd server is running successfully...🚀`);
         });
-        this.app.use('/api/v1', new router_1.default().v1Router);
+        this.app.use("/api/v1", new router_1.default().v1Router);
     }
     // not found router
     notFoundRouter() {
-        this.app.use('*', (_req, _res, next) => {
-            next(new customError_1.default('Cannot found the route', 404));
+        this.app.use("*", (_req, _res, next) => {
+            next(new customError_1.default("Cannot found the route", 404));
         });
     }
     // error handler

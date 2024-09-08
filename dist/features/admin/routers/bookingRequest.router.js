@@ -14,12 +14,10 @@ class BookingRequestRouter extends abstract_router_1.default {
     }
     callRouter() {
         // get list
-        this.router
-            .route('/')
-            .get(this.controller.get);
+        this.router.route("/").get(this.controller.get);
         // get single
         this.router
-            .route('/:id')
+            .route("/:id")
             .get(this.controller.getSingle)
             .patch(this.controller.update);
     }

@@ -1,4 +1,4 @@
-import Joi, { number } from "joi";
+import Joi from "joi";
 
 export default class AdminBookingRequestValidator {
   //update validator

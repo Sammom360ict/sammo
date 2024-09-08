@@ -1,5 +1,5 @@
-import AbstractRouter from '../../../abstract/abstract.router';
-import { BookingRequestController } from '../controllers/bookingRequest.controller';
+import AbstractRouter from "../../../abstract/abstract.router";
+import { BookingRequestController } from "../controllers/bookingRequest.controller";
 
 export class BookingRequestRouter extends AbstractRouter {
   private controller = new BookingRequestController();
@@ -10,14 +10,12 @@ export class BookingRequestRouter extends AbstractRouter {
 
   private callRouter() {
     // get list
-    this.router
-      .route('/')
-      .get(this.controller.get);
+    this.router.route("/").get(this.controller.get);
 
     // get single
     this.router
-      .route('/:id')
+      .route("/:id")
       .get(this.controller.getSingle)
-      .patch(this.controller.update)
+      .patch(this.controller.update);
   }
 }

@@ -37,8 +37,12 @@ class Wrapper {
                 yield cb(req, res, next);
             }
             catch (err) {
-                console.log({ err });
+                console.log({ err }, "error from wrap");
                 if (err.isJoi) {
+                    // throw new CustomError(
+                    //   err.message,
+                    //   StatusCode.HTTP_UNPROCESSABLE_ENTITY
+                    // );
                     res.status(statusCode_1.default.HTTP_UNPROCESSABLE_ENTITY).json({
                         success: false,
                         message: err.message,
