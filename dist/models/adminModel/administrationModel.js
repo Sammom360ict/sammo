@@ -41,7 +41,7 @@ class AdministrationModel extends schema_1.default {
             const data = yield this.db("roles as rl")
                 .withSchema(this.ADMIN_SCHEMA)
                 .select("rl.id as role_id", "rl.name as role_name", "ua.username as created_by", "rl.create_date")
-                .join("user_admin as ua", "ua.id", "rl.created_by")
+                .leftJoin("user_admin as ua", "ua.id", "rl.created_by")
                 .limit(limit ? limit : 100)
                 .offset(skip ? skip : 0)
                 .orderBy("rl.id", "asc");
