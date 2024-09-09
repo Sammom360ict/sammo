@@ -39,11 +39,6 @@ export default class Wrapper {
         console.log({ err }, "error from wrap");
 
         if (err.isJoi) {
-          // throw new CustomError(
-          //   err.message,
-          //   StatusCode.HTTP_UNPROCESSABLE_ENTITY
-          // );
-
           res.status(StatusCode.HTTP_UNPROCESSABLE_ENTITY).json({
             success: false,
             message: err.message,

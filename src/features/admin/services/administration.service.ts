@@ -3,6 +3,7 @@ import { Request } from "express";
 import Lib from "../../../utils/lib/lib";
 
 class AdministrationService extends AbstractServices {
+  // create role
   public async createRole(req: Request) {
     return await this.db.transaction(async (trx) => {
       const { id } = req.admin;
@@ -169,13 +170,7 @@ class AdministrationService extends AbstractServices {
         };
       }
 
-      const {
-        add_permissions,
-        role_name,
-        status,
-        // remove_permissions,
-        // update_permissions,
-      } = req.body;
+      const { add_permissions, role_name, status } = req.body;
 
       if (role_name || status) {
         const check_name = await model.getSingleRole({ name: role_name });
@@ -243,7 +238,6 @@ class AdministrationService extends AbstractServices {
         }
 
         // update section
-
         if (haveToUpdateVal.length) {
           const update_permission_res = haveToUpdateVal.map(
             async (element: {

@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_service_1 = __importDefault(require("../../../abstract/abstract.service"));
 const lib_1 = __importDefault(require("../../../utils/lib/lib"));
 class AdministrationService extends abstract_service_1.default {
+    // create role
     createRole(req) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
@@ -185,10 +186,7 @@ class AdministrationService extends abstract_service_1.default {
                         message: this.ResMsg.HTTP_NOT_FOUND,
                     };
                 }
-                const { add_permissions, role_name, status,
-                // remove_permissions,
-                // update_permissions,
-                 } = req.body;
+                const { add_permissions, role_name, status } = req.body;
                 if (role_name || status) {
                     const check_name = yield model.getSingleRole({ name: role_name });
                     if (!check_name.length) {

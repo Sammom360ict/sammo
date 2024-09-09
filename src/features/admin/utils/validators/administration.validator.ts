@@ -33,20 +33,6 @@ class AdministrationValidator {
         delete: Joi.number().valid(0, 1).required(),
       })
       .optional(),
-    // remove_permissions: Joi.array()
-    //   .items({
-    //     permission_id: Joi.number().required(),
-    //   })
-    //   .optional(),
-    // update_permissions: Joi.array()
-    //   .items({
-    //     permission_id: Joi.number().required(),
-    //     read: Joi.number().valid(0, 1).optional(),
-    //     update: Joi.number().valid(0, 1).optional(),
-    //     write: Joi.number().valid(0, 1).optional(),
-    //     delete: Joi.number().valid(0, 1).optional(),
-    //   })
-    //   .optional(),
   });
 
   //create admin

@@ -130,7 +130,7 @@ class AdministrationModel extends Schema {
         "ua.username as created_by",
         "per.create_date"
       )
-      .join("user_admin as ua", "ua.id", "per.created_by")
+      .leftJoin("user_admin as ua", "ua.id", "per.created_by")
       .limit(params.limit ? params.limit : 100)
       .offset(params.skip ? params.skip : 0)
       .orderBy("per.id", "asc")
