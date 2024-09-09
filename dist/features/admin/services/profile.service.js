@@ -33,8 +33,7 @@ class AdminProfileService extends abstract_service_1.default {
             const model = this.Model.adminModel();
             const profile = yield model.getSingleAdmin({ id });
             const _a = profile[0], { password_hash, created_by, role_id } = _a, rest = __rest(_a, ["password_hash", "created_by", "role_id"]);
-            const admModel = this.Model.administrationModel();
-            const role_permission = yield admModel.getSingleRole({
+            const role_permission = yield this.Model.administrationModel().getSingleRole({
                 id: parseInt(role_id),
             });
             return {

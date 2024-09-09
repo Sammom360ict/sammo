@@ -1,5 +1,5 @@
-import AbstractRouter from '../../../abstract/abstract.router';
-import flightBookingController from '../controllers/flightBooking.controller';
+import AbstractRouter from "../../../abstract/abstract.router";
+import flightBookingController from "../controllers/flightBooking.controller";
 
 class flightBookingRouter extends AbstractRouter {
   private controller = new flightBookingController();
@@ -11,14 +11,15 @@ class flightBookingRouter extends AbstractRouter {
   private callRouter() {
     // Get all flight booking
     this.router
-      .route('/')
+      .route("/")
       .post(this.controller.flightBooking)
       .get(this.controller.getAllFlightBooking);
 
-
     // Get single flight booking
-    this.router.route('/:id').get(this.controller.getSingleFlightBooking)
-    .delete(this.controller.cancelFlightBooking);
+    this.router
+      .route("/:id")
+      .get(this.controller.getSingleFlightBooking)
+      .delete(this.controller.cancelFlightBooking);
   }
 }
 export default flightBookingRouter;

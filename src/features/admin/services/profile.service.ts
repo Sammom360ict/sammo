@@ -14,11 +14,10 @@ class AdminProfileService extends AbstractServices {
     const profile = await model.getSingleAdmin({ id });
     const { password_hash, created_by, role_id, ...rest } = profile[0];
 
-    const admModel = this.Model.administrationModel();
-
-    const role_permission = await admModel.getSingleRole({
-      id: parseInt(role_id),
-    });
+    const role_permission =
+      await this.Model.administrationModel().getSingleRole({
+        id: parseInt(role_id),
+      });
 
     return {
       success: true,

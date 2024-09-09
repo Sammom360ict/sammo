@@ -49,7 +49,7 @@ class AdminArticleController extends abstract_controller_1.default {
         //update article
         this.updateArticle = this.asyncWrapper.wrap({
             paramSchema: this.commonValidator.singleParamValidator,
-            bodySchema: this.ArticleValidator.updateArticlePayloadValidator
+            bodySchema: this.ArticleValidator.updateArticlePayloadValidator,
         }, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _d = yield this.AdminArticleService.updateArticle(req), { code } = _d, data = __rest(_d, ["code"]);
             res.status(code).json(data);
@@ -59,6 +59,16 @@ class AdminArticleController extends abstract_controller_1.default {
             paramSchema: this.commonValidator.singleParamValidator,
         }, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _e = yield this.AdminArticleService.deleteArticle(req), { code } = _e, data = __rest(_e, ["code"]);
+            res.status(code).json(data);
+        }));
+        //insert article
+        this.insertArticleDoc = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _f = yield this.AdminArticleService.insertArticleDoc(req), { code } = _f, data = __rest(_f, ["code"]);
+            res.status(code).json(data);
+        }));
+        //get all article doc
+        this.getAllArticleDoc = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _g = yield this.AdminArticleService.getAllArticleDoc(req), { code } = _g, data = __rest(_g, ["code"]);
             res.status(code).json(data);
         }));
     }

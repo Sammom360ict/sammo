@@ -25,6 +25,7 @@ class AdminArticleService extends abstract_service_1.default {
             const model = this.Model.articleModel();
             //check if this slug already exists
             const check_slug = yield model.getSingleArticle({ slug: req.body.slug }, false);
+            console.log({ check_slug });
             if (check_slug.length) {
                 return {
                     success: false,
@@ -32,36 +33,32 @@ class AdminArticleService extends abstract_service_1.default {
                     message: this.ResMsg.SLUG_EXISTS,
                 };
             }
-            const create_article = yield model.createArticle(req.body);
-            if (create_article) {
-                return {
-                    success: true,
-                    code: this.StatusCode.HTTP_SUCCESSFUL,
-                    message: this.ResMsg.HTTP_SUCCESSFUL,
-                    data: req.body
-                };
-            }
-            else {
-                return {
-                    success: false,
-                    code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
-                    message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR,
-                };
-            }
+            yield model.createArticle(Object.assign(Object.assign({}, req.body), { created_by: req.admin.id }));
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_SUCCESSFUL,
+                message: this.ResMsg.HTTP_SUCCESSFUL,
+                data: req.body,
+            };
         });
     }
     //get article list
     getArticleList(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { title, status, limit, skip } = req.query;
-            const model = this.Model.articleModel();
-            const data = yield model.getArticleList({ title, status, limit, skip });
+            const { title, status, limit, skip, deleted } = req.query;
+            const data = yield this.Model.articleModel().getArticleList({
+                title,
+                status,
+                limit,
+                skip,
+                deleted,
+            });
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 message: this.ResMsg.HTTP_OK,
                 total: data.total,
-                data: data.data
+                data: data.data,
             };
         });
     }
@@ -69,8 +66,16 @@ class AdminArticleService extends abstract_service_1.default {
     getSingleArticle(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const article_id = req.params.id;
-            const model = this.Model.articleModel();
-            const data = yield model.getSingleArticle({ id: Number(article_id) }, false);
+            const data = yield this.Model.articleModel().getSingleArticle({
+                id: Number(article_id),
+            });
+            if (!data.length) {
+                return {
+                    success: true,
+                    code: this.StatusCode.HTTP_NOT_FOUND,
+                    message: this.ResMsg.HTTP_NOT_FOUND,
+                };
+            }
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
@@ -91,7 +96,7 @@ class AdminArticleService extends abstract_service_1.default {
             if (req.body.title) {
                 req.body.slug = req.body.title.toLowerCase().replace(/ /g, "-");
                 //check if this slug already exists
-                const check_slug = yield model.getSingleArticle({ slug: req.body.slug }, false, Number(article_id));
+                const check_slug = yield model.getSingleArticle({ slug: req.body.slug }, true, Number(article_id));
                 if (check_slug.length) {
                     return {
                         success: false,
@@ -101,21 +106,12 @@ class AdminArticleService extends abstract_service_1.default {
                 }
             }
             const update_article = yield model.updateArticle(req.body, Number(article_id));
-            if (update_article) {
-                return {
-                    success: true,
-                    code: this.StatusCode.HTTP_OK,
-                    message: this.ResMsg.HTTP_OK,
-                    data: req.body
-                };
-            }
-            else {
-                return {
-                    success: false,
-                    code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
-                    message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR,
-                };
-            }
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                message: this.ResMsg.HTTP_OK,
+                data: req.body,
+            };
         });
     }
     deleteArticle(req) {
@@ -145,6 +141,49 @@ class AdminArticleService extends abstract_service_1.default {
                     message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR,
                 };
             }
+        });
+    }
+    //-------------------- insert article doc -------------------//
+    //create article
+    insertArticleDoc(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const files = req.files || [];
+            const uploadedFiles = [];
+            console.log({ files });
+            const payload = {};
+            if (files === null || files === void 0 ? void 0 : files.length) {
+                for (const element of files) {
+                    payload["link"] = element.filename;
+                    uploadedFiles.push(element.filename);
+                }
+                // console.log(req.body, "body");
+                console.log({ payload });
+                yield this.Model.articleModel().insertArticleDoc(payload);
+            }
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_SUCCESSFUL,
+                message: this.ResMsg.HTTP_SUCCESSFUL,
+                data: uploadedFiles,
+            };
+        });
+    }
+    //get all article doc
+    getAllArticleDoc(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { limit, skip, status } = req.query;
+            const { data, total } = yield this.Model.articleModel().getAllArticleDoc({
+                limit: parseInt(limit),
+                skip: parseInt(skip),
+                status: status,
+            });
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                message: this.ResMsg.HTTP_OK,
+                total,
+                data,
+            };
         });
     }
 }
