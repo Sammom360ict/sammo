@@ -26,6 +26,23 @@ export class VisaModel extends Schema {
       .insert(payload, "id");
   }
 
+  //get all visa country
+  public async getAllVisaCountryList(query: IGetVisaQuery) {
+    const data = await this.db("dbo.country as con")
+      .select("con.id", "con.name", "con.iso")
+      .join("services.visa as vi", "con.id", "vi.country_id")
+      .groupBy("con.id");
+
+    const total = await this.db("dbo.country as con")
+      .countDistinct("con.id as total")
+      .join("services.visa as vi", "con.id", "vi.country_id");
+
+    return {
+      data,
+      total: total[0]?.total,
+    };
+  }
+
   //get visa
   public async get(query: IGetVisaQuery, is_total: boolean = false) {
     const data = await this.db("services.visa as vi")

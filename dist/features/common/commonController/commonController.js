@@ -61,19 +61,34 @@ class CommonController extends abstract_controller_1.default {
             const _f = yield this.commonService.getAllAirlines(req), { code } = _f, data = __rest(_f, ["code"]);
             res.status(code).json(data);
         }));
+        //get all visa country list
+        this.getAllVisaCountryList = this.asyncWrapper.wrap({ querySchema: this.commonValidator.visaListSchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _g = yield this.commonService.getAllVisaCountryList(req), { code } = _g, data = __rest(_g, ["code"]);
+            res.status(code).json(data);
+        }));
         //visa list
         this.getAllVisaList = this.asyncWrapper.wrap({ querySchema: this.commonValidator.visaListSchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _g = yield this.commonService.getAllVisaList(req), { code } = _g, data = __rest(_g, ["code"]);
+            const _h = yield this.commonService.getAllVisaList(req), { code } = _h, data = __rest(_h, ["code"]);
             res.status(code).json(data);
         }));
         //single visa
         this.getSingleVisa = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _h = yield this.commonService.getSingleVisa(req), { code } = _h, data = __rest(_h, ["code"]);
+            const _j = yield this.commonService.getSingleVisa(req), { code } = _j, data = __rest(_j, ["code"]);
             res.status(code).json(data);
         }));
         //migrate data
         this.dataMigrate = this.asyncWrapper.wrap(null, (_req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _j = yield this.migrate.migrateAirlineImage(), { code } = _j, data = __rest(_j, ["code"]);
+            const _k = yield this.migrate.migrateAirlineImage(), { code } = _k, data = __rest(_k, ["code"]);
+            res.status(code).json(data);
+        }));
+        //get article list
+        this.getArticleList = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _l = yield this.commonService.getArticleList(req), { code } = _l, data = __rest(_l, ["code"]);
+            res.status(code).json(data);
+        }));
+        //get single article
+        this.getSingleArticle = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _m = yield this.commonService.getSingleArticle(req), { code } = _m, data = __rest(_m, ["code"]);
             res.status(code).json(data);
         }));
     }

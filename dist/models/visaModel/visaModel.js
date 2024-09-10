@@ -27,6 +27,23 @@ class VisaModel extends schema_1.default {
                 .insert(payload, "id");
         });
     }
+    //get all visa country
+    getAllVisaCountryList(query) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const data = yield this.db("dbo.country as con")
+                .select("con.id", "con.name", "con.iso")
+                .join("services.visa as vi", "con.id", "vi.country_id")
+                .groupBy("con.id");
+            const total = yield this.db("dbo.country as con")
+                .countDistinct("con.id as total")
+                .join("services.visa as vi", "con.id", "vi.country_id");
+            return {
+                data,
+                total: (_a = total[0]) === null || _a === void 0 ? void 0 : _a.total,
+            };
+        });
+    }
     //get visa
     get(query_1) {
         return __awaiter(this, arguments, void 0, function* (query, is_total = false) {

@@ -24,17 +24,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const abstract_controller_1 = __importDefault(require("../../../abstract/abstract.controller"));
-const flightBooking_service_1 = __importDefault(require("../services/flightBooking.service"));
 const flightBooking_validator_1 = __importDefault(require("../utils/validators/flightBooking.validator"));
-class flightBookingController extends abstract_controller_1.default {
+const bookingRequest_service_1 = __importDefault(require("../services/bookingRequest.service"));
+class BookingRequestController extends abstract_controller_1.default {
     constructor() {
         super();
-        this.service = new flightBooking_service_1.default();
+        this.service = new bookingRequest_service_1.default();
         this.flightValidator = new flightBooking_validator_1.default();
         // Flight booking controller
-        this.flightBooking = this.asyncWrapper.wrap({
-            bodySchema: this.flightValidator.pnrCreateSchema,
-        }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.flightBooking = this.asyncWrapper.wrap({ bodySchema: this.flightValidator.pnrCreateSchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _a = yield this.service.flightBooking(req), { code } = _a, rest = __rest(_a, ["code"]);
             res.status(code).json(rest);
         }));
@@ -48,11 +46,6 @@ class flightBookingController extends abstract_controller_1.default {
             const _c = yield this.service.getSingleFlightBooking(req), { code } = _c, rest = __rest(_c, ["code"]);
             res.status(code).json(rest);
         }));
-        // cancel flight booking
-        this.cancelFlightBooking = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _d = yield this.service.cancelFlightBooking(req), { code } = _d, rest = __rest(_d, ["code"]);
-            res.status(code).json(rest);
-        }));
     }
 }
-exports.default = flightBookingController;
+exports.default = BookingRequestController;

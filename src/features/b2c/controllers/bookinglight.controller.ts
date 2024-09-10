@@ -1,6 +1,6 @@
 import AbstractController from "../../../abstract/abstract.controller";
 import { Request, Response } from "express";
-import BookingFlightService from "../services/bookinglight.service";
+import BookingFlightService from "../services/bookingFlight.service";
 import BookingFlightValidator from "../utils/validators/bookingFlight.validator";
 
 export default class BookingFlightController extends AbstractController {

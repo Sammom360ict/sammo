@@ -49,9 +49,9 @@ class migrateDataService extends abstract_service_1.default {
     migrateAirlines() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
-                const airlines = yield (0, database_1.db)('ota_airline').select('*');
+                const airlines = yield (0, database_1.db)("ota_airline").select("*");
                 for (const airline of airlines) {
-                    yield trx('airlines').withSchema('dbo').insert({
+                    yield trx("airlines").withSchema("dbo").insert({
                         id: airline.id,
                         code: airline.airline_code,
                         name: airline.alternative_business_name,
@@ -68,11 +68,11 @@ class migrateDataService extends abstract_service_1.default {
     migrateAirport() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
-                const airports = yield (0, database_1.db)('airports')
-                    .select('*')
+                const airports = yield (0, database_1.db)("airports")
+                    .select("*")
                     .where({ is_deleted: 0 });
                 for (const airport of airports) {
-                    yield trx('airport').withSchema('dbo').insert({
+                    yield trx("airport").withSchema("dbo").insert({
                         id: airport.id,
                         country_id: airport.country_id,
                         iata_code: airport.iata_code,
@@ -90,11 +90,11 @@ class migrateDataService extends abstract_service_1.default {
     migrateCity() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
-                const datas = yield (0, database_1.db)('city')
-                    .select('*')
-                    .whereNotNull('city_country_id');
+                const datas = yield (0, database_1.db)("city")
+                    .select("*")
+                    .whereNotNull("city_country_id");
                 for (const data of datas) {
-                    yield trx('city').withSchema('dbo').insert({
+                    yield trx("city").withSchema("dbo").insert({
                         id: data.city_id,
                         country_id: data.city_country_id,
                         code: data.city_code,
@@ -114,34 +114,34 @@ class migrateDataService extends abstract_service_1.default {
     migrateAirlineImage() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
-                const airlines = yield trx('airlines').withSchema('dbo').select('*');
+                const airlines = yield trx("airlines").withSchema("dbo").select("*");
                 const s3 = new aws_sdk_1.default.S3({
                     accessKeyId: config_1.default.AWS_S3_ACCESS_KEY, // AWS Access Key
                     secretAccessKey: config_1.default.AWS_S3_SECRET_KEY, // AWS Secret Access Key
-                    region: 'ap-south-1', // Your AWS bucket region
+                    region: "ap-south-1", // Your AWS bucket region
                 });
                 for (const data of airlines) {
                     (0, axios_1.default)({
-                        method: 'get',
+                        method: "get",
                         url: `https://fe-pub.s3.ap-southeast-1.amazonaws.com/airlineimages/128/${data.code}.png`,
-                        responseType: 'arraybuffer',
+                        responseType: "arraybuffer",
                     })
                         .then((res) => {
-                        const buffer = Buffer.from(res.data, 'binary');
+                        const buffer = Buffer.from(res.data, "binary");
                         const fileBuffer = {
                             Bucket: config_1.default.AWS_S3_BUCKET,
                             Key: `amar-flight-files/airlines/${data.code}.png`,
                             Body: buffer,
-                            ContentEncoding: 'base64',
-                            ContentType: mime.lookup(`${data.code}.png`) || 'application/octet-stream',
-                            ACL: 'public-read',
+                            ContentEncoding: "base64",
+                            ContentType: mime.lookup(`${data.code}.png`) || "application/octet-stream",
+                            ACL: "public-read",
                         };
                         s3.putObject(fileBuffer, (err, data) => {
                             if (err) {
                                 console.log(err);
                             }
                             else {
-                                console.log('Image uploaded');
+                                console.log("Image uploaded");
                             }
                         }).promise();
                     })
@@ -159,10 +159,10 @@ class migrateDataService extends abstract_service_1.default {
     updateAirlines() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
-                const airlines = yield trx('airlines').withSchema('dbo').select('*');
+                const airlines = yield trx("airlines").withSchema("dbo").select("*");
                 for (const airline of airlines) {
-                    yield trx('airlines')
-                        .withSchema('dbo')
+                    yield trx("airlines")
+                        .withSchema("dbo")
                         .update({
                         logo: `airlines/${airline.code}.png`,
                     })

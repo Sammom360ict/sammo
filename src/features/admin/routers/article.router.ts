@@ -31,7 +31,7 @@ class AdminArticleRouter extends AbstractRouter {
 
     this.router
       .route("/docs")
-      .post(this.AdminArticleController.getAllArticleDoc);
+      .get(this.AdminArticleController.getAllArticleDoc);
 
     // ------------- article doc end ----------------- //
 

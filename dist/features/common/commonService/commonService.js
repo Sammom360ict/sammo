@@ -300,6 +300,25 @@ class commonService extends abstract_service_1.default {
         });
     }
     //get all visa list
+    getAllVisaCountryList(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let { limit, skip } = req.query;
+            const model = this.Model.VisaModel();
+            const data = yield model.getAllVisaCountryList({
+                status: true,
+                limit,
+                skip,
+            });
+            console.log({ data });
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                total: data.total,
+                data: data.data,
+            };
+        });
+    }
+    //get all visa list
     getAllVisaList(req) {
         return __awaiter(this, void 0, void 0, function* () {
             let { country_id, limit, skip } = req.query;
@@ -333,6 +352,48 @@ class commonService extends abstract_service_1.default {
                     data: data[0],
                 };
             }
+        });
+    }
+    //get article list
+    getArticleList(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { title, status, limit, skip, deleted } = req.query;
+            const data = yield this.Model.articleModel().getArticleList({
+                title,
+                status,
+                limit,
+                skip,
+                deleted,
+            });
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                message: this.ResMsg.HTTP_OK,
+                total: data.total,
+                data: data.data,
+            };
+        });
+    }
+    //get single article
+    getSingleArticle(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const article_id = req.params.id;
+            const data = yield this.Model.articleModel().getSingleArticle({
+                id: Number(article_id),
+            });
+            if (!data.length) {
+                return {
+                    success: true,
+                    code: this.StatusCode.HTTP_NOT_FOUND,
+                    message: this.ResMsg.HTTP_NOT_FOUND,
+                };
+            }
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                message: this.ResMsg.HTTP_OK,
+                data: data[0],
+            };
         });
     }
 }

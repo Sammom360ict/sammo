@@ -117,7 +117,7 @@ class ArticleModel extends schema_1.default {
         return __awaiter(this, arguments, void 0, function* ({ limit, skip, status, }) {
             const data = yield this.db("article_doc")
                 .withSchema(this.ADMIN_SCHEMA)
-                .select("id", "link", "status")
+                .select("link as url")
                 .where((qb) => {
                 if (status) {
                     qb.where("status", status);

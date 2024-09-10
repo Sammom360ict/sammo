@@ -27,9 +27,8 @@ const abstract_service_1 = __importDefault(require("../../../abstract/abstract.s
 const requestFomatter_1 = __importDefault(require("../../../utils/lib/requestFomatter"));
 const responseFormatter_1 = __importDefault(require("../../../utils/lib/responseFormatter"));
 const sabreRequest_1 = __importDefault(require("../../../utils/lib/sabreRequest"));
-const sabreApiEndpoints_1 = require("../../../utils/miscellaneous/sabreApiEndpoints");
 const bookingFlight_service_1 = __importDefault(require("./bookingFlight.service"));
-class flightBookingService extends abstract_service_1.default {
+class BookingRequestService extends abstract_service_1.default {
     constructor() {
         super();
         this.ResFormatter = new responseFormatter_1.default();
@@ -40,9 +39,9 @@ class flightBookingService extends abstract_service_1.default {
     flightBooking(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const body = req.body;
-            const search_id = req.query.search_id;
+            // const clientIP = req.ip as string;
             // const flight_id = body.flight_id;
-            const { flight_id, passengers: traveler } = req.body;
+            const { search_id, flight_id, passengers: traveler } = req.body;
             const { id: user_id } = req.user;
             const commission_per = 5;
             // const data = await revalidateFlight(clientIP, flight_id);
@@ -58,28 +57,6 @@ class flightBookingService extends abstract_service_1.default {
                 };
             }
             return yield this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
-                var _a, _b;
-                const requestBody = this.RequestFormatter.pnrReqBody(body, data);
-                const response = yield this.request.postRequest(sabreApiEndpoints_1.FLIGHT_BOOKING_ENDPOINT, requestBody);
-                console.log({ response });
-                if (!response) {
-                    return {
-                        success: false,
-                        code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
-                        message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR,
-                    };
-                }
-                if (((_b = (_a = response === null || response === void 0 ? void 0 : response.CreatePassengerNameRecordRS) === null || _a === void 0 ? void 0 : _a.ApplicationResults) === null || _b === void 0 ? void 0 : _b.status) !==
-                    "Complete") {
-                    return {
-                        success: false,
-                        code: this.StatusCode.HTTP_BAD_REQUEST,
-                        message: this.ResMsg.HTTP_BAD_REQUEST,
-                        data: response.CreatePassengerNameRecordRS.ApplicationResults,
-                    };
-                }
-                const formattedResponse = yield this.ResFormatter.pnrResponseFormatter(response);
-                const { LastTicketingDate, pnrId: pnr_code, PersonName, FlightSegment, } = formattedResponse;
                 //save traveler
                 const travelersModel = this.Model.travelerModel();
                 const traveler_promises = body.passengers.map((element) => __awaiter(this, void 0, void 0, function* () {
@@ -92,7 +69,7 @@ class flightBookingService extends abstract_service_1.default {
                 }));
                 yield Promise.all(traveler_promises);
                 // create pnr
-                const flightBookingModel = this.Model.flightBookingModel(trx);
+                const bookingRequestModel = this.Model.bookingRequestModel(trx);
                 const ticket_price = data.fare.total_price;
                 const base_fare = data.fare.base_fare;
                 const total_tax = data.fare.total_tax;
@@ -114,10 +91,9 @@ class flightBookingService extends abstract_service_1.default {
                     journey_type = "Multi City";
                 }
                 //insert flight booking
-                const res = yield flightBookingModel.insertFlightBooking({
+                const res = yield bookingRequestModel.insert({
                     user_id,
-                    pnr_code,
-                    total_passenger: PersonName.length,
+                    total_passenger: passengers.length,
                     created_by: user_id,
                     ticket_issue_last_time: ticket_issue_last_time,
                     base_fare,
@@ -141,7 +117,7 @@ class flightBookingService extends abstract_service_1.default {
                 flights.forEach((flight) => {
                     flight.options.forEach((option) => {
                         segmentBody.push({
-                            flight_booking_id: res[0].id,
+                            booking_request_id: res[0].id,
                             airline: option.carrier.carrier_marketing_airline,
                             airline_logo: option.carrier.carrier_marketing_logo,
                             arrival_date: option.arrival.date,
@@ -154,38 +130,36 @@ class flightBookingService extends abstract_service_1.default {
                             destination: option.arrival.airport +
                                 " (" +
                                 option.arrival.city +
-                                "-" +
+                                "," +
                                 option.arrival.city_code +
                                 ")",
                             flight_number: `${option.carrier.carrier_marketing_code} ${option.carrier.carrier_marketing_flight_number}`,
                             origin: option.departure.airport +
                                 " (" +
                                 option.departure.city +
-                                "-" +
+                                "," +
                                 option.departure.city_code +
                                 ")",
                         });
                     });
                 });
-                yield flightBookingModel.insertFlightSegment(segmentBody);
+                yield bookingRequestModel.insertSegment(segmentBody);
                 //insert traveler
                 let travelerBody = [];
                 travelerBody = traveler.map((obj) => {
                     const { save_information, passport_expire_date } = obj, rest = __rest(obj, ["save_information", "passport_expire_date"]);
-                    return Object.assign(Object.assign({}, rest), { flight_booking_id: res[0].id, passport_expiry_date: passport_expire_date
+                    return Object.assign(Object.assign({}, rest), { booking_request_id: res[0].id, passport_expiry_date: passport_expire_date
                             ? passport_expire_date.split("T")[0]
                             : undefined });
                 });
-                yield flightBookingModel.insertFlightTraveler(travelerBody);
+                yield bookingRequestModel.insertTraveler(travelerBody);
                 return {
                     success: true,
-                    message: "Pnr has been created successfully",
+                    message: "Booking Request has been created successfully",
                     ticketLastDateTime: ticket_issue_last_time
                         ? ticket_issue_last_time
                         : null,
                     booking_id: res[0].id,
-                    // data: formattedResponse,
-                    // response,
                     code: this.StatusCode.HTTP_OK,
                 };
             }));
@@ -195,15 +169,15 @@ class flightBookingService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const { id: user_id } = req.user;
             const { status, limit, skip, from_date, to_date } = req.query;
-            const flightBookingModel = this.Model.flightBookingModel();
-            const { data, total } = yield flightBookingModel.getAllFlightBooking({
+            const flightBookingModel = this.Model.bookingRequestModel();
+            const { data, total } = yield flightBookingModel.get({
                 limit: limit,
                 skip: skip,
                 user_id: user_id,
                 status: status,
                 from_date: from_date,
                 to_date: to_date,
-            });
+            }, true);
             return {
                 success: true,
                 data,
@@ -217,8 +191,8 @@ class flightBookingService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const { id: user_id } = req.user;
             const { id } = req.params;
-            const model = this.Model.flightBookingModel();
-            const checkBooking = yield model.getSingleFlightBooking({
+            const model = this.Model.bookingRequestModel();
+            const checkBooking = yield model.getSingle({
                 user_id,
                 id: Number(id),
             });
@@ -229,81 +203,14 @@ class flightBookingService extends abstract_service_1.default {
                     message: this.ResMsg.HTTP_NOT_FOUND,
                 };
             }
-            const getSegments = yield model.getFlightSegment(Number(id));
-            const getTraveler = yield model.getFlightTraveler(Number(id));
-            getTraveler.forEach((item) => {
-                if (item.gender === "M") {
-                    item.gender = "Male";
-                }
-                if (item.gender === "F") {
-                    item.gender = "Female";
-                }
-            });
-            // const sabre_response:any = await postRequest(GET_BOOKING_ENDPOINT, {
-            //   confirmationId: checkBooking[0].pnr_code,
-            // });
-            const ticket_model = this.Model.flightTicketIssueModel();
-            const ticket_issue_data = yield ticket_model.getSingleIssueTicket(Number(id));
-            const ticket_issue_segment_data = yield ticket_model.getTicketSegment(Number(id));
+            const getSegments = yield model.getSegment(Number(id));
+            const getTraveler = yield model.getTraveler(Number(id));
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
-                data: Object.assign(Object.assign({}, checkBooking[0]), { segments: getSegments, traveler: getTraveler, ticket: ticket_issue_data.length
-                        ? { ticket_issue_data, ticket_issue_segment_data }
-                        : null }),
+                data: Object.assign(Object.assign({}, checkBooking[0]), { segments: getSegments, traveler: getTraveler }),
             };
         });
     }
-    // cancel flight booking
-    cancelFlightBooking(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const flightBookingModel = this.Model.flightBookingModel();
-            const { booking_id } = req.params;
-            let { id: user_id } = req.user;
-            const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
-                user_id,
-                id: Number(booking_id),
-                status: "pending",
-            });
-            if (!checkFlightBooking.length) {
-                return {
-                    success: false,
-                    message: this.ResMsg.HTTP_NOT_FOUND,
-                    code: this.StatusCode.HTTP_NOT_FOUND,
-                };
-            }
-            const { ticket_issue_last_time, pnr_code } = checkFlightBooking[0];
-            // Convert the database timestamp string to a Date object in UTC
-            const databaseUTCTimestamp = Date.parse(ticket_issue_last_time);
-            // Get the current UTC timestamp
-            const currentUTCTimestamp = Date.now();
-            if (currentUTCTimestamp < databaseUTCTimestamp) {
-                const requestBody = this.RequestFormatter.cancelBookingReqBody(pnr_code);
-                const response = yield this.request.postRequest(sabreApiEndpoints_1.CANCEL_BOOKING_ENDPOINT, requestBody);
-                if (!response.errors) {
-                    yield flightBookingModel.updateBooking({ status: "cancelled", cancelled_by: user_id }, parseInt(booking_id));
-                    return {
-                        success: true,
-                        message: "Booking successfully canceled",
-                        code: this.StatusCode.HTTP_OK,
-                    };
-                }
-                else {
-                    return {
-                        success: false,
-                        message: "PNR is not valid for cancel",
-                        code: this.StatusCode.HTTP_NOT_FOUND,
-                    };
-                }
-            }
-            else {
-                return {
-                    success: false,
-                    message: this.ResMsg.HTTP_BAD_REQUEST,
-                    code: this.StatusCode.HTTP_BAD_REQUEST,
-                };
-            }
-        });
-    }
 }
-exports.default = flightBookingService;
+exports.default = BookingRequestService;

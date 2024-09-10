@@ -34,10 +34,21 @@ class CommonRouter extends AbstractRouter {
     this.router.route("/airlines").get(this.Controller.getAllAirlines);
 
     //get all visa list
+    this.router
+      .route("/visa-country")
+      .get(this.Controller.getAllVisaCountryList);
+
+    //get all visa list
     this.router.route("/visa").get(this.Controller.getAllVisaList);
 
     //get single visa
     this.router.route("/visa/:id").get(this.Controller.getSingleVisa);
+
+    // get all article
+    this.router.route("/article").get(this.Controller.getArticleList);
+
+    // get single article
+    this.router.route("/article/:id").get(this.Controller.getSingleArticle);
   }
 }
 

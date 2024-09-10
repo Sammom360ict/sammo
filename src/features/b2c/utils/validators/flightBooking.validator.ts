@@ -3,18 +3,14 @@ import Joi from "joi";
 class FlightBookingValidator {
   // get all flight booking validator
   public getAllFlightBookingSchema = Joi.object({
-    status: Joi.string().optional(),
-    pnr: Joi.string().optional(),
-    limit: Joi.string().optional(),
-    skip: Joi.string().optional(),
-    from_date: Joi.string().optional(),
-    to_date: Joi.string().optional(),
+    status: Joi.string().allow("").optional(),
+    pnr: Joi.string().allow("").optional(),
+    limit: Joi.string().allow("").optional(),
+    skip: Joi.string().allow("").optional(),
+    from_date: Joi.string().allow("").optional(),
+    to_date: Joi.string().allow("").optional(),
   });
-
-  public flightBookingQuerySchema = Joi.object({
-    search_id: Joi.string().required(),
-  });
-
+  // pnr create schema start //
   private passengerSchema = Joi.object({
     type: Joi.string()
       .valid(
@@ -65,26 +61,24 @@ class FlightBookingValidator {
       "any.required": "Provide valid email",
       "string.email": "Invalid email format",
     }),
-    address: Joi.string().allow("").optional().messages({
-      "string.empty": "Address must be a string",
-    }),
-    post_code: Joi.string().allow("").optional().messages({
-      "string.empty": "post_code must be a string",
-    }),
-    city: Joi.string().allow("").optional().messages({
-      "string.empty": "city must be a string",
-    }),
+    // address: Joi.string().allow('').optional().messages({
+    //   'string.empty': 'Address must be a string',
+    // }),
+    // post_code: Joi.string().allow('').optional().messages({
+    //   'string.empty': 'post_code must be a string',
+    // }),
+    city_id: Joi.number().optional(),
     country: Joi.number().optional(),
-    issuingCountryCode: Joi.string().allow("").optional(),
-    residenceCountryCode: Joi.string().allow("").optional(),
-    expiryDate: Joi.string().optional(),
-    documentNumber: Joi.string().allow("").optional(),
+    // issuingCountryCode: Joi.string().allow('').optional(),
+    // residenceCountryCode: Joi.string().allow('').optional(),
+    // expiryDate: Joi.string().optional(),
+    // documentNumber: Joi.string().allow('').optional(),
     passport_number: Joi.string().optional(),
     passport_expire_date: Joi.string().optional(),
     save_information: Joi.boolean().optional(),
   });
-
   public pnrCreateSchema = Joi.object({
+    search_id: Joi.string().required(),
     flight_id: Joi.string().required().messages({
       "any.required": "Provide valid flight id",
     }),
@@ -103,7 +97,6 @@ class FlightBookingValidator {
       )
       .required(),
   });
-
   // TICKET ISSUE SCHEMA
   public ticketIssueSchema = Joi.object({
     booking_id: Joi.number().required().messages({
@@ -111,5 +104,4 @@ class FlightBookingValidator {
     }),
   });
 }
-
 export default FlightBookingValidator;

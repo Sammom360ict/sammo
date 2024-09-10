@@ -89,7 +89,7 @@ class AdminArticleService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const article_id = req.params.id;
             const files = req.files || [];
-            if (files === null || files === void 0 ? void 0 : files.length) {
+            if (files.length) {
                 req.body[files[0].fieldname] = files[0].filename;
             }
             const model = this.Model.articleModel();
@@ -149,22 +149,23 @@ class AdminArticleService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const files = req.files || [];
             const uploadedFiles = [];
-            console.log({ files });
             const payload = {};
             if (files === null || files === void 0 ? void 0 : files.length) {
                 for (const element of files) {
-                    payload["link"] = element.filename;
-                    uploadedFiles.push(element.filename);
+                    payload["link"] =
+                        "https://m360-trabill.s3.ap-south-1.amazonaws.com/travel-trip-bd-storage/" +
+                            element.filename;
+                    uploadedFiles.push("https://m360-trabill.s3.ap-south-1.amazonaws.com/travel-trip-bd-storage/" +
+                        element.filename);
                 }
-                // console.log(req.body, "body");
-                console.log({ payload });
                 yield this.Model.articleModel().insertArticleDoc(payload);
             }
+            console.log({ uploadedFiles });
             return {
-                success: true,
-                code: this.StatusCode.HTTP_SUCCESSFUL,
-                message: this.ResMsg.HTTP_SUCCESSFUL,
-                data: uploadedFiles,
+                // success: true,
+                // code: this.StatusCode.HTTP_SUCCESSFUL,
+                // message: this.ResMsg.HTTP_SUCCESSFUL,
+                link: uploadedFiles[0],
             };
         });
     }
@@ -177,13 +178,8 @@ class AdminArticleService extends abstract_service_1.default {
                 skip: parseInt(skip),
                 status: status,
             });
-            return {
-                success: true,
-                code: this.StatusCode.HTTP_OK,
-                message: this.ResMsg.HTTP_OK,
-                total,
-                data,
-            };
+            console.log({ data });
+            return data;
         });
     }
 }

@@ -1,5 +1,6 @@
 import AbstractRouter from "../../../abstract/abstract.router";
 import { AdminBtocController } from "../controllers/admin.btoc.controller";
+import { AdminBookingRequestRouter } from "./adminBookingRequest.router";
 
 export class AdminBtocRouter extends AbstractRouter {
   private controller = new AdminBtocController();
@@ -19,5 +20,8 @@ export class AdminBtocRouter extends AbstractRouter {
         this.uploader.cloudUploadRaw(this.fileFolders.USER_FILES),
         this.controller.editUserProfile
       );
+
+    // booking request root router
+    this.router.use("/booking-request", new AdminBookingRequestRouter().router);
   }
 }

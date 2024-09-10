@@ -98,7 +98,7 @@ export class BookingRequestModel extends Schema {
     if (total) {
       count = await this.db(`${this.BTOC_SCHEMA}.booking_request as fb`)
         .count("fb.id as total")
-        .leftJoin("btoc.users as us", "us.id", "fb.created_by")
+        .leftJoin("b2c.users as us", "us.id", "fb.created_by")
         .where((qb) => {
           if (params.user_name) {
             qb.andWhereILike("us.username", `%${params.user_name}%`);
@@ -128,7 +128,6 @@ export class BookingRequestModel extends Schema {
         "fb.total_passenger",
         "fb.ticket_issue_last_time",
         "fb.status",
-        "fb.note",
         "fb.ticket_price",
         "fb.base_fare",
         "fb.total_tax",
@@ -139,7 +138,7 @@ export class BookingRequestModel extends Schema {
         "fb.journey_type",
         "fb.created_at"
       )
-      .leftJoin("btoc.users as us", "us.id", "fb.created_by")
+      .leftJoin("b2c.users as us", "us.id", "fb.created_by")
       .where((qb) => {
         if (params.id) {
           qb.andWhere("fb.id", params.id);

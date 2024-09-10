@@ -9,16 +9,14 @@ class FlightBookingValidator {
     constructor() {
         // get all flight booking validator
         this.getAllFlightBookingSchema = joi_1.default.object({
-            status: joi_1.default.string().optional(),
-            pnr: joi_1.default.string().optional(),
-            limit: joi_1.default.string().optional(),
-            skip: joi_1.default.string().optional(),
-            from_date: joi_1.default.string().optional(),
-            to_date: joi_1.default.string().optional(),
+            status: joi_1.default.string().allow("").optional(),
+            pnr: joi_1.default.string().allow("").optional(),
+            limit: joi_1.default.string().allow("").optional(),
+            skip: joi_1.default.string().allow("").optional(),
+            from_date: joi_1.default.string().allow("").optional(),
+            to_date: joi_1.default.string().allow("").optional(),
         });
-        this.flightBookingQuerySchema = joi_1.default.object({
-            search_id: joi_1.default.string().required(),
-        });
+        // pnr create schema start //
         this.passengerSchema = joi_1.default.object({
             type: joi_1.default.string()
                 .valid("ADT", "INF", "C02", "C03", "C04", "C05", "C06", "C07", "C08", "C09", "C10", "C11")
@@ -56,25 +54,24 @@ class FlightBookingValidator {
                 "any.required": "Provide valid email",
                 "string.email": "Invalid email format",
             }),
-            address: joi_1.default.string().allow("").optional().messages({
-                "string.empty": "Address must be a string",
-            }),
-            post_code: joi_1.default.string().allow("").optional().messages({
-                "string.empty": "post_code must be a string",
-            }),
-            city: joi_1.default.string().allow("").optional().messages({
-                "string.empty": "city must be a string",
-            }),
+            // address: Joi.string().allow('').optional().messages({
+            //   'string.empty': 'Address must be a string',
+            // }),
+            // post_code: Joi.string().allow('').optional().messages({
+            //   'string.empty': 'post_code must be a string',
+            // }),
+            city_id: joi_1.default.number().optional(),
             country: joi_1.default.number().optional(),
-            issuingCountryCode: joi_1.default.string().allow("").optional(),
-            residenceCountryCode: joi_1.default.string().allow("").optional(),
-            expiryDate: joi_1.default.string().optional(),
-            documentNumber: joi_1.default.string().allow("").optional(),
+            // issuingCountryCode: Joi.string().allow('').optional(),
+            // residenceCountryCode: Joi.string().allow('').optional(),
+            // expiryDate: Joi.string().optional(),
+            // documentNumber: Joi.string().allow('').optional(),
             passport_number: joi_1.default.string().optional(),
             passport_expire_date: joi_1.default.string().optional(),
             save_information: joi_1.default.boolean().optional(),
         });
         this.pnrCreateSchema = joi_1.default.object({
+            search_id: joi_1.default.string().required(),
             flight_id: joi_1.default.string().required().messages({
                 "any.required": "Provide valid flight id",
             }),

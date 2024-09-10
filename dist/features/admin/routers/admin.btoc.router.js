@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminBtocRouter = void 0;
 const abstract_router_1 = __importDefault(require("../../../abstract/abstract.router"));
 const admin_btoc_controller_1 = require("../controllers/admin.btoc.controller");
+const adminBookingRequest_router_1 = require("./adminBookingRequest.router");
 class AdminBtocRouter extends abstract_router_1.default {
     constructor() {
         super();
@@ -20,6 +21,8 @@ class AdminBtocRouter extends abstract_router_1.default {
             .route("/users/:id")
             .get(this.controller.getSingleUser)
             .patch(this.uploader.cloudUploadRaw(this.fileFolders.USER_FILES), this.controller.editUserProfile);
+        // booking request root router
+        this.router.use("/booking-request", new adminBookingRequest_router_1.AdminBookingRequestRouter().router);
     }
 }
 exports.AdminBtocRouter = AdminBtocRouter;

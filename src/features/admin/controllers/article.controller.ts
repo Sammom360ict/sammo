@@ -75,10 +75,8 @@ class AdminArticleController extends AbstractController {
   public insertArticleDoc = this.asyncWrapper.wrap(
     null,
     async (req: Request, res: Response) => {
-      const { code, ...data } = await this.AdminArticleService.insertArticleDoc(
-        req
-      );
-      res.status(code).json(data);
+      const { ...data } = await this.AdminArticleService.insertArticleDoc(req);
+      res.status(200).json(data);
     }
   );
 
@@ -86,10 +84,8 @@ class AdminArticleController extends AbstractController {
   public getAllArticleDoc = this.asyncWrapper.wrap(
     null,
     async (req: Request, res: Response) => {
-      const { code, ...data } = await this.AdminArticleService.getAllArticleDoc(
-        req
-      );
-      res.status(code).json(data);
+      const data = await this.AdminArticleService.getAllArticleDoc(req);
+      res.status(200).json(data);
     }
   );
 }

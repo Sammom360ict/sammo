@@ -23,29 +23,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AdminBookingRequestController = void 0;
 const abstract_controller_1 = __importDefault(require("../../../abstract/abstract.controller"));
-const bookingFlight_service_1 = __importDefault(require("../services/bookingFlight.service"));
-const bookingFlight_validator_1 = __importDefault(require("../utils/validators/bookingFlight.validator"));
-class BookingFlightController extends abstract_controller_1.default {
+const bookingRequest_validator_1 = __importDefault(require("../utils/validators/bookingRequest.validator"));
+const adminBookingRequest_service_1 = require("../services/adminBookingRequest.service");
+class AdminBookingRequestController extends abstract_controller_1.default {
     constructor() {
         super();
-        this.service = new bookingFlight_service_1.default();
-        this.validator = new bookingFlight_validator_1.default();
-        // Search flight
-        this.flightSearch = this.asyncWrapper.wrap({ bodySchema: this.validator.flightSearchSchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _a = yield this.service.flightSearch(req), { code } = _a, rest = __rest(_a, ["code"]);
+        this.services = new adminBookingRequest_service_1.AdminBookingRequestService();
+        this.validators = new bookingRequest_validator_1.default();
+        // get
+        this.get = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _a = yield this.services.get(req), { code } = _a, rest = __rest(_a, ["code"]);
             res.status(code).json(rest);
         }));
-        // Filter flight
-        this.flightFilter = this.asyncWrapper.wrap({ querySchema: this.validator.flightFilterSchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _b = yield this.service.flightFilter(req), { code } = _b, rest = __rest(_b, ["code"]);
+        // get single
+        this.getSingle = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _b = yield this.services.getSingle(req), { code } = _b, rest = __rest(_b, ["code"]);
             res.status(code).json(rest);
         }));
-        // revalidate flight
-        this.revalidate = this.asyncWrapper.wrap({ bodySchema: this.validator.flightRevalidateSchemaV2 }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _c = yield this.service.flightRevalidateV2(req), { code } = _c, rest = __rest(_c, ["code"]);
+        // update
+        this.update = this.asyncWrapper.wrap({
+            paramSchema: this.commonValidator.singleParamValidator,
+            bodySchema: this.validators.updateBookingRequestApplication,
+        }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _c = yield this.services.update(req), { code } = _c, rest = __rest(_c, ["code"]);
             res.status(code).json(rest);
         }));
     }
 }
-exports.default = BookingFlightController;
+exports.AdminBookingRequestController = AdminBookingRequestController;

@@ -80,7 +80,7 @@ class BookingRequestModel extends schema_1.default {
             if (total) {
                 count = yield this.db(`${this.BTOC_SCHEMA}.booking_request as fb`)
                     .count("fb.id as total")
-                    .leftJoin("btoc.users as us", "us.id", "fb.created_by")
+                    .leftJoin("b2c.users as us", "us.id", "fb.created_by")
                     .where((qb) => {
                     if (params.user_name) {
                         qb.andWhereILike("us.username", `%${params.user_name}%`);
@@ -106,8 +106,8 @@ class BookingRequestModel extends schema_1.default {
     getSingle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.db(`${this.BTOC_SCHEMA}.booking_request as fb`)
-                .select("fb.id as booking_id", "us.username as created_by", "fb.total_passenger", "fb.ticket_issue_last_time", "fb.status", "fb.note", "fb.ticket_price", "fb.base_fare", "fb.total_tax", "fb.commission", "fb.payable_amount", "fb.ait", "fb.discount", "fb.journey_type", "fb.created_at")
-                .leftJoin("btoc.users as us", "us.id", "fb.created_by")
+                .select("fb.id as booking_id", "us.username as created_by", "fb.total_passenger", "fb.ticket_issue_last_time", "fb.status", "fb.ticket_price", "fb.base_fare", "fb.total_tax", "fb.commission", "fb.payable_amount", "fb.ait", "fb.discount", "fb.journey_type", "fb.created_at")
+                .leftJoin("b2c.users as us", "us.id", "fb.created_by")
                 .where((qb) => {
                 if (params.id) {
                     qb.andWhere("fb.id", params.id);

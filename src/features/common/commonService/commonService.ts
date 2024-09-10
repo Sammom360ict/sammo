@@ -22,6 +22,7 @@ import {
 import qs from "qs";
 import { GET_TOKEN_ENDPOINT } from "../../../utils/miscellaneous/sabreApiEndpoints";
 import axios from "axios";
+import { IArticleFilterQuery } from "../../../utils/interfaces/article/articleInterface";
 
 class commonService extends AbstractServices {
   constructor() {
@@ -335,6 +336,25 @@ class commonService extends AbstractServices {
   }
 
   //get all visa list
+  public async getAllVisaCountryList(req: Request) {
+    let { limit, skip } = req.query as IVisaFilterQuery;
+    const model = this.Model.VisaModel();
+    const data = await model.getAllVisaCountryList({
+      status: true,
+      limit,
+      skip,
+    });
+
+    console.log({ data });
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      total: data.total,
+      data: data.data,
+    };
+  }
+
+  //get all visa list
   public async getAllVisaList(req: Request) {
     let { country_id, limit, skip } = req.query as IVisaFilterQuery;
     const model = this.Model.VisaModel();
@@ -368,6 +388,51 @@ class commonService extends AbstractServices {
         data: data[0],
       };
     }
+  }
+
+  //get article list
+  public async getArticleList(req: Request) {
+    const { title, status, limit, skip, deleted } =
+      req.query as IArticleFilterQuery;
+
+    const data = await this.Model.articleModel().getArticleList({
+      title,
+      status,
+      limit,
+      skip,
+      deleted,
+    });
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      message: this.ResMsg.HTTP_OK,
+      total: data.total,
+      data: data.data,
+    };
+  }
+
+  //get single article
+  public async getSingleArticle(req: Request) {
+    const article_id = req.params.id;
+
+    const data = await this.Model.articleModel().getSingleArticle({
+      id: Number(article_id),
+    });
+
+    if (!data.length) {
+      return {
+        success: true,
+        code: this.StatusCode.HTTP_NOT_FOUND,
+        message: this.ResMsg.HTTP_NOT_FOUND,
+      };
+    }
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      message: this.ResMsg.HTTP_OK,
+      data: data[0],
+    };
   }
 }
 export default commonService;

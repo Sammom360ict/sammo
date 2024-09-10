@@ -24,7 +24,7 @@ class AdminArticleRouter extends abstract_router_1.default {
             .post(this.uploader.cloudUploadRaw(this.fileFolders.ARTICLE_FILES), this.AdminArticleController.insertArticleDoc);
         this.router
             .route("/docs")
-            .post(this.AdminArticleController.getAllArticleDoc);
+            .get(this.AdminArticleController.getAllArticleDoc);
         // ------------- article doc end ----------------- //
         //get single article, update, delete
         this.router

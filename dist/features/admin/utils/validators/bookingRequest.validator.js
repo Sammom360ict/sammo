@@ -8,7 +8,7 @@ class AdminBookingRequestValidator {
     constructor() {
         //update validator
         this.updateBookingRequestApplication = joi_1.default.object({
-            status: joi_1.default.string().valid("Approved", "Cancelled").required(),
+            status: joi_1.default.string().valid("approved", "cancelled").required(),
             note: joi_1.default.string().optional(),
         });
         // manual issue ticket validator

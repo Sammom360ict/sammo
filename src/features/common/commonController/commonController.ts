@@ -69,6 +69,17 @@ class CommonController extends AbstractController {
     }
   );
 
+  //get all visa country list
+  public getAllVisaCountryList = this.asyncWrapper.wrap(
+    { querySchema: this.commonValidator.visaListSchema },
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.commonService.getAllVisaCountryList(
+        req
+      );
+      res.status(code).json(data);
+    }
+  );
+
   //visa list
   public getAllVisaList = this.asyncWrapper.wrap(
     { querySchema: this.commonValidator.visaListSchema },
@@ -92,6 +103,24 @@ class CommonController extends AbstractController {
     null,
     async (_req: Request, res: Response) => {
       const { code, ...data } = await this.migrate.migrateAirlineImage();
+      res.status(code).json(data);
+    }
+  );
+
+  //get article list
+  public getArticleList = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.commonService.getArticleList(req);
+      res.status(code).json(data);
+    }
+  );
+
+  //get single article
+  public getSingleArticle = this.asyncWrapper.wrap(
+    { paramSchema: this.commonValidator.singleParamValidator },
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.commonService.getSingleArticle(req);
       res.status(code).json(data);
     }
   );

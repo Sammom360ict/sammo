@@ -63,13 +63,13 @@ class AdminArticleController extends abstract_controller_1.default {
         }));
         //insert article
         this.insertArticleDoc = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _f = yield this.AdminArticleService.insertArticleDoc(req), { code } = _f, data = __rest(_f, ["code"]);
-            res.status(code).json(data);
+            const data = __rest(yield this.AdminArticleService.insertArticleDoc(req), []);
+            res.status(200).json(data);
         }));
         //get all article doc
         this.getAllArticleDoc = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _g = yield this.AdminArticleService.getAllArticleDoc(req), { code } = _g, data = __rest(_g, ["code"]);
-            res.status(code).json(data);
+            const data = yield this.AdminArticleService.getAllArticleDoc(req);
+            res.status(200).json(data);
         }));
     }
 }

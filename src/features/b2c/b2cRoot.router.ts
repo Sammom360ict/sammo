@@ -7,6 +7,7 @@ import flightBookingRouter from "./routers/flightBooking.router";
 import ticketIssueRouter from "./routers/ticketIssue.router";
 import { BookingPaymentRouter } from "./routers/bookingPayment.router";
 import { BookingVisaRouter } from "./routers/bookingVisa.router";
+import BookingRequestRouter from "./routers/bookingRequest.router";
 
 class B2CRootRouter {
   public Router = Router();
@@ -57,6 +58,13 @@ class B2CRootRouter {
       "/payment",
       this.authChecker.userAuthChecker,
       this.PaymentRouter.router
+    );
+
+    //flight booking request router
+    this.Router.use(
+      "/flight-booking-request",
+      this.authChecker.userAuthChecker,
+      new BookingRequestRouter().router
     );
 
     //flight booking router
