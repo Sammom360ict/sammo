@@ -18,6 +18,8 @@ import B2BFlightBookingModel from "./agencyModel/b2bFlightBookingModel";
 import B2BFlightTicketModel from "./agencyModel/b2bFlightTicketModel";
 import { BtoBBookingServiceModel } from "./bookingServiceModel/BtoBBookingServiceModel";
 import { AuditTrailModel } from "./auditTrailModel/auditTrailModel";
+import PromotionModel from "./promotionModel/promotionModel";
+import BtocFlightBookingModel from "./flightModel/btocFlightBookingModel";
 
 class Models {
   //booking request models
@@ -48,6 +50,11 @@ class Models {
   public articleModel(trx?: Knex.Transaction) {
     return new ArticleModel(trx || db);
   }
+
+  //promotion model
+  public promotionModel(trx?: Knex.Transaction) {
+    return new PromotionModel(trx || db);
+  }
   //airline commission model
   public AirlineCommissionModel(trx?: Knex.Transaction) {
     return new AirlineCommissionModel(trx || db);
@@ -66,8 +73,8 @@ class Models {
     return new PaymentModel(trx || db);
   }
   //flight booking model
-  public flightBookingModel(trx?: Knex.Transaction) {
-    return new FlightBookingModel(trx || db);
+  public btocFlightBookingModel(trx?: Knex.Transaction) {
+    return new BtocFlightBookingModel(trx || db);
   }
   //flight ticket issue model
   public flightTicketIssueModel(trx?: Knex.Transaction) {

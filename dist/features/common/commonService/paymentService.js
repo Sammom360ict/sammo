@@ -65,7 +65,7 @@ class PaymentService extends abstract_service_1.default {
             }
             const [paymentTryId, bookingId, user_id] = tran_id;
             const paymentModel = this.Model.paymentModel();
-            const bookingModel = this.Model.flightBookingModel();
+            const bookingModel = this.Model.btocFlightBookingModel();
             const paymentTry = yield paymentModel.getSinglePaymentTry(Number(paymentTryId), Number(user_id));
             if (!paymentTry.length) {
                 return {

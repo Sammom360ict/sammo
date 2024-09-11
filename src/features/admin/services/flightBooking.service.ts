@@ -28,7 +28,7 @@ class adminFlightBookingService extends AbstractServices {
   public async getAllFlightBooking(req: Request) {
     const { status, limit, skip, from_date, to_date, filter } = req.query;
 
-    const flightBookingModel = this.Model.flightBookingModel();
+    const flightBookingModel = this.Model.btocFlightBookingModel();
 
     const { data, total } = await flightBookingModel.getAllFlightBooking({
       limit: limit as string,
@@ -51,7 +51,7 @@ class adminFlightBookingService extends AbstractServices {
   public async getSingleFlightBooking(req: Request) {
     const { id } = req.params;
 
-    const model = this.Model.flightBookingModel();
+    const model = this.Model.btocFlightBookingModel();
 
     const checkBooking = await model.getSingleFlightBooking({
       id: Number(id),
@@ -113,7 +113,7 @@ class adminFlightBookingService extends AbstractServices {
 
   // cancel flight booking
   public async cancelFlightBooking(req: Request) {
-    const flightBookingModel = this.Model.flightBookingModel();
+    const flightBookingModel = this.Model.btocFlightBookingModel();
     const { id: booking_id } = req.params;
     let { id } = req.admin;
 
@@ -172,7 +172,7 @@ class adminFlightBookingService extends AbstractServices {
 
   //ticket issue
   public async ticketIssue(req: Request) {
-    const flightBookingModel = this.Model.flightBookingModel();
+    const flightBookingModel = this.Model.btocFlightBookingModel();
     const ticketModel = this.Model.b2bTicketIssueModel();
     const { id: booking_id } = req.params;
     let { id } = req.admin;

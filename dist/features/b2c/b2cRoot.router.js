@@ -19,7 +19,6 @@ class B2CRootRouter {
         this.TravelerRouter = new bookingTraveler_router_1.default();
         this.ProfileRouter = new bookingProfile_router_1.default();
         this.PaymentRouter = new bookingPayment_router_1.BookingPaymentRouter();
-        this.FlightBookingRouter = new flightBooking_router_1.default();
         this.TicketRouter = new ticketIssue_router_1.default();
         this.authChecker = new authChecker_1.default();
         this.callRouter();
@@ -38,7 +37,7 @@ class B2CRootRouter {
         //flight booking request router
         this.Router.use("/flight-booking-request", this.authChecker.userAuthChecker, new bookingRequest_router_1.default().router);
         //flight booking router
-        this.Router.use("/flight-booking", this.authChecker.userAuthChecker, this.FlightBookingRouter.router);
+        this.Router.use("/flight-booking", this.authChecker.userAuthChecker, new flightBooking_router_1.default().router);
         //ticket router
         this.Router.use("/ticket-issue", this.authChecker.userAuthChecker, this.TicketRouter.router);
     }

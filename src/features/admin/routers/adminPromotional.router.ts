@@ -10,11 +10,31 @@ export class AdminPromotionalRouter extends AbstractRouter {
 
   // call router
   private callRouter() {
-    // deposit to agency
-    this.router.route("/promo-codes").post(this.controller.insertPromoCode);
-
+    // insert promo & get
     this.router
-      .route("/deposit-request/:id")
-      .patch(this.controller.updateDepositRequest);
+      .route("/promo-code")
+      .post(this.controller.insertPromoCode)
+      .get(this.controller.getAllPromoCode);
+
+    // update promo code
+    this.router.route("/promo-code/:id").patch(this.controller.updatePromoCode);
+
+    // create offer
+    this.router
+      .route("/offer")
+      .post(
+        this.uploader.cloudUploadRaw(this.fileFolders.ARTICLE_FILES),
+        this.controller.inserOffer
+      )
+      .get(this.controller.getAllOffer);
+
+    // update offer
+    this.router
+      .route("/offer/:id")
+      .get(this.controller.getSingleOffer)
+      .patch(
+        this.uploader.cloudUploadRaw(this.fileFolders.ARTICLE_FILES),
+        this.controller.updateOffer
+      );
   }
 }

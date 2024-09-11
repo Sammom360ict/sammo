@@ -92,7 +92,7 @@ class flightBookingService extends abstract_service_1.default {
                 }));
                 yield Promise.all(traveler_promises);
                 // create pnr
-                const flightBookingModel = this.Model.flightBookingModel(trx);
+                const flightBookingModel = this.Model.btocFlightBookingModel(trx);
                 const ticket_price = data.fare.total_price;
                 const base_fare = data.fare.base_fare;
                 const total_tax = data.fare.total_tax;
@@ -195,7 +195,7 @@ class flightBookingService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const { id: user_id } = req.user;
             const { status, limit, skip, from_date, to_date } = req.query;
-            const flightBookingModel = this.Model.flightBookingModel();
+            const flightBookingModel = this.Model.btocFlightBookingModel();
             const { data, total } = yield flightBookingModel.getAllFlightBooking({
                 limit: limit,
                 skip: skip,
@@ -217,7 +217,7 @@ class flightBookingService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const { id: user_id } = req.user;
             const { id } = req.params;
-            const model = this.Model.flightBookingModel();
+            const model = this.Model.btocFlightBookingModel();
             const checkBooking = yield model.getSingleFlightBooking({
                 user_id,
                 id: Number(id),
@@ -257,7 +257,34 @@ class flightBookingService extends abstract_service_1.default {
     // cancel flight booking
     cancelFlightBooking(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const flightBookingModel = this.Model.flightBookingModel();
+            const flightBookingModel = this.Model.btocFlightBookingModel();
+            const { booking_id } = req.params;
+            let { id: user_id } = req.user;
+            const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
+                user_id,
+                id: Number(booking_id),
+                status: "pending",
+            });
+            if (!checkFlightBooking.length) {
+                return {
+                    success: false,
+                    message: this.ResMsg.HTTP_NOT_FOUND,
+                    code: this.StatusCode.HTTP_NOT_FOUND,
+                };
+            }
+            const { ticket_issue_last_time, pnr_code } = checkFlightBooking[0];
+            yield flightBookingModel.updateBooking({ status: "cancelled", cancelled_by: user_id }, parseInt(booking_id));
+            return {
+                success: true,
+                message: "Booking successfully canceled",
+                code: this.StatusCode.HTTP_OK,
+            };
+        });
+    }
+    // cancel flight booking
+    cancelFlightBookingSabre(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const flightBookingModel = this.Model.btocFlightBookingModel();
             const { booking_id } = req.params;
             let { id: user_id } = req.user;
             const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({

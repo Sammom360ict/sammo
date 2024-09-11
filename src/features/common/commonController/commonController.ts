@@ -118,9 +118,27 @@ class CommonController extends AbstractController {
 
   //get single article
   public getSingleArticle = this.asyncWrapper.wrap(
-    { paramSchema: this.commonValidator.singleParamValidator },
+    null,
     async (req: Request, res: Response) => {
       const { code, ...data } = await this.commonService.getSingleArticle(req);
+      res.status(code).json(data);
+    }
+  );
+
+  //get all offer list
+  public getAllOfferList = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.commonService.getAllOffer(req);
+      res.status(code).json(data);
+    }
+  );
+
+  //get single article
+  public getSingleOffer = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.commonService.getSingleOffer(req);
       res.status(code).json(data);
     }
   );

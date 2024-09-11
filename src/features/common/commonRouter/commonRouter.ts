@@ -48,7 +48,13 @@ class CommonRouter extends AbstractRouter {
     this.router.route("/article").get(this.Controller.getArticleList);
 
     // get single article
-    this.router.route("/article/:id").get(this.Controller.getSingleArticle);
+    this.router.route("/article/:slug").get(this.Controller.getSingleArticle);
+
+    // get all article
+    this.router.route("/offer").get(this.Controller.getAllOfferList);
+
+    // get single article
+    this.router.route("/offer/:slug").get(this.Controller.getSingleOffer);
   }
 }
 

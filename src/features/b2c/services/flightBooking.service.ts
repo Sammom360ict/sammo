@@ -116,7 +116,7 @@ class flightBookingService extends AbstractServices {
       await Promise.all(traveler_promises);
 
       // create pnr
-      const flightBookingModel = this.Model.flightBookingModel(trx);
+      const flightBookingModel = this.Model.btocFlightBookingModel(trx);
 
       const ticket_price = data.fare.total_price;
       const base_fare = data.fare.base_fare;
@@ -239,7 +239,7 @@ class flightBookingService extends AbstractServices {
 
     const { status, limit, skip, from_date, to_date } = req.query;
 
-    const flightBookingModel = this.Model.flightBookingModel();
+    const flightBookingModel = this.Model.btocFlightBookingModel();
 
     const { data, total } = await flightBookingModel.getAllFlightBooking({
       limit: limit as string,
@@ -264,7 +264,7 @@ class flightBookingService extends AbstractServices {
 
     const { id } = req.params;
 
-    const model = this.Model.flightBookingModel();
+    const model = this.Model.btocFlightBookingModel();
 
     const checkBooking = await model.getSingleFlightBooking({
       user_id,
@@ -319,7 +319,39 @@ class flightBookingService extends AbstractServices {
 
   // cancel flight booking
   public async cancelFlightBooking(req: Request) {
-    const flightBookingModel = this.Model.flightBookingModel();
+    const flightBookingModel = this.Model.btocFlightBookingModel();
+    const { booking_id } = req.params;
+    let { id: user_id } = req.user;
+
+    const checkFlightBooking = await flightBookingModel.getSingleFlightBooking({
+      user_id,
+      id: Number(booking_id),
+      status: "pending",
+    });
+
+    if (!checkFlightBooking.length) {
+      return {
+        success: false,
+        message: this.ResMsg.HTTP_NOT_FOUND,
+        code: this.StatusCode.HTTP_NOT_FOUND,
+      };
+    }
+
+    const { ticket_issue_last_time, pnr_code } = checkFlightBooking[0];
+
+    await flightBookingModel.updateBooking(
+      { status: "cancelled", cancelled_by: user_id },
+      parseInt(booking_id)
+    );
+    return {
+      success: true,
+      message: "Booking successfully canceled",
+      code: this.StatusCode.HTTP_OK,
+    };
+  }
+  // cancel flight booking
+  public async cancelFlightBookingSabre(req: Request) {
+    const flightBookingModel = this.Model.btocFlightBookingModel();
     const { booking_id } = req.params;
     let { id: user_id } = req.user;
 

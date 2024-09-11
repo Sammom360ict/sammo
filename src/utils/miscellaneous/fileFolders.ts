@@ -1,4 +1,5 @@
 class FileFolder {
+  static readonly PROMOTIONAL_FILES = "promotional-files";
   static readonly ARTICLE_FILES = "article-files";
   static readonly ADMIN_FILES = "admin-files";
   static readonly COMMON_FILES = "common-files";

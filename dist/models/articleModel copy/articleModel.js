@@ -75,7 +75,7 @@ class ArticleModel extends schema_1.default {
     }
     //get single article
     getSingleArticle(params_1) {
-        return __awaiter(this, arguments, void 0, function* (params, status = true, article_id, deleted, slug) {
+        return __awaiter(this, arguments, void 0, function* (params, status = true, article_id, deleted) {
             return yield this.db("article")
                 .withSchema(this.ADMIN_SCHEMA)
                 .select("id", "title", "slug", "description", "thumbnail", "deleted", "thumbnail_details", "status", "created_at")
@@ -91,9 +91,6 @@ class ArticleModel extends schema_1.default {
                 }
                 if (article_id) {
                     qb.andWhereNot("id", article_id);
-                }
-                if (slug) {
-                    qb.andWhere("slug", slug);
                 }
             });
         });

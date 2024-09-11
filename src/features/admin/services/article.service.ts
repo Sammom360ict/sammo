@@ -18,7 +18,6 @@ class AdminArticleService extends AbstractServices {
       false
     );
 
-    console.log({ check_slug });
     if (check_slug.length) {
       return {
         success: false,

@@ -14,7 +14,7 @@ export class BookingPaymentServices extends AbstractServices {
         message: this.ResMsg.HTTP_UNPROCESSABLE_ENTITY,
       };
     }
-    const booking_model = this.Model.flightBookingModel();
+    const booking_model = this.Model.btocFlightBookingModel();
     const booking_data = await booking_model.getSingleFlightBooking({
       id: Number(booking_id),
       status: "pending",

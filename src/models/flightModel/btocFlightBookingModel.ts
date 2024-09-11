@@ -6,7 +6,7 @@ import {
 } from "../../utils/interfaces/flight/flightBookingInterface";
 import Schema from "../../utils/miscellaneous/schema";
 
-class FlightBookingModel extends Schema {
+class BtocFlightBookingModel extends Schema {
   private db: TDB;
   constructor(db: TDB) {
     super();
@@ -194,4 +194,4 @@ class FlightBookingModel extends Schema {
   }
 }
 
-export default FlightBookingModel;
+export default BtocFlightBookingModel;

@@ -30,7 +30,7 @@ class adminFlightBookingService extends abstract_service_1.default {
     getAllFlightBooking(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const { status, limit, skip, from_date, to_date, filter } = req.query;
-            const flightBookingModel = this.Model.flightBookingModel();
+            const flightBookingModel = this.Model.btocFlightBookingModel();
             const { data, total } = yield flightBookingModel.getAllFlightBooking({
                 limit: limit,
                 skip: skip,
@@ -51,7 +51,7 @@ class adminFlightBookingService extends abstract_service_1.default {
     getSingleFlightBooking(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            const model = this.Model.flightBookingModel();
+            const model = this.Model.btocFlightBookingModel();
             const checkBooking = yield model.getSingleFlightBooking({
                 id: Number(id),
             });
@@ -98,7 +98,7 @@ class adminFlightBookingService extends abstract_service_1.default {
     // cancel flight booking
     cancelFlightBooking(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const flightBookingModel = this.Model.flightBookingModel();
+            const flightBookingModel = this.Model.btocFlightBookingModel();
             const { id: booking_id } = req.params;
             let { id } = req.admin;
             const checkFlightBooking = yield flightBookingModel.getSingleFlightBooking({
@@ -149,7 +149,7 @@ class adminFlightBookingService extends abstract_service_1.default {
     ticketIssue(req) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a, _b;
-            const flightBookingModel = this.Model.flightBookingModel();
+            const flightBookingModel = this.Model.btocFlightBookingModel();
             const ticketModel = this.Model.b2bTicketIssueModel();
             const { id: booking_id } = req.params;
             let { id } = req.admin;

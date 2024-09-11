@@ -25,7 +25,6 @@ class AdminArticleService extends abstract_service_1.default {
             const model = this.Model.articleModel();
             //check if this slug already exists
             const check_slug = yield model.getSingleArticle({ slug: req.body.slug }, false);
-            console.log({ check_slug });
             if (check_slug.length) {
                 return {
                     success: false,

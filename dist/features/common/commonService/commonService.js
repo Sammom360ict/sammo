@@ -377,9 +377,9 @@ class commonService extends abstract_service_1.default {
     //get single article
     getSingleArticle(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const article_id = req.params.id;
+            const article_slug = req.params.slug;
             const data = yield this.Model.articleModel().getSingleArticle({
-                id: Number(article_id),
+                slug: article_slug,
             });
             if (!data.length) {
                 return {
@@ -392,6 +392,44 @@ class commonService extends abstract_service_1.default {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 message: this.ResMsg.HTTP_OK,
+                data: data[0],
+            };
+        });
+    }
+    //get all offer
+    getAllOffer(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { limit, skip, status, name } = req.query;
+            const data = yield this.Model.promotionModel().getOfferList({
+                limit: Number(limit),
+                skip: Number(skip),
+                status: status,
+                name: name,
+            });
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                total: data.total,
+                data: data.data,
+            };
+        });
+    }
+    //get single offer
+    getSingleOffer(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = yield this.Model.promotionModel().getSingleOffer({
+                slug: req.params.slug,
+            });
+            if (!data.length) {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_NOT_FOUND,
+                    message: this.ResMsg.HTTP_NOT_FOUND,
+                };
+            }
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
                 data: data[0],
             };
         });

@@ -14,44 +14,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminPromotionalService = void 0;
 const abstract_service_1 = __importDefault(require("../../../abstract/abstract.service"));
-const lib_1 = __importDefault(require("../../../utils/lib/lib"));
 class AdminPromotionalService extends abstract_service_1.default {
     constructor() {
         super();
     }
-    //deposit to agency
-    depositToAgency(req) {
+    // insert promo code
+    insertPromoCode(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.admin;
-            const body = req.body;
-            body.created_by = id;
-            body.type = "credit";
-            const model = this.Model.agencyModel();
-            const res = yield model.insertAgencyDeposit(body);
-            if (res) {
-                return {
-                    success: true,
-                    code: this.StatusCode.HTTP_SUCCESSFUL,
-                    message: this.ResMsg.HTTP_SUCCESSFUL,
-                };
-            }
-            else {
+            const model = this.Model.promotionModel();
+            const { data: checkCode } = yield model.getPromoCodeList({
+                code: req.body.code,
+            });
+            if (checkCode.length) {
                 return {
                     success: false,
-                    code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
-                    message: this.ResMsg.HTTP_INTERNAL_SERVER_ERROR,
+                    code: this.StatusCode.HTTP_CONFLICT,
+                    message: this.ResMsg.HTTP_CONFLICT,
                 };
             }
+            yield model.insertPromoCode(Object.assign(Object.assign({}, req.body), { created_by: id }));
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_SUCCESSFUL,
+                message: this.ResMsg.HTTP_SUCCESSFUL,
+            };
         });
     }
-    //get list
-    getAllDepositRequestList(req) {
+    //get promo code list
+    getAllPromoCode(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { limit, skip, status } = req.query;
-            const data = yield this.Model.agencyModel().getAllAgencyDepositRequest({
+            const { limit, skip, status, code } = req.query;
+            const data = yield this.Model.promotionModel().getPromoCodeList({
                 limit: Number(limit),
                 skip: Number(skip),
                 status: status,
+                code: code,
             });
             return {
                 success: true,
@@ -61,14 +59,92 @@ class AdminPromotionalService extends abstract_service_1.default {
             };
         });
     }
-    //get list
-    updateDepositRequest(req) {
+    //update promo code
+    updatePromoCode(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const { status: bdy_status } = req.body;
-            const model = this.Model.agencyModel();
-            // get single deposit
-            const data = yield model.getSingleDeposit({
+            var _a;
+            const model = this.Model.promotionModel();
+            if ((_a = req.body) === null || _a === void 0 ? void 0 : _a.code) {
+                const { data: checkCode } = yield model.getPromoCodeList({
+                    code: req.body.code,
+                });
+                if (checkCode.length) {
+                    return {
+                        success: false,
+                        code: this.StatusCode.HTTP_CONFLICT,
+                        message: "Promo code already exist",
+                    };
+                }
+            }
+            yield model.updatePromoCode(Object.assign({}, req.body), parseInt(req.params.id));
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_SUCCESSFUL,
+                message: this.ResMsg.HTTP_SUCCESSFUL,
+            };
+        });
+    }
+    // insert offer
+    inserOffer(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.admin;
+            const model = this.Model.promotionModel();
+            const files = req.files || [];
+            if (files === null || files === void 0 ? void 0 : files.length) {
+                req.body[files[0].fieldname] = files[0].filename;
+            }
+            req.body.slug = req.body.title.toLowerCase().replace(/ /g, "-");
+            // check if this slug already exists
+            const { data: check_slug } = yield model.getOfferList({
+                slug: req.body.slug,
+            });
+            if (check_slug.length) {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_CONFLICT,
+                    message: this.ResMsg.SLUG_EXISTS,
+                };
+            }
+            if (req.body.promo_code_id) {
+                const checkCode = yield model.getSinglePromoCode(parseInt(req.body.promo_code_id));
+                if (!checkCode.length) {
+                    return {
+                        success: false,
+                        code: this.StatusCode.HTTP_NOT_FOUND,
+                        message: this.ResMsg.HTTP_NOT_FOUND,
+                    };
+                }
+            }
+            yield model.insertOffer(Object.assign(Object.assign({}, req.body), { created_by: id }));
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_SUCCESSFUL,
+                message: this.ResMsg.HTTP_SUCCESSFUL,
+            };
+        });
+    }
+    //get all offer
+    getAlOffer(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { limit, skip, status, name } = req.query;
+            const data = yield this.Model.promotionModel().getOfferList({
+                limit: Number(limit),
+                skip: Number(skip),
+                status: status,
+                name: name,
+            });
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                total: data.total,
+                data: data.data,
+            };
+        });
+    }
+    //get single offer
+    getSingleOffer(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = yield this.Model.promotionModel().getSingleOffer({
                 id: parseInt(req.params.id),
             });
             if (!data.length) {
@@ -78,234 +154,39 @@ class AdminPromotionalService extends abstract_service_1.default {
                     message: this.ResMsg.HTTP_NOT_FOUND,
                 };
             }
-            const { status, amount, agency_id } = data[0];
-            console.log({ data });
-            if (status == "pending" && bdy_status == "approved") {
-                console.log("first");
-                yield model.insertAgencyDeposit({
-                    type: "credit",
-                    amount,
-                    agency_id,
-                    created_by: req.admin.id,
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                data: data[0],
+            };
+        });
+    }
+    //update offer
+    updateOffer(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const model = this.Model.promotionModel();
+            const files = req.files || [];
+            if (files.length) {
+                req.body[files[0].fieldname] = files[0].filename;
+            }
+            if (req.body.title) {
+                req.body.slug = req.body.title.toLowerCase().replace(/ /g, "-");
+                const { data: check_slug } = yield model.getOfferList({
+                    slug: req.body.slug,
                 });
-                yield model.updateAgencyDepositRequest({
-                    status: bdy_status,
-                }, { id: parseInt(id), agency_id });
-            }
-            else {
-                yield model.updateAgencyDepositRequest({
-                    status: bdy_status,
-                }, { id: parseInt(id), agency_id });
-            }
-            return {
-                success: true,
-                code: this.StatusCode.HTTP_OK,
-                message: "Updated Succesfully",
-            };
-        });
-    }
-    //get transaction
-    getTransaction(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const model = this.Model.agencyModel();
-            const { start_date, end_date, limit, skip } = req.query;
-            const data = yield model.getAgencyTransactions({
-                agency_id: Number(id),
-                start_date: start_date,
-                end_date: end_date,
-                limit: limit,
-                skip: skip,
-            });
-            return {
-                success: true,
-                code: this.StatusCode.HTTP_OK,
-                message: this.ResMsg.HTTP_OK,
-                total: data.total,
-                data: data.data,
-            };
-        });
-    }
-    // Create agency
-    create(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.db.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
-                const { id: admin_id } = req.admin;
-                const { agency_name, agency_email, agency_phone, user_name, user_email, user_password, user_phone, } = req.body;
-                const files = req.files || [];
-                const agencyModel = this.Model.agencyModel(trx);
-                const agencyBody = {
-                    agency_name,
-                    email: agency_email,
-                    phone: agency_phone,
-                    created_by: admin_id,
-                };
-                const checkEmail = yield agencyModel.getSingleUser({ email: user_email });
-                if (checkEmail.length) {
+                if (check_slug.length) {
                     return {
                         success: false,
                         code: this.StatusCode.HTTP_CONFLICT,
-                        message: "Email already exist.",
+                        message: this.ResMsg.SLUG_EXISTS,
                     };
                 }
-                const hashed_password = yield lib_1.default.hashPass(user_password);
-                const userBody = {
-                    name: user_name,
-                    email: user_email,
-                    hashed_password,
-                    mobile_number: user_phone,
-                };
-                files.forEach((item) => {
-                    if (item.fieldname === "agency_logo") {
-                        agencyBody["agency_logo"] = item.filename;
-                    }
-                    else if (item.fieldname === "user_photo") {
-                        userBody["photo"] = item.filename;
-                    }
-                });
-                const agency = yield agencyModel.createAgency(agencyBody);
-                userBody["agency_id"] = agency[0].id;
-                // let btocToken = '';
-                // if (btoc_commission) {
-                //   btocToken = uuidv4();
-                //   await agencyModel.insertAgencyBtoCToken({
-                //     agency_id: agency[0],
-                //     token: btocToken,
-                //   });
-                // }
-                yield agencyModel.createAgencyUser(userBody);
-                return {
-                    success: true,
-                    code: this.StatusCode.HTTP_SUCCESSFUL,
-                    message: this.ResMsg.HTTP_SUCCESSFUL,
-                    data: {
-                        id: agency[0].id,
-                        agency_logo: agencyBody.agency_logo,
-                        user_photo: userBody.photo,
-                    },
-                };
-            }));
-        });
-    }
-    // get agency
-    get(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const query = req.query;
-            const agencyModel = this.Model.agencyModel();
-            const { data, total } = yield agencyModel.getAgency(query);
-            return {
-                success: true,
-                code: this.StatusCode.HTTP_OK,
-                message: this.ResMsg.HTTP_OK,
-                data,
-                total,
-            };
-        });
-    }
-    // get single agency
-    getSingle(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const agencyModel = this.Model.agencyModel();
-            const data = yield agencyModel.getSingleAgency(Number(id));
-            if (!data.length) {
-                return {
-                    success: false,
-                    code: this.StatusCode.HTTP_NOT_FOUND,
-                    message: this.ResMsg.HTTP_NOT_FOUND,
-                };
             }
-            const query = req.query;
-            const users = yield agencyModel.getUser(Object.assign({ agency_id: Number(id) }, query));
-            return {
-                success: true,
-                code: this.StatusCode.HTTP_OK,
-                message: this.ResMsg.HTTP_OK,
-                data: Object.assign(Object.assign({}, data[0]), { users }),
-            };
-        });
-    }
-    // update single agency
-    update(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const body = req.body;
-            const { id } = req.params;
-            const files = req.files || [];
-            if (files.length) {
-                body["agency_logo"] = files[0].filename;
-            }
-            const agencyModel = this.Model.agencyModel();
-            yield agencyModel.updateAgency(body, Number(id));
-            return {
-                success: true,
-                code: this.StatusCode.HTTP_OK,
-                message: this.ResMsg.HTTP_OK,
-                data: {
-                    agency_logo: body.agency_logo,
-                },
-            };
-        });
-    }
-    // create agency user
-    createUser(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { agency_id, name, email, password, mobile_number } = req.body;
-            const userModel = this.Model.agencyModel();
-            const checkEmail = yield userModel.getSingleUser({ email });
-            const files = req.files || [];
-            if (checkEmail.length) {
-                return {
-                    success: false,
-                    code: this.StatusCode.HTTP_CONFLICT,
-                    message: "Email already exist.",
-                };
-            }
-            const hashed_password = yield lib_1.default.hashPass(password);
-            const userBody = {
-                name,
-                email,
-                hashed_password,
-                mobile_number,
-                agency_id,
-            };
-            if (files.length) {
-                userBody["photo"] = files[0].filename;
-            }
-            const newUser = yield userModel.createAgencyUser(userBody);
+            yield model.updateOffer(Object.assign({}, req.body), parseInt(req.params.id));
             return {
                 success: true,
                 code: this.StatusCode.HTTP_SUCCESSFUL,
                 message: this.ResMsg.HTTP_SUCCESSFUL,
-                data: {
-                    id: newUser[0].id,
-                    photo: userBody.photo,
-                },
-            };
-        });
-    }
-    // update agency user
-    updateUser(req) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const userModel = this.Model.agencyModel();
-            const checkEmail = yield userModel.getSingleUser({ id: Number(id) });
-            const files = req.files || [];
-            if (!checkEmail.length) {
-                return {
-                    success: false,
-                    code: this.StatusCode.HTTP_NOT_FOUND,
-                    message: this.ResMsg.HTTP_NOT_FOUND,
-                };
-            }
-            const userBody = Object.assign({}, req.body);
-            if (files.length) {
-                userBody["photo"] = files[0].filename;
-            }
-            yield userModel.updateAgencyUser(userBody, Number(id));
-            return {
-                success: true,
-                code: this.StatusCode.HTTP_OK,
-                message: this.ResMsg.HTTP_OK,
             };
         });
     }

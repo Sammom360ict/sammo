@@ -50,7 +50,7 @@ class PaymentService extends AbstractServices {
     }
     const [paymentTryId, bookingId, user_id] = tran_id;
     const paymentModel = this.Model.paymentModel();
-    const bookingModel = this.Model.flightBookingModel();
+    const bookingModel = this.Model.btocFlightBookingModel();
     const paymentTry = await paymentModel.getSinglePaymentTry(
       Number(paymentTryId),
       Number(user_id)

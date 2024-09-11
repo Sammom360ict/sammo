@@ -14,9 +14,7 @@ class B2CRootRouter {
 
   private TravelerRouter = new BookingTravelerRouter();
   private ProfileRouter = new BookingProfileRouter();
-
   private PaymentRouter = new BookingPaymentRouter();
-  private FlightBookingRouter = new flightBookingRouter();
   private TicketRouter = new ticketIssueRouter();
   private authChecker = new AuthChecker();
 
@@ -71,7 +69,7 @@ class B2CRootRouter {
     this.Router.use(
       "/flight-booking",
       this.authChecker.userAuthChecker,
-      this.FlightBookingRouter.router
+      new flightBookingRouter().router
     );
 
     //ticket router

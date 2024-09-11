@@ -414,10 +414,10 @@ class commonService extends AbstractServices {
 
   //get single article
   public async getSingleArticle(req: Request) {
-    const article_id = req.params.id;
+    const article_slug = req.params.slug;
 
     const data = await this.Model.articleModel().getSingleArticle({
-      id: Number(article_id),
+      slug: article_slug,
     });
 
     if (!data.length) {
@@ -431,6 +431,45 @@ class commonService extends AbstractServices {
       success: true,
       code: this.StatusCode.HTTP_OK,
       message: this.ResMsg.HTTP_OK,
+      data: data[0],
+    };
+  }
+
+  //get all offer
+  public async getAllOffer(req: Request) {
+    const { limit, skip, status, name } = req.query;
+    const data = await this.Model.promotionModel().getOfferList({
+      limit: Number(limit),
+      skip: Number(skip),
+      status: status as string,
+      name: name as string,
+    });
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      total: data.total,
+      data: data.data,
+    };
+  }
+
+  //get single offer
+  public async getSingleOffer(req: Request) {
+    const data = await this.Model.promotionModel().getSingleOffer({
+      slug: req.params.slug,
+    });
+
+    if (!data.length) {
+      return {
+        success: false,
+        code: this.StatusCode.HTTP_NOT_FOUND,
+        message: this.ResMsg.HTTP_NOT_FOUND,
+      };
+    }
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
       data: data[0],
     };
   }

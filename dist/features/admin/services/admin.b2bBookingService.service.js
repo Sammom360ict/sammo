@@ -109,7 +109,7 @@ class AdminBtoBBookingServiceService extends abstract_service_1.default {
             const { id: user_id } = req.admin;
             const { id: support_id } = req.params;
             const model = this.Model.btobBookingSupportModel();
-            const booking_model = this.Model.flightBookingModel();
+            const booking_model = this.Model.btocFlightBookingModel();
             const support_data = yield model.getSingleSupport({
                 id: Number(support_id),
             });

@@ -25,98 +25,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminPromotionalController = void 0;
 const abstract_controller_1 = __importDefault(require("../../../abstract/abstract.controller"));
-const admin_agency_validator_1 = require("../utils/validators/admin.agency.validator");
-const adminAgency_service_1 = require("../services/adminAgency.service");
+const admin_promotion_validator_1 = require("../utils/validators/admin.promotion.validator");
+const adminPromotional_service_1 = require("../services/adminPromotional.service");
 class AdminPromotionalController extends abstract_controller_1.default {
     constructor() {
         super();
-        this.services = new adminAgency_service_1.AdminAgencyService();
-        this.validator = new admin_agency_validator_1.AdminAgencyValidator();
-        // insert promo controller
-        this.insertPromoCode = this.asyncWrapper.wrap({ bodySchema: this.validator.depositToAgencySchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _a = yield this.services.depositToAgency(req), { code } = _a, rest = __rest(_a, ["code"]);
-            if (rest.success) {
-                res.status(code).json(rest);
-            }
-            else {
-                this.error(rest.message, code);
-            }
-        }));
-        //get deposit request
-        this.getAllDepositRequestList = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _b = yield this.services.getAllDepositRequestList(req), { code } = _b, data = __rest(_b, ["code"]);
-            res.status(code).json(data);
-        }));
-        //update deposit request
-        this.updateDepositRequest = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _c = yield this.services.updateDepositRequest(req), { code } = _c, data = __rest(_c, ["code"]);
-            res.status(code).json(data);
-        }));
-        // get transaction controller
-        this.getTransaction = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _d = yield this.services.getTransaction(req), { code } = _d, rest = __rest(_d, ["code"]);
-            if (rest.success) {
-                res.status(code).json(rest);
-            }
-            else {
-                this.error(rest.message, code);
-            }
-        }));
-        // create controller
-        this.create = this.asyncWrapper.wrap({ bodySchema: this.validator.createAgencySchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _e = yield this.services.create(req), { code } = _e, rest = __rest(_e, ["code"]);
-            if (rest.success) {
-                res.status(code).json(rest);
-            }
-            else {
-                this.error(rest.message, code);
-            }
-        }));
-        // get controller
-        this.get = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _f = yield this.services.get(req), { code } = _f, rest = __rest(_f, ["code"]);
+        this.services = new adminPromotional_service_1.AdminPromotionalService();
+        this.validator = new admin_promotion_validator_1.AdminPrmotionValidator();
+        // insert promo code
+        this.insertPromoCode = this.asyncWrapper.wrap({ bodySchema: this.validator.createPromoCodeValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _a = yield this.services.insertPromoCode(req), { code } = _a, rest = __rest(_a, ["code"]);
             res.status(code).json(rest);
         }));
-        // get single controller
-        this.getSingle = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _g = yield this.services.getSingle(req), { code } = _g, rest = __rest(_g, ["code"]);
+        // get all promo code
+        this.getAllPromoCode = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _b = yield this.services.getAllPromoCode(req), { code } = _b, rest = __rest(_b, ["code"]);
             res.status(code).json(rest);
         }));
-        // update controller
-        this.update = this.asyncWrapper.wrap({
+        // update promo code
+        this.updatePromoCode = this.asyncWrapper.wrap({
+            bodySchema: this.validator.updatePromoCodeValidator,
             paramSchema: this.commonValidator.singleParamValidator,
-            bodySchema: this.validator.updateAgencySchema,
         }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _h = yield this.services.update(req), { code } = _h, rest = __rest(_h, ["code"]);
-            if (rest.success) {
-                res.status(code).json(rest);
-            }
-            else {
-                this.error(rest.message, code);
-            }
+            const _c = yield this.services.updatePromoCode(req), { code } = _c, rest = __rest(_c, ["code"]);
+            res.status(code).json(rest);
         }));
-        // create agency user controller
-        this.createUser = this.asyncWrapper.wrap({ bodySchema: this.validator.createAgencyUserSchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _j = yield this.services.createUser(req), { code } = _j, rest = __rest(_j, ["code"]);
-            if (rest.success) {
-                res.status(code).json(rest);
-            }
-            else {
-                this.error(rest.message, code);
-            }
+        // insert offer
+        this.inserOffer = this.asyncWrapper.wrap({ bodySchema: this.validator.createOfferValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _d = yield this.services.inserOffer(req), { code } = _d, rest = __rest(_d, ["code"]);
+            res.status(code).json(rest);
         }));
-        // update agency user controller
-        this.updateUser = this.asyncWrapper.wrap({
+        // get all offer
+        this.getAllOffer = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _e = yield this.services.getAlOffer(req), { code } = _e, rest = __rest(_e, ["code"]);
+            res.status(code).json(rest);
+        }));
+        // get single offer
+        this.getSingleOffer = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _f = yield this.services.getSingleOffer(req), { code } = _f, rest = __rest(_f, ["code"]);
+            res.status(code).json(rest);
+        }));
+        // update offer
+        this.updateOffer = this.asyncWrapper.wrap({
+            bodySchema: this.validator.updateOfferValidator,
             paramSchema: this.commonValidator.singleParamValidator,
-            bodySchema: this.validator.updateAgencyUserSchema,
         }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _k = yield this.services.updateUser(req), { code } = _k, rest = __rest(_k, ["code"]);
-            if (rest.success) {
-                res.status(code).json(rest);
-            }
-            else {
-                this.error(rest.message, code);
-            }
+            const _g = yield this.services.updateOffer(req), { code } = _g, rest = __rest(_g, ["code"]);
+            res.status(code).json(rest);
         }));
     }
 }

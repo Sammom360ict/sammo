@@ -1,140 +1,89 @@
 import { Request, Response } from "express";
 import AbstractController from "../../../abstract/abstract.controller";
-import { AdminAgencyValidator } from "../utils/validators/admin.agency.validator";
 import { AdminAgencyService } from "../services/adminAgency.service";
+import { AdminPrmotionValidator } from "../utils/validators/admin.promotion.validator";
+import { AdminPromotionalService } from "../services/adminPromotional.service";
 
 export class AdminPromotionalController extends AbstractController {
-  private services = new AdminAgencyService();
-  private validator = new AdminAgencyValidator();
+  private services = new AdminPromotionalService();
+  private validator = new AdminPrmotionValidator();
   constructor() {
     super();
   }
 
-  // insert promo controller
+  // insert promo code
   public insertPromoCode = this.asyncWrapper.wrap(
-    { bodySchema: this.validator.depositToAgencySchema },
+    { bodySchema: this.validator.createPromoCodeValidator },
     async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.services.depositToAgency(req);
+      const { code, ...rest } = await this.services.insertPromoCode(req);
 
-      if (rest.success) {
-        res.status(code).json(rest);
-      } else {
-        this.error(rest.message, code);
-      }
-    }
-  );
-
-  //get deposit request
-  public getAllDepositRequestList = this.asyncWrapper.wrap(
-    null,
-    async (req: Request, res: Response) => {
-      const { code, ...data } = await this.services.getAllDepositRequestList(
-        req
-      );
-      res.status(code).json(data);
-    }
-  );
-
-  //update deposit request
-  public updateDepositRequest = this.asyncWrapper.wrap(
-    { paramSchema: this.commonValidator.singleParamValidator },
-    async (req: Request, res: Response) => {
-      const { code, ...data } = await this.services.updateDepositRequest(req);
-      res.status(code).json(data);
-    }
-  );
-
-  // get transaction controller
-  public getTransaction = this.asyncWrapper.wrap(
-    { paramSchema: this.commonValidator.singleParamValidator },
-    async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.services.getTransaction(req);
-
-      if (rest.success) {
-        res.status(code).json(rest);
-      } else {
-        this.error(rest.message, code);
-      }
-    }
-  );
-
-  // create controller
-  public create = this.asyncWrapper.wrap(
-    { bodySchema: this.validator.createAgencySchema },
-    async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.services.create(req);
-
-      if (rest.success) {
-        res.status(code).json(rest);
-      } else {
-        this.error(rest.message, code);
-      }
-    }
-  );
-
-  // get controller
-  public get = this.asyncWrapper.wrap(
-    null,
-    async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.services.get(req);
       res.status(code).json(rest);
     }
   );
 
-  // get single controller
-  public getSingle = this.asyncWrapper.wrap(
-    { paramSchema: this.commonValidator.singleParamValidator },
+  // get all promo code
+  public getAllPromoCode = this.asyncWrapper.wrap(
+    null,
     async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.services.getSingle(req);
+      const { code, ...rest } = await this.services.getAllPromoCode(req);
+
       res.status(code).json(rest);
     }
   );
 
-  // update controller
-  public update = this.asyncWrapper.wrap(
+  // update promo code
+  public updatePromoCode = this.asyncWrapper.wrap(
     {
+      bodySchema: this.validator.updatePromoCodeValidator,
       paramSchema: this.commonValidator.singleParamValidator,
-      bodySchema: this.validator.updateAgencySchema,
     },
     async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.services.update(req);
+      const { code, ...rest } = await this.services.updatePromoCode(req);
 
-      if (rest.success) {
-        res.status(code).json(rest);
-      } else {
-        this.error(rest.message, code);
-      }
+      res.status(code).json(rest);
     }
   );
 
-  // create agency user controller
-  public createUser = this.asyncWrapper.wrap(
-    { bodySchema: this.validator.createAgencyUserSchema },
+  // insert offer
+  public inserOffer = this.asyncWrapper.wrap(
+    { bodySchema: this.validator.createOfferValidator },
     async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.services.createUser(req);
+      const { code, ...rest } = await this.services.inserOffer(req);
 
-      if (rest.success) {
-        res.status(code).json(rest);
-      } else {
-        this.error(rest.message, code);
-      }
+      res.status(code).json(rest);
     }
   );
 
-  // update agency user controller
-  public updateUser = this.asyncWrapper.wrap(
+  // get all offer
+  public getAllOffer = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...rest } = await this.services.getAlOffer(req);
+
+      res.status(code).json(rest);
+    }
+  );
+
+  // get single offer
+  public getSingleOffer = this.asyncWrapper.wrap(
+    { paramSchema: this.commonValidator.singleParamValidator },
+    async (req: Request, res: Response) => {
+      const { code, ...rest } = await this.services.getSingleOffer(req);
+
+      res.status(code).json(rest);
+    }
+  );
+
+  // update offer
+  public updateOffer = this.asyncWrapper.wrap(
     {
+      bodySchema: this.validator.updateOfferValidator,
       paramSchema: this.commonValidator.singleParamValidator,
-      bodySchema: this.validator.updateAgencyUserSchema,
     },
     async (req: Request, res: Response) => {
-      const { code, ...rest } = await this.services.updateUser(req);
+      const { code, ...rest } = await this.services.updateOffer(req);
 
-      if (rest.success) {
-        res.status(code).json(rest);
-      } else {
-        this.error(rest.message, code);
-      }
+      res.status(code).json(rest);
     }
   );
 }

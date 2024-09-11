@@ -1,9 +1,12 @@
-import { Request } from 'express';
-import AbstractServices from '../../../abstract/abstract.service';
-import SabreRequests from '../../../utils/lib/sabreRequest';
-import RequestFormatter from '../../../utils/lib/requestFomatter';
-import { GET_BOOKING_ENDPOINT, TICKET_ISSUE_ENDPOINT } from '../../../utils/miscellaneous/sabreApiEndpoints';
-import { CLIENT_URL } from '../../../utils/miscellaneous/constants';
+import { Request } from "express";
+import AbstractServices from "../../../abstract/abstract.service";
+import SabreRequests from "../../../utils/lib/sabreRequest";
+import RequestFormatter from "../../../utils/lib/requestFomatter";
+import {
+  GET_BOOKING_ENDPOINT,
+  TICKET_ISSUE_ENDPOINT,
+} from "../../../utils/miscellaneous/sabreApiEndpoints";
+import { CLIENT_URL } from "../../../utils/miscellaneous/constants";
 
 class TicketIssueService extends AbstractServices {
   private request = new SabreRequests();
@@ -14,24 +17,26 @@ class TicketIssueService extends AbstractServices {
   }
 
   // TICKET ISSUE
-  public async ticketIssueDataInsert(booking_id:number, pnr_code: string) {
+  public async ticketIssueDataInsert(booking_id: number, pnr_code: string) {
     return this.db.transaction(async (trx) => {
-
-      const booking_model = await this.Model.flightBookingModel(trx);
+      const booking_model = await this.Model.btocFlightBookingModel(trx);
       const ticketIssueModel = await this.Model.flightTicketIssueModel(trx);
 
       //get booking details from sabre
-      const sabre_response: any = await this.sabreRequest.postRequest(GET_BOOKING_ENDPOINT, {
-        confirmationId: pnr_code,
-      });
+      const sabre_response: any = await this.sabreRequest.postRequest(
+        GET_BOOKING_ENDPOINT,
+        {
+          confirmationId: pnr_code,
+        }
+      );
 
       if (!sabre_response || !sabre_response?.flightTickets) {
         return {
           success: false,
           code: this.StatusCode.HTTP_BAD_REQUEST,
           message: this.ResMsg.HTTP_BAD_REQUEST,
-          redirect_url: `${CLIENT_URL}/paymentSuccess/${booking_id}`
-        }
+          redirect_url: `${CLIENT_URL}/paymentSuccess/${booking_id}`,
+        };
       }
 
       //ticket issue insertion
@@ -51,37 +56,60 @@ class TicketIssueService extends AbstractServices {
           taxes: sabre_response.payments.flightTotals[0].taxes,
           total: sabre_response.payments.flightTotals[0].total,
           currency: sabre_response.payments.flightTotals[0].currencyCode,
-          traveler_type: sabre_response.travelers[i].type
-        })
+          traveler_type: sabre_response.travelers[i].type,
+        });
       }
 
       let bags;
-      if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.maximumPieces) {
-        bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.maximumPieces + "pcs";
-      }
-      else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInPounds) {
-        bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInPounds + "lb";
-      }
-      else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInKilograms) {
-        bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInKilograms + "k";
+      if (
+        sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+          .maximumPieces
+      ) {
+        bags =
+          sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+            .maximumPieces + "pcs";
+      } else if (
+        sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+          .totalWeightInPounds
+      ) {
+        bags =
+          sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+            .totalWeightInPounds + "lb";
+      } else if (
+        sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+          .totalWeightInKilograms
+      ) {
+        bags =
+          sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+            .totalWeightInKilograms + "k";
       }
 
-      const flight_segment_data = await booking_model.getFlightSegment(booking_id);
+      const flight_segment_data = await booking_model.getFlightSegment(
+        booking_id
+      );
 
       //flight segment insertion
       for (let i = 0; i < sabre_response.flights.length; i++) {
-        let departure_data = flight_segment_data[i] ? flight_segment_data[i].origin : null;
+        let departure_data = flight_segment_data[i]
+          ? flight_segment_data[i].origin
+          : null;
         if (departure_data) {
-          const part1 = departure_data.split('(')[1].split(')')[0];
-          const part2 = part1.split('-').slice(0, 2).join('-').trim();
-          const [city, country] = part2.split(' - ').map((part: string) => part.trim().toUpperCase());
+          const part1 = departure_data.split("(")[1].split(")")[0];
+          const part2 = part1.split("-").slice(0, 2).join("-").trim();
+          const [city, country] = part2
+            .split(" - ")
+            .map((part: string) => part.trim().toUpperCase());
           departure_data = `${city}, ${country}`;
         }
-        let arrival_data = flight_segment_data[i] ? flight_segment_data[i].destination : null;
+        let arrival_data = flight_segment_data[i]
+          ? flight_segment_data[i].destination
+          : null;
         if (arrival_data) {
-          const part1 = arrival_data.split('(')[1].split(')')[0];
-          const part2 = part1.split('-').slice(0, 2).join('-').trim();
-          const [city, country] = part2.split(' - ').map((part: string) => part.trim().toUpperCase());
+          const part1 = arrival_data.split("(")[1].split(")")[0];
+          const part2 = part1.split("-").slice(0, 2).join("-").trim();
+          const [city, country] = part2
+            .split(" - ")
+            .map((part: string) => part.trim().toUpperCase());
           arrival_data = `${city}, ${country}`;
         }
         await ticketIssueModel.createFlightTicketSegment({
@@ -105,33 +133,30 @@ class TicketIssueService extends AbstractServices {
           operated_by: sabre_response.flights[i].operatingAirlineName,
           from_airport_code: sabre_response.flights[i].fromAirportCode,
           to_airport_code: sabre_response.flights[i].toAirportCode,
-          arrival_date: sabre_response.flights[i].arrivalDate
-        })
+          arrival_date: sabre_response.flights[i].arrivalDate,
+        });
       }
-
 
       return {
         success: true,
         code: this.StatusCode.HTTP_SUCCESSFUL,
         message: `Ticket has been issued`,
-        redirect_url: `${CLIENT_URL}/paymentSuccess/${booking_id}`
-      }
-
+        redirect_url: `${CLIENT_URL}/paymentSuccess/${booking_id}`,
+      };
     });
   }
 
-
   //Ticket issue
   public async ticketIssue(req: Request) {
-    const flightBookingModel = this.Model.flightBookingModel();
+    const flightBookingModel = this.Model.btocFlightBookingModel();
     const ticketModel = this.Model.flightTicketIssueModel();
     const { id: booking_id } = req.params;
     let { id: user_id } = req.user;
 
     const checkFlightBooking = await flightBookingModel.getSingleFlightBooking({
       id: Number(booking_id),
-      status: 'pending',
-      user_id
+      status: "pending",
+      user_id,
     });
 
     if (!checkFlightBooking.length) {
@@ -142,7 +167,8 @@ class TicketIssueService extends AbstractServices {
       };
     }
 
-    const { ticket_issue_last_time, payable_amount, pnr_code } = checkFlightBooking[0];
+    const { ticket_issue_last_time, payable_amount, pnr_code } =
+      checkFlightBooking[0];
 
     // Convert the database timestamp string to a Date object in UTC
     const databaseUTCTimestamp = Date.parse(ticket_issue_last_time);
@@ -150,32 +176,33 @@ class TicketIssueService extends AbstractServices {
     // Get the current UTC timestamp
     const currentUTCTimestamp = Date.now();
     if (currentUTCTimestamp < databaseUTCTimestamp) {
-      
       const ticketReqBody = this.RequestFormatter.ticketIssueReqBody(pnr_code);
       const response = await this.request.postRequest(
         TICKET_ISSUE_ENDPOINT,
         ticketReqBody
       );
-      if (response?.AirTicketRS?.ApplicationResults?.status === 'Complete') {
+      if (response?.AirTicketRS?.ApplicationResults?.status === "Complete") {
         //update booking
         await flightBookingModel.updateBooking(
-          { status: 'issued' },
-          Number(booking_id),
+          { status: "issued" },
+          Number(booking_id)
         );
 
         //get booking details from sabre
-        const sabre_response: any = await this.request.postRequest(GET_BOOKING_ENDPOINT, {
-          confirmationId: pnr_code,
-        });
+        const sabre_response: any = await this.request.postRequest(
+          GET_BOOKING_ENDPOINT,
+          {
+            confirmationId: pnr_code,
+          }
+        );
 
         if (!sabre_response || !sabre_response?.flightTickets) {
           return {
             success: false,
             code: this.StatusCode.HTTP_BAD_REQUEST,
             message: this.ResMsg.HTTP_BAD_REQUEST,
-          }
+          };
         }
-
 
         //ticket issue insertion
         for (let i = 0; i < sabre_response.flightTickets.length; i++) {
@@ -194,37 +221,60 @@ class TicketIssueService extends AbstractServices {
             taxes: sabre_response.payments.flightTotals[0].taxes,
             total: sabre_response.payments.flightTotals[0].total,
             currency: sabre_response.payments.flightTotals[0].currencyCode,
-            traveler_type: sabre_response.travelers[i].type
-          })
+            traveler_type: sabre_response.travelers[i].type,
+          });
         }
 
         let bags;
-        if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.maximumPieces) {
-          bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.maximumPieces + "pcs";
-        }
-        else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInPounds) {
-          bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInPounds + "lb";
-        }
-        else if (sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInKilograms) {
-          bags = sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance.totalWeightInKilograms + "k";
+        if (
+          sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+            .maximumPieces
+        ) {
+          bags =
+            sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+              .maximumPieces + "pcs";
+        } else if (
+          sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+            .totalWeightInPounds
+        ) {
+          bags =
+            sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+              .totalWeightInPounds + "lb";
+        } else if (
+          sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+            .totalWeightInKilograms
+        ) {
+          bags =
+            sabre_response.fares[0].fareConstruction[0].checkedBaggageAllowance
+              .totalWeightInKilograms + "k";
         }
 
-        const flight_segment_data = await flightBookingModel.getFlightSegment(Number(booking_id));
+        const flight_segment_data = await flightBookingModel.getFlightSegment(
+          Number(booking_id)
+        );
 
         //flight segment insertion
         for (let i = 0; i < sabre_response.flights.length; i++) {
-          let departure_data = flight_segment_data[i] ? flight_segment_data[i].origin : null;
+          let departure_data = flight_segment_data[i]
+            ? flight_segment_data[i].origin
+            : null;
           if (departure_data) {
-            const part1 = departure_data.split('(')[1].split(')')[0];
-            const part2 = part1.split('-').slice(0, 2).join('-').trim();
-            const [city, country] = part2.split(' - ').map((part: string) => part.trim().toUpperCase());
+            const part1 = departure_data.split("(")[1].split(")")[0];
+            const part2 = part1.split("-").slice(0, 2).join("-").trim();
+            const [city, country] = part2
+              .split(" - ")
+              .map((part: string) => part.trim().toUpperCase());
             departure_data = `${city}, ${country}`;
           }
-          let arrival_data = flight_segment_data[i] ? flight_segment_data[i].destination : null;
+          let arrival_data = flight_segment_data[i]
+            ? flight_segment_data[i].destination
+            : null;
           if (arrival_data) {
-            const part1 = arrival_data.split('(')[1].split(')')[0];
-            const part2 = part1.split('-').slice(0, 2).join('-').trim();
-            const [city, country] = part2.split(' - ').map((part: string) => part.trim().toUpperCase());
+            const part1 = arrival_data.split("(")[1].split(")")[0];
+            const part2 = part1.split("-").slice(0, 2).join("-").trim();
+            const [city, country] = part2
+              .split(" - ")
+              .map((part: string) => part.trim().toUpperCase());
             arrival_data = `${city}, ${country}`;
           }
           await ticketModel.createFlightTicketSegment({
@@ -243,30 +293,29 @@ class TicketIssueService extends AbstractServices {
             cabin_type: sabre_response.flights[i].cabinTypeName,
             cabin_code: sabre_response.flights[i].cabinTypeCode,
             status: sabre_response.flights[i].flightStatusName,
-            fare_basis: sabre_response.fares[0].fareConstruction[0].fareBasisCode,
+            fare_basis:
+              sabre_response.fares[0].fareConstruction[0].fareBasisCode,
             bags: bags,
             operated_by: sabre_response.flights[i].operatingAirlineName,
-          })
+          });
         }
-
 
         return {
           success: true,
           code: this.StatusCode.HTTP_SUCCESSFUL,
           message: `Ticket has been issued`,
-          data: response
-        }
+          data: response,
+        };
       } else {
         return {
           success: false,
           code: this.StatusCode.HTTP_INTERNAL_SERVER_ERROR,
           message: `Ticket cannot be issued now. Please try again letter`,
-          data: response
-        }
+          data: response,
+        };
       }
     }
   }
-
 }
 
 export default TicketIssueService;

@@ -83,7 +83,7 @@ class AdminRootRouter {
     );
 
     //promotional router
-    this.Router.use("/promotional", new AdminPromotionalRouter().router);
+    this.Router.use("/promotion", new AdminPromotionalRouter().router);
 
     //agency router
     this.Router.use("/agency", new AdminAgencyRouter().router);

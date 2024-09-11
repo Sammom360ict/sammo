@@ -15,13 +15,14 @@ const bookingRequestModel_1 = require("./bookingModel/bookingRequestModel");
 const visaModel_1 = require("./visaModel/visaModel");
 const flightModel_1 = require("./flightModel/flightModel");
 const paymentModel_1 = __importDefault(require("./userModel/paymentModel"));
-const btocFlightBookingModel_1 = __importDefault(require("./flightModel/btocFlightBookingModel"));
 const flightTicketModel_1 = __importDefault(require("./flightModel/flightTicketModel"));
 const agencyModel_1 = require("./agencyModel/agencyModel");
 const b2bFlightBookingModel_1 = __importDefault(require("./agencyModel/b2bFlightBookingModel"));
 const b2bFlightTicketModel_1 = __importDefault(require("./agencyModel/b2bFlightTicketModel"));
 const BtoBBookingServiceModel_1 = require("./bookingServiceModel/BtoBBookingServiceModel");
 const auditTrailModel_1 = require("./auditTrailModel/auditTrailModel");
+const promotionModel_1 = __importDefault(require("./promotionModel/promotionModel"));
+const btocFlightBookingModel_1 = __importDefault(require("./flightModel/btocFlightBookingModel"));
 class Models {
     //booking request models
     bookingRequestModel(trx) {
@@ -51,6 +52,10 @@ class Models {
     articleModel(trx) {
         return new articleModel_1.default(trx || database_1.db);
     }
+    //promotion model
+    promotionModel(trx) {
+        return new promotionModel_1.default(trx || database_1.db);
+    }
     //airline commission model
     AirlineCommissionModel(trx) {
         return new airlinesCommissionModel_1.AirlineCommissionModel(trx || database_1.db);
@@ -68,7 +73,7 @@ class Models {
         return new paymentModel_1.default(trx || database_1.db);
     }
     //flight booking model
-    flightBookingModel(trx) {
+    btocFlightBookingModel(trx) {
         return new btocFlightBookingModel_1.default(trx || database_1.db);
     }
     //flight ticket issue model

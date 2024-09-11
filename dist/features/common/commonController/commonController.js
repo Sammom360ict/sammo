@@ -87,8 +87,18 @@ class CommonController extends abstract_controller_1.default {
             res.status(code).json(data);
         }));
         //get single article
-        this.getSingleArticle = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getSingleArticle = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _m = yield this.commonService.getSingleArticle(req), { code } = _m, data = __rest(_m, ["code"]);
+            res.status(code).json(data);
+        }));
+        //get all offer list
+        this.getAllOfferList = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _o = yield this.commonService.getAllOffer(req), { code } = _o, data = __rest(_o, ["code"]);
+            res.status(code).json(data);
+        }));
+        //get single article
+        this.getSingleOffer = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _p = yield this.commonService.getSingleOffer(req), { code } = _p, data = __rest(_p, ["code"]);
             res.status(code).json(data);
         }));
     }

@@ -22,7 +22,7 @@ class BookingRequestService extends abstract_service_1.default {
     get(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const query = req.query;
-            const bookingReqModel = this.Model.flightBookingModel();
+            const bookingReqModel = this.Model.btocFlightBookingModel();
             const { data, total } = yield bookingReqModel.getAllFlightBooking(Object.assign({}, query));
             return {
                 success: true,
@@ -37,8 +37,10 @@ class BookingRequestService extends abstract_service_1.default {
     getSingle(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            const bookingReqModel = this.Model.flightBookingModel();
-            const data = yield bookingReqModel.getSingleFlightBooking({ id: Number(id) });
+            const bookingReqModel = this.Model.btocFlightBookingModel();
+            const data = yield bookingReqModel.getSingleFlightBooking({
+                id: Number(id),
+            });
             if (!data.length) {
                 return {
                     success: false,
@@ -71,7 +73,7 @@ class BookingRequestService extends abstract_service_1.default {
                     message: this.ResMsg.HTTP_NOT_FOUND,
                 };
             }
-            if (data[0].status !== 'Pending') {
+            if (data[0].status !== "Pending") {
                 return {
                     success: false,
                     code: this.StatusCode.HTTP_BAD_REQUEST,

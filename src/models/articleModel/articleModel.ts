@@ -84,7 +84,8 @@ class ArticleModel extends Schema {
     params: ISingleArticleParams,
     status: boolean = true,
     article_id?: number,
-    deleted?: string
+    deleted?: string,
+    slug?: string
   ) {
     return await this.db("article")
       .withSchema(this.ADMIN_SCHEMA)
@@ -111,6 +112,10 @@ class ArticleModel extends Schema {
         }
         if (article_id) {
           qb.andWhereNot("id", article_id);
+        }
+
+        if (slug) {
+          qb.andWhere("slug", slug);
         }
       });
   }

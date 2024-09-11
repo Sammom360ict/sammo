@@ -32,7 +32,7 @@ class BookingPaymentServices extends abstract_service_1.default {
                     message: this.ResMsg.HTTP_UNPROCESSABLE_ENTITY,
                 };
             }
-            const booking_model = this.Model.flightBookingModel();
+            const booking_model = this.Model.btocFlightBookingModel();
             const booking_data = yield booking_model.getSingleFlightBooking({
                 id: Number(booking_id),
                 status: "pending",

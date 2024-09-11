@@ -59,7 +59,7 @@ class AdminRootRouter {
         //agency router
         this.Router.use("/booking-service", new admin_b2bBookingService_router_1.AdminBtoBBookingServiceRouter().router);
         //promotional router
-        this.Router.use("/promotional", new adminPromotional_router_1.AdminPromotionalRouter().router);
+        this.Router.use("/promotion", new adminPromotional_router_1.AdminPromotionalRouter().router);
         //agency router
         this.Router.use("/agency", new adminAgency_router_1.AdminAgencyRouter().router);
     }
