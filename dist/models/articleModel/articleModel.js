@@ -127,7 +127,7 @@ class ArticleModel extends schema_1.default {
                 .limit(limit || 100)
                 .offset(skip || 0);
             const total = yield this.db("article")
-                .withSchema(this.DBO_SCHEMA)
+                .withSchema(this.ADMIN_SCHEMA)
                 .count("id as total")
                 .where((qb) => {
                 if (status) {

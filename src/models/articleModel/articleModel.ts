@@ -153,7 +153,7 @@ class ArticleModel extends Schema {
       .offset(skip || 0);
 
     const total = await this.db("article")
-      .withSchema(this.DBO_SCHEMA)
+      .withSchema(this.ADMIN_SCHEMA)
       .count("id as total")
       .where((qb) => {
         if (status) {
