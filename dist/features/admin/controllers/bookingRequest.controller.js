@@ -45,7 +45,7 @@ class BookingRequestController extends abstract_controller_1.default {
         // update
         this.update = this.asyncWrapper.wrap({
             paramSchema: this.commonValidator.singleParamValidator,
-            bodySchema: this.validators.updateBookingRequestApplication
+            bodySchema: this.validators.updateBookingRequestApplication,
         }, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _c = yield this.services.update(req), { code } = _c, rest = __rest(_c, ["code"]);
             res.status(code).json(rest);

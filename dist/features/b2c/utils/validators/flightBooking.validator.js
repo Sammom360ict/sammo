@@ -94,6 +94,9 @@ class FlightBookingValidator {
                 "any.required": "Provide valid booking id",
             }),
         });
+        this.btocBookingRequestValidator = joi_1.default.object({
+            status: joi_1.default.string().valid("cancelled").required(),
+        });
     }
 }
 exports.default = FlightBookingValidator;

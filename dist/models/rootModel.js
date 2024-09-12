@@ -3,30 +3,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const commonModel_1 = __importDefault(require("./commonModel/commonModel"));
-const adminModel_1 = __importDefault(require("./adminModel/adminModel"));
 const database_1 = require("../app/database");
 const administrationModel_1 = __importDefault(require("./adminModel/administrationModel"));
-const userModel_1 = __importDefault(require("./userModel/userModel"));
-const travelerModel_1 = __importDefault(require("./userModel/travelerModel"));
-const articleModel_1 = __importDefault(require("./articleModel/articleModel"));
-const airlinesCommissionModel_1 = require("./commonModel/airlinesCommissionModel");
-const bookingRequestModel_1 = require("./bookingModel/bookingRequestModel");
-const visaModel_1 = require("./visaModel/visaModel");
-const flightModel_1 = require("./flightModel/flightModel");
-const paymentModel_1 = __importDefault(require("./userModel/paymentModel"));
-const flightTicketModel_1 = __importDefault(require("./flightModel/flightTicketModel"));
+const adminModel_1 = __importDefault(require("./adminModel/adminModel"));
 const agencyModel_1 = require("./agencyModel/agencyModel");
 const b2bFlightBookingModel_1 = __importDefault(require("./agencyModel/b2bFlightBookingModel"));
 const b2bFlightTicketModel_1 = __importDefault(require("./agencyModel/b2bFlightTicketModel"));
-const BtoBBookingServiceModel_1 = require("./bookingServiceModel/BtoBBookingServiceModel");
+const articleModel_1 = __importDefault(require("./articleModel/articleModel"));
 const auditTrailModel_1 = require("./auditTrailModel/auditTrailModel");
-const promotionModel_1 = __importDefault(require("./promotionModel/promotionModel"));
+const BtoBBookingServiceModel_1 = require("./bookingServiceModel/BtoBBookingServiceModel");
+const airlinesCommissionModel_1 = require("./commonModel/airlinesCommissionModel");
+const commonModel_1 = __importDefault(require("./commonModel/commonModel"));
 const btocFlightBookingModel_1 = __importDefault(require("./flightModel/btocFlightBookingModel"));
+const flightModel_1 = require("./flightModel/flightModel");
+const flightTicketModel_1 = __importDefault(require("./flightModel/flightTicketModel"));
+const promotionModel_1 = __importDefault(require("./promotionModel/promotionModel"));
+const paymentModel_1 = __importDefault(require("./userModel/paymentModel"));
+const travelerModel_1 = __importDefault(require("./userModel/travelerModel"));
+const userModel_1 = __importDefault(require("./userModel/userModel"));
+const visaModel_1 = require("./visaModel/visaModel");
+const bookingRequestModel_1 = require("./bookingModel/bookingRequestModel");
 class Models {
     //booking request models
-    bookingRequestModel(trx) {
-        return new bookingRequestModel_1.BookingRequestModel(trx || database_1.db);
+    btocBookingRequestModel(trx) {
+        return new bookingRequestModel_1.BtocBookingRequestModel(trx || database_1.db);
     }
     // common models
     commonModel(trx) {

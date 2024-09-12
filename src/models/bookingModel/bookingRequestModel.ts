@@ -7,7 +7,7 @@ import {
   IInsertBookingRequestTravelerPayload,
 } from "../../utils/interfaces/booking/bookingRequest.interface";
 import Schema from "../../utils/miscellaneous/schema";
-export class BookingRequestModel extends Schema {
+export class BtocBookingRequestModel extends Schema {
   private db: TDB;
   constructor(db: TDB) {
     super();
@@ -151,7 +151,7 @@ export class BookingRequestModel extends Schema {
   }
   // update
   public async update(
-    payload: { status: string; note: string; updated_by?: number },
+    payload: { status?: string; note?: string; updated_by?: number },
     id: number,
     user_id?: number
   ) {

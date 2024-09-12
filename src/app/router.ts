@@ -9,7 +9,6 @@ import B2CRootRouter from "../features/b2c/b2cRoot.router";
 
 class RootRouter {
   public v1Router = Router();
-  private commonRouter = new CommonRouter();
   private authRouter = new AuthRouter();
   private authChecker = new AuthChecker();
 
@@ -19,7 +18,7 @@ class RootRouter {
 
   private callV1Router() {
     //common
-    this.v1Router.use("/common", this.commonRouter.router);
+    this.v1Router.use("/common", new CommonRouter().router);
 
     //payment
     this.v1Router.use("/payment", new PaymentRouter().router);

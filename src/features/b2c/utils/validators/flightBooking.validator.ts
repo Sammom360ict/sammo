@@ -103,5 +103,9 @@ class FlightBookingValidator {
       "any.required": "Provide valid booking id",
     }),
   });
+
+  public btocBookingRequestValidator = Joi.object({
+    status: Joi.string().valid("cancelled").required(),
+  });
 }
 export default FlightBookingValidator;

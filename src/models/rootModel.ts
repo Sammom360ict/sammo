@@ -1,30 +1,30 @@
 import { Knex } from "knex";
-import CommonModel from "./commonModel/commonModel";
-import AdminModel from "./adminModel/adminModel";
 import { db } from "../app/database";
 import AdministrationModel from "./adminModel/administrationModel";
-import UserModel from "./userModel/userModel";
-import TravelerModel from "./userModel/travelerModel";
-import ArticleModel from "./articleModel/articleModel";
-import { AirlineCommissionModel } from "./commonModel/airlinesCommissionModel";
-import { BookingRequestModel } from "./bookingModel/bookingRequestModel";
-import { VisaModel } from "./visaModel/visaModel";
-import { FlightModel } from "./flightModel/flightModel";
-import PaymentModel from "./userModel/paymentModel";
-import FlightBookingModel from "./flightModel/btocFlightBookingModel";
-import FlightTicketModel from "./flightModel/flightTicketModel";
+import AdminModel from "./adminModel/adminModel";
 import { AgencyModel } from "./agencyModel/agencyModel";
 import B2BFlightBookingModel from "./agencyModel/b2bFlightBookingModel";
 import B2BFlightTicketModel from "./agencyModel/b2bFlightTicketModel";
-import { BtoBBookingServiceModel } from "./bookingServiceModel/BtoBBookingServiceModel";
+import ArticleModel from "./articleModel/articleModel";
 import { AuditTrailModel } from "./auditTrailModel/auditTrailModel";
-import PromotionModel from "./promotionModel/promotionModel";
+
+import { BtoBBookingServiceModel } from "./bookingServiceModel/BtoBBookingServiceModel";
+import { AirlineCommissionModel } from "./commonModel/airlinesCommissionModel";
+import CommonModel from "./commonModel/commonModel";
 import BtocFlightBookingModel from "./flightModel/btocFlightBookingModel";
+import { FlightModel } from "./flightModel/flightModel";
+import FlightTicketModel from "./flightModel/flightTicketModel";
+import PromotionModel from "./promotionModel/promotionModel";
+import PaymentModel from "./userModel/paymentModel";
+import TravelerModel from "./userModel/travelerModel";
+import UserModel from "./userModel/userModel";
+import { VisaModel } from "./visaModel/visaModel";
+import { BtocBookingRequestModel } from "./bookingModel/bookingRequestModel";
 
 class Models {
   //booking request models
-  public bookingRequestModel(trx?: Knex.Transaction) {
-    return new BookingRequestModel(trx || db);
+  public btocBookingRequestModel(trx?: Knex.Transaction) {
+    return new BtocBookingRequestModel(trx || db);
   }
   // common models
   public commonModel(trx?: Knex.Transaction) {

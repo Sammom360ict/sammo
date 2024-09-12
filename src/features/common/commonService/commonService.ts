@@ -441,7 +441,7 @@ class commonService extends AbstractServices {
     const data = await this.Model.promotionModel().getOfferList({
       limit: Number(limit),
       skip: Number(skip),
-      status: status as string,
+      status: "1",
       name: name as string,
     });
 

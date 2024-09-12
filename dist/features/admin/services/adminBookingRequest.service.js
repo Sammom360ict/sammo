@@ -22,7 +22,7 @@ class AdminBookingRequestService extends abstract_service_1.default {
     get(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const query = req.query;
-            const bookingReqModel = this.Model.bookingRequestModel();
+            const bookingReqModel = this.Model.btocBookingRequestModel();
             const { data, total } = yield bookingReqModel.get(Object.assign({}, query));
             return {
                 success: true,
@@ -37,7 +37,7 @@ class AdminBookingRequestService extends abstract_service_1.default {
     getSingle(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            const bookingReqModel = this.Model.bookingRequestModel();
+            const bookingReqModel = this.Model.btocBookingRequestModel();
             const data = yield bookingReqModel.getSingle({ id: Number(id) });
             if (!data.length) {
                 return {
@@ -62,7 +62,7 @@ class AdminBookingRequestService extends abstract_service_1.default {
             const { id } = req.params;
             const { id: admin_id } = req.admin;
             const { status, note } = req.body;
-            const bookingReqModel = this.Model.bookingRequestModel();
+            const bookingReqModel = this.Model.btocBookingRequestModel();
             const data = yield bookingReqModel.getSingle({ id: Number(id) });
             if (!data.length) {
                 return {
@@ -71,7 +71,7 @@ class AdminBookingRequestService extends abstract_service_1.default {
                     message: this.ResMsg.HTTP_NOT_FOUND,
                 };
             }
-            if (data[0].status !== "Pending") {
+            if (data[0].status !== "pending") {
                 return {
                     success: false,
                     code: this.StatusCode.HTTP_BAD_REQUEST,

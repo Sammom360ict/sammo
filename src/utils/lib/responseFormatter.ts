@@ -1,4 +1,6 @@
 import { Knex } from "knex";
+import { v4 as uuidv4 } from "uuid";
+import Models from "../../models/rootModel";
 import {
   IArrival,
   ICarrier,
@@ -12,17 +14,13 @@ import {
   INewLegDesc,
   INewPassenger,
   INewPassengerFacilities,
-  IResponse,
   IScheduleDesc,
-  IUpdatedSchedules,
 } from "../interfaces/flight/flightSearchInterface";
-import CustomError from "./customError";
-import Models from "../../models/rootModel";
-import Lib from "./lib";
-import { v4 as uuidv4 } from "uuid";
-import FlightUtils from "./flightUtils";
 import { IFlightSearchRes } from "../interfaces/flight/flightSearchResInterface";
 import { BD_AIRPORT } from "../miscellaneous/constants";
+import CustomError from "./customError";
+import FlightUtils from "./flightUtils";
+import Lib from "./lib";
 
 export default class ResponseFormatter {
   private Model: Models;

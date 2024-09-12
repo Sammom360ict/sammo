@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminPromotionalService = void 0;
 const abstract_service_1 = __importDefault(require("../../../abstract/abstract.service"));
+const uuid_1 = require("uuid");
 class AdminPromotionalService extends abstract_service_1.default {
     constructor() {
         super();
@@ -93,7 +94,13 @@ class AdminPromotionalService extends abstract_service_1.default {
             if (files === null || files === void 0 ? void 0 : files.length) {
                 req.body[files[0].fieldname] = files[0].filename;
             }
-            req.body.slug = req.body.title.toLowerCase().replace(/ /g, "-");
+            req.body.slug =
+                req.body.title
+                    .toLowerCase()
+                    .replace(/ /g, "-")
+                    .replace(/[^\w-]/g, "") +
+                    "-" +
+                    (0, uuid_1.v4)();
             // check if this slug already exists
             const { data: check_slug } = yield model.getOfferList({
                 slug: req.body.slug,
@@ -170,17 +177,13 @@ class AdminPromotionalService extends abstract_service_1.default {
                 req.body[files[0].fieldname] = files[0].filename;
             }
             if (req.body.title) {
-                req.body.slug = req.body.title.toLowerCase().replace(/ /g, "-");
-                const { data: check_slug } = yield model.getOfferList({
-                    slug: req.body.slug,
-                });
-                if (check_slug.length) {
-                    return {
-                        success: false,
-                        code: this.StatusCode.HTTP_CONFLICT,
-                        message: this.ResMsg.SLUG_EXISTS,
-                    };
-                }
+                req.body.slug =
+                    req.body.title
+                        .toLowerCase()
+                        .replace(/ /g, "-")
+                        .replace(/[^\w-]/g, "") +
+                        "-" +
+                        (0, uuid_1.v4)();
             }
             yield model.updateOffer(Object.assign({}, req.body), parseInt(req.params.id));
             return {

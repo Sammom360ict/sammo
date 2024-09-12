@@ -140,6 +140,7 @@ class CommonController extends AbstractController {
     async (req: Request, res: Response) => {
       const { code, ...data } = await this.commonService.getSingleOffer(req);
       res.status(code).json(data);
+      // res.send("working");
     }
   );
 }

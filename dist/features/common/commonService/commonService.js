@@ -403,7 +403,7 @@ class commonService extends abstract_service_1.default {
             const data = yield this.Model.promotionModel().getOfferList({
                 limit: Number(limit),
                 skip: Number(skip),
-                status: status,
+                status: "1",
                 name: name,
             });
             return {

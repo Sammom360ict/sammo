@@ -14,14 +14,13 @@ const b2cRoot_router_1 = __importDefault(require("../features/b2c/b2cRoot.router
 class RootRouter {
     constructor() {
         this.v1Router = (0, express_1.Router)();
-        this.commonRouter = new commonRouter_1.default();
         this.authRouter = new auth_router_1.default();
         this.authChecker = new authChecker_1.default();
         this.callV1Router();
     }
     callV1Router() {
         //common
-        this.v1Router.use("/common", this.commonRouter.router);
+        this.v1Router.use("/common", new commonRouter_1.default().router);
         //payment
         this.v1Router.use("/payment", new paymentRouter_1.default().router);
         //auth

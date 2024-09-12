@@ -64,7 +64,7 @@ class BookingRequestService extends abstract_service_1.default {
             const { id } = req.params;
             const { id: admin_id } = req.admin;
             const { status, note } = req.body;
-            const bookingReqModel = this.Model.bookingRequestModel();
+            const bookingReqModel = this.Model.btocBookingRequestModel();
             const data = yield bookingReqModel.getSingle({ id: Number(id) });
             if (!data.length) {
                 return {

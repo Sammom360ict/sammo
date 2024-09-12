@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const customError_1 = __importDefault(require("./customError"));
-const rootModel_1 = __importDefault(require("../../models/rootModel"));
-const lib_1 = __importDefault(require("./lib"));
 const uuid_1 = require("uuid");
-const flightUtils_1 = __importDefault(require("./flightUtils"));
+const rootModel_1 = __importDefault(require("../../models/rootModel"));
 const constants_1 = require("../miscellaneous/constants");
+const customError_1 = __importDefault(require("./customError"));
+const flightUtils_1 = __importDefault(require("./flightUtils"));
+const lib_1 = __importDefault(require("./lib"));
 class ResponseFormatter {
     constructor() {
         // flight search filter

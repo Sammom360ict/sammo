@@ -329,6 +329,8 @@ class flightBookingService extends AbstractServices {
       status: "pending",
     });
 
+    console.log({ checkFlightBooking });
+
     if (!checkFlightBooking.length) {
       return {
         success: false,

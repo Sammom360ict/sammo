@@ -14,7 +14,10 @@ class BookingRequestRouter extends AbstractRouter {
       .post(this.controller.flightBooking)
       .get(this.controller.getAllFlightBooking);
     // Get single flight booking
-    this.router.route("/:id").get(this.controller.getSingleFlightBooking);
+    this.router
+      .route("/:id")
+      .get(this.controller.getSingleFlightBooking)
+      .delete(this.controller.cancelledBookingRequest);
   }
 }
 export default BookingRequestRouter;

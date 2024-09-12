@@ -58,7 +58,7 @@ export class BookingRequestService extends AbstractServices {
     const { id } = req.params;
     const { id: admin_id } = req.admin;
     const { status, note } = req.body;
-    const bookingReqModel = this.Model.bookingRequestModel();
+    const bookingReqModel = this.Model.btocBookingRequestModel();
     const data = await bookingReqModel.getSingle({ id: Number(id) });
     if (!data.length) {
       return {

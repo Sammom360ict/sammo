@@ -12,9 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BookingRequestModel = void 0;
+exports.BtocBookingRequestModel = void 0;
 const schema_1 = __importDefault(require("../../utils/miscellaneous/schema"));
-class BookingRequestModel extends schema_1.default {
+class BtocBookingRequestModel extends schema_1.default {
     constructor(db) {
         super();
         this.db = db;
@@ -181,4 +181,4 @@ class BookingRequestModel extends schema_1.default {
         });
     }
 }
-exports.BookingRequestModel = BookingRequestModel;
+exports.BtocBookingRequestModel = BtocBookingRequestModel;

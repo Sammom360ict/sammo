@@ -69,7 +69,7 @@ class BookingRequestService extends abstract_service_1.default {
                 }));
                 yield Promise.all(traveler_promises);
                 // create pnr
-                const bookingRequestModel = this.Model.bookingRequestModel(trx);
+                const bookingRequestModel = this.Model.btocBookingRequestModel(trx);
                 const ticket_price = data.fare.total_price;
                 const base_fare = data.fare.base_fare;
                 const total_tax = data.fare.total_tax;
@@ -169,7 +169,7 @@ class BookingRequestService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const { id: user_id } = req.user;
             const { status, limit, skip, from_date, to_date } = req.query;
-            const flightBookingModel = this.Model.bookingRequestModel();
+            const flightBookingModel = this.Model.btocBookingRequestModel();
             const { data, total } = yield flightBookingModel.get({
                 limit: limit,
                 skip: skip,
@@ -191,7 +191,7 @@ class BookingRequestService extends abstract_service_1.default {
         return __awaiter(this, void 0, void 0, function* () {
             const { id: user_id } = req.user;
             const { id } = req.params;
-            const model = this.Model.bookingRequestModel();
+            const model = this.Model.btocBookingRequestModel();
             const checkBooking = yield model.getSingle({
                 user_id,
                 id: Number(id),
@@ -209,6 +209,34 @@ class BookingRequestService extends abstract_service_1.default {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 data: Object.assign(Object.assign({}, checkBooking[0]), { segments: getSegments, traveler: getTraveler }),
+            };
+        });
+    }
+    // cancelled booking request
+    cancelledBookingRequest(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const bookingReqModel = this.Model.btocBookingRequestModel();
+            const data = yield bookingReqModel.getSingle({ id: Number(id) });
+            if (!data.length) {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_NOT_FOUND,
+                    message: this.ResMsg.HTTP_NOT_FOUND,
+                };
+            }
+            if (data[0].status !== "pending") {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_BAD_REQUEST,
+                    message: "Already Cancelled",
+                };
+            }
+            yield bookingReqModel.update({ status: "cancelled" }, Number(id));
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                message: this.ResMsg.HTTP_OK,
             };
         });
     }

@@ -26,7 +26,6 @@ class AdminRootRouter {
         this.ArticleRouter = new article_router_1.default();
         this.AirlinesCommissionRouter = new airlineCommision_router_1.AirlineCommissionRouter();
         this.AirlineRouter = new airline_router_1.AirlineRouter();
-        this.BookingRequestRouter = new bookingRequest_router_1.BookingRequestRouter();
         this.VisaRouter = new visa_router_1.AdminVisaRouter();
         this.DashBoardRouter = new dashboard_router_1.default();
         this.callRouter();
@@ -45,7 +44,7 @@ class AdminRootRouter {
         //airport router
         this.Router.use("/airport", new airport_router_1.AirportRouter().router);
         //booking request router
-        // this.Router.use('/booking-request', this.BookingRequestRouter.router);
+        this.Router.use("/booking-request", new bookingRequest_router_1.BookingRequestRouter().router);
         //visa router
         this.Router.use("/visa", this.VisaRouter.router);
         //dashboard router

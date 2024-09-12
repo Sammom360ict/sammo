@@ -1,6 +1,6 @@
 import { Request } from "express";
 import AbstractServices from "../../../abstract/abstract.service";
-
+import { v4 as uuidv4 } from "uuid";
 export class AdminPromotionalService extends AbstractServices {
   constructor() {
     super();
@@ -88,7 +88,14 @@ export class AdminPromotionalService extends AbstractServices {
     if (files?.length) {
       req.body[files[0].fieldname] = files[0].filename;
     }
-    req.body.slug = req.body.title.toLowerCase().replace(/ /g, "-");
+
+    req.body.slug =
+      req.body.title
+        .toLowerCase()
+        .replace(/ /g, "-")
+        .replace(/[^\w-]/g, "") +
+      "-" +
+      uuidv4();
 
     // check if this slug already exists
     const { data: check_slug } = await model.getOfferList({
@@ -176,18 +183,13 @@ export class AdminPromotionalService extends AbstractServices {
     }
 
     if (req.body.title) {
-      req.body.slug = req.body.title.toLowerCase().replace(/ /g, "-");
-
-      const { data: check_slug } = await model.getOfferList({
-        slug: req.body.slug,
-      });
-      if (check_slug.length) {
-        return {
-          success: false,
-          code: this.StatusCode.HTTP_CONFLICT,
-          message: this.ResMsg.SLUG_EXISTS,
-        };
-      }
+      req.body.slug =
+        req.body.title
+          .toLowerCase()
+          .replace(/ /g, "-")
+          .replace(/[^\w-]/g, "") +
+        "-" +
+        uuidv4();
     }
 
     await model.updateOffer({ ...req.body }, parseInt(req.params.id));

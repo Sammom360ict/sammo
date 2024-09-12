@@ -100,6 +100,7 @@ class CommonController extends abstract_controller_1.default {
         this.getSingleOffer = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
             const _p = yield this.commonService.getSingleOffer(req), { code } = _p, data = __rest(_p, ["code"]);
             res.status(code).json(data);
+            // res.send("working");
         }));
     }
 }

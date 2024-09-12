@@ -17,12 +17,9 @@ import { AdminPromotionalRouter } from "./routers/adminPromotional.router";
 class AdminRootRouter {
   public Router = Router();
   private ProfileRouter = new AdminProfileRouter();
-
   private ArticleRouter = new AdminArticleRouter();
   private AirlinesCommissionRouter = new AirlineCommissionRouter();
   private AirlineRouter = new AirlineRouter();
-
-  private BookingRequestRouter = new BookingRequestRouter();
   private VisaRouter = new AdminVisaRouter();
   private DashBoardRouter = new AdminDashboardRouter();
 
@@ -53,7 +50,7 @@ class AdminRootRouter {
     this.Router.use("/airport", new AirportRouter().router);
 
     //booking request router
-    // this.Router.use('/booking-request', this.BookingRequestRouter.router);
+    this.Router.use("/booking-request", new BookingRequestRouter().router);
 
     //visa router
     this.Router.use("/visa", this.VisaRouter.router);

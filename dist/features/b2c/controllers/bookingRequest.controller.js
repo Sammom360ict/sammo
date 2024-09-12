@@ -46,6 +46,13 @@ class BookingRequestController extends abstract_controller_1.default {
             const _c = yield this.service.getSingleFlightBooking(req), { code } = _c, rest = __rest(_c, ["code"]);
             res.status(code).json(rest);
         }));
+        // cancelled booking request
+        this.cancelledBookingRequest = this.asyncWrapper.wrap({
+            paramSchema: this.commonValidator.singleParamValidator,
+        }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _d = yield this.service.cancelledBookingRequest(req), { code } = _d, rest = __rest(_d, ["code"]);
+            res.status(code).json(rest);
+        }));
     }
 }
 exports.default = BookingRequestController;

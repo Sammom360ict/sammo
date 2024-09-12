@@ -265,6 +265,7 @@ class flightBookingService extends abstract_service_1.default {
                 id: Number(booking_id),
                 status: "pending",
             });
+            console.log({ checkFlightBooking });
             if (!checkFlightBooking.length) {
                 return {
                     success: false,

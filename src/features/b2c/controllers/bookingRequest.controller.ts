@@ -33,5 +33,16 @@ class BookingRequestController extends AbstractController {
       res.status(code).json(rest);
     }
   );
+
+  // cancelled booking request
+  public cancelledBookingRequest = this.asyncWrapper.wrap(
+    {
+      paramSchema: this.commonValidator.singleParamValidator,
+    },
+    async (req: Request, res: Response) => {
+      const { code, ...rest } = await this.service.cancelledBookingRequest(req);
+      res.status(code).json(rest);
+    }
+  );
 }
 export default BookingRequestController;

@@ -7,7 +7,7 @@ export class AdminBookingRequestService extends AbstractServices {
   // get booking request
   public async get(req: Request) {
     const query = req.query;
-    const bookingReqModel = this.Model.bookingRequestModel();
+    const bookingReqModel = this.Model.btocBookingRequestModel();
     const { data, total } = await bookingReqModel.get({ ...query });
     return {
       success: true,
@@ -20,7 +20,7 @@ export class AdminBookingRequestService extends AbstractServices {
   // get single booking request
   public async getSingle(req: Request) {
     const { id } = req.params;
-    const bookingReqModel = this.Model.bookingRequestModel();
+    const bookingReqModel = this.Model.btocBookingRequestModel();
     const data = await bookingReqModel.getSingle({ id: Number(id) });
     if (!data.length) {
       return {
@@ -43,8 +43,9 @@ export class AdminBookingRequestService extends AbstractServices {
     const { id } = req.params;
     const { id: admin_id } = req.admin;
     const { status, note } = req.body;
-    const bookingReqModel = this.Model.bookingRequestModel();
+    const bookingReqModel = this.Model.btocBookingRequestModel();
     const data = await bookingReqModel.getSingle({ id: Number(id) });
+
     if (!data.length) {
       return {
         success: false,
@@ -52,7 +53,8 @@ export class AdminBookingRequestService extends AbstractServices {
         message: this.ResMsg.HTTP_NOT_FOUND,
       };
     }
-    if (data[0].status !== "Pending") {
+
+    if (data[0].status !== "pending") {
       return {
         success: false,
         code: this.StatusCode.HTTP_BAD_REQUEST,
