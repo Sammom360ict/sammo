@@ -72,10 +72,17 @@ class BookingPaymentServices extends abstract_service_1.default {
     //get transaction
     getTransaction(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.user;
-            const model = this.Model.paymentModel();
-            const { limit, skip, booking_id } = req.query;
-            const data = yield model.getTransactions(id, limit, skip, booking_id);
+            const { agency_id } = req.agency;
+            const model = this.Model.agencyModel();
+            const { limit, skip, from_date, to_date, type } = req.query;
+            const data = yield model.getAgencyTransactions({
+                agency_id,
+                start_date: from_date,
+                end_date: to_date,
+                limit: parseInt(limit),
+                skip: parseInt(skip),
+                type: type,
+            });
             return {
                 success: true,
                 code: this.StatusCode.HTTP_OK,

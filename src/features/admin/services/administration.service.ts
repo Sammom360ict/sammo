@@ -464,6 +464,78 @@ class AdministrationService extends AbstractServices {
       };
     }
   }
+
+  //insert visa type
+  public async insertVisaType(req: Request) {
+    await this.Model.VisaModel().insertVisaType({
+      ...req.body,
+      created_by: req.admin.id,
+    });
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_SUCCESSFUL,
+      message: this.ResMsg.HTTP_SUCCESSFUL,
+    };
+  }
+
+  //get all visa type
+  public async getAllVisaType(req: Request) {
+    const data = await this.Model.VisaModel().getAllVisaType();
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      data,
+    };
+  }
+
+  //delete visa type
+  public async deleteVisaType(req: Request) {
+    await this.Model.VisaModel().deleteVisaType(parseInt(req.params.id));
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      message: this.ResMsg.HTTP_OK,
+    };
+  }
+
+  //insert visa type
+  public async insertVisaMode(req: Request) {
+    await this.Model.VisaModel().insertVisaMode({
+      ...req.body,
+      created_by: req.admin.id,
+    });
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_SUCCESSFUL,
+      message: this.ResMsg.HTTP_SUCCESSFUL,
+    };
+  }
+
+  //get all visa type
+  public async getAllVisaMode(req: Request) {
+    const data = await this.Model.VisaModel().getAllVisaMode();
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      data,
+    };
+  }
+
+  //delete visa type
+  public async deleteVisaMode(req: Request) {
+    await this.Model.VisaModel().deleteVisaMode(parseInt(req.params.id));
+
+    return {
+      success: true,
+      code: this.StatusCode.HTTP_OK,
+      message: this.ResMsg.HTTP_OK,
+    };
+  }
 }
 
 export default AdministrationService;

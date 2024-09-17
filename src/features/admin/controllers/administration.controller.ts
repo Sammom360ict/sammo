@@ -132,6 +132,72 @@ class AdministrationController extends AbstractController {
       res.status(code).json(data);
     }
   );
+
+  //insert visa type
+  public insertVisaType = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.AdministrationService.insertVisaType(
+        req
+      );
+      res.status(code).json(data);
+    }
+  );
+
+  //get all visa type
+  public getAllVisaType = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.AdministrationService.getAllVisaType(
+        req
+      );
+      res.status(code).json(data);
+    }
+  );
+
+  //delete visa type
+  public deleteVisaType = this.asyncWrapper.wrap(
+    { paramSchema: this.commonValidator.singleParamValidator },
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.AdministrationService.deleteVisaType(
+        req
+      );
+      res.status(code).json(data);
+    }
+  );
+
+  //insert visa mode
+  public insertVisaMode = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.AdministrationService.insertVisaMode(
+        req
+      );
+      res.status(code).json(data);
+    }
+  );
+
+  //get all visa mode
+  public getAllVisaMode = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.AdministrationService.getAllVisaMode(
+        req
+      );
+      res.status(code).json(data);
+    }
+  );
+
+  //delete visa mode
+  public deleteVisaMode = this.asyncWrapper.wrap(
+    { paramSchema: this.commonValidator.singleParamValidator },
+    async (req: Request, res: Response) => {
+      const { code, ...data } = await this.AdministrationService.deleteVisaMode(
+        req
+      );
+      res.status(code).json(data);
+    }
+  );
 }
 
 export default AdministrationController;

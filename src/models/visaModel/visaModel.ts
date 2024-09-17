@@ -490,4 +490,48 @@ export class VisaModel extends Schema {
       .orderBy("id", "asc");
   }
   //----B2B application----//
+
+  // create visa type
+  public async insertVisaType(payload: any) {
+    return await this.db("visa_type")
+      .insert(payload)
+      .withSchema(this.SERVICE_SCHEMA);
+  }
+
+  // get all visa type
+  public async getAllVisaType() {
+    return await this.db("visa_type")
+      .withSchema(this.SERVICE_SCHEMA)
+      .select("id", "name");
+  }
+
+  // delete  visa type
+  public async deleteVisaType(id: number) {
+    return await this.db("visa_type")
+      .withSchema(this.SERVICE_SCHEMA)
+      .del()
+      .where({ id });
+  }
+
+  // create visa mode
+  public async insertVisaMode(payload: any) {
+    return await this.db("visa_mode")
+      .insert(payload)
+      .withSchema(this.SERVICE_SCHEMA);
+  }
+
+  // get all visa mode
+  public async getAllVisaMode() {
+    return await this.db("visa_mode")
+      .withSchema(this.SERVICE_SCHEMA)
+      .select("id", "name");
+  }
+
+  // delete  visa mode
+  public async deleteVisaMode(id: number) {
+    return await this.db("visa_mode")
+      .withSchema(this.SERVICE_SCHEMA)
+      .del()
+      .where({ id });
+  }
 }

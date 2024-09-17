@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import AbstractController from "../../../abstract/abstract.controller";
 import FlightBookingValidator from "../utils/validators/flightBooking.validator";
-import BookingRequestService from "../services/bookingRequest.service";
+import BookingRequestService from "../services/btocBookingRequest.service";
 
 class BookingRequestController extends AbstractController {
   private service = new BookingRequestService();

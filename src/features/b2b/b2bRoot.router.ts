@@ -9,6 +9,7 @@ import BtobTravelerRouter from "./routers/btobTraveler.router";
 import { B2BDashboardRouter } from "./routers/dashboard.router";
 import { BtoBSubAgencyRouter } from "./routers/subAgency.router";
 import ticketIssueRouter from "./routers/ticketIssue.router";
+import { BookingPaymentRouter } from "./routers/bookingPayment.router";
 
 class B2BRootRouter {
   public Router = Router();
@@ -33,7 +34,7 @@ class B2BRootRouter {
     this.Router.use("/profile", this.ProfileRouter.router);
 
     //payment router
-    // this.Router.use("/payment", new BookingPaymentRouter().router);
+    this.Router.use("/payment", new BookingPaymentRouter().router);
 
     //flight booking router
     this.Router.use("/flight-booking", new BtobFlightBookingRouter().router);
@@ -54,7 +55,7 @@ class B2BRootRouter {
     this.Router.use("/booking-service", new BtoBBookingServiceRouter().router);
 
     // b2b deposit request
-    this.Router.use("/deposit-request", new BtobRouter().router);
+    this.Router.use("/", new BtobRouter().router);
   }
 }
 export default B2BRootRouter;

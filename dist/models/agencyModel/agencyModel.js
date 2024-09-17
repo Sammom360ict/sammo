@@ -39,9 +39,18 @@ class AgencyModel extends schema_1.default {
     getAgency(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const data = yield this.db("agency_info")
+            const data = yield this.db("agency_info  as ai")
                 .withSchema(this.BTOB_SCHEMA)
-                .select("id", "agency_logo", "agency_name", "email", "phone", "status", "created_at")
+                .select("ai.id", "ai.agency_logo", "ai.agency_name", "ai.email", "ai.phone", "ai.status", "ai.created_at", this.db.raw(`
+(
+  SELECT 
+    COALESCE(SUM(CASE WHEN ad.type = 'credit' THEN amount ELSE 0 END), 0) - 
+    COALESCE(SUM(CASE WHEN ad.type = 'debit' THEN amount ELSE 0 END), 0) 
+  AS balance 
+  FROM b2b.agency_deposits as ad
+  WHERE ai.id = ad.agency_id
+) AS balance
+`))
                 .where((qb) => {
                 if (payload.name) {
                     qb.andWhere("agency_name", payload.name);
@@ -264,6 +273,35 @@ class AgencyModel extends schema_1.default {
                     }
                 });
             }
+            return { data, total: (_a = total[0]) === null || _a === void 0 ? void 0 : _a.total };
+        });
+    }
+    //get all transactions
+    getAllTransaction(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const data = yield this.db("agency_deposits as ad")
+                .withSchema(this.BTOB_SCHEMA)
+                .select("ad.id", "ad.type", "ai.agency_name", "ad.amount", "ad.date", "a.first_name as deposited_by", "bu.name as credited_by", "ad.details")
+                .join("agency_info as ai", "ai.id", "ad.agency_id")
+                .joinRaw(`left join ${this.ADMIN_SCHEMA}.user_admin as a on ad.created_by = a.id`)
+                .leftJoin("btob_user AS bu", "ad.agency_id", "bu.agency_id")
+                .where((qb) => {
+                if (params.from_date && params.to_date) {
+                    qb.andWhereBetween("ad.date", [params.from_date, params.to_date]);
+                }
+            })
+                .limit(params.limit || 100)
+                .offset(params.skip || 0)
+                .orderBy("ad.id", "desc");
+            const total = yield this.db("agency_deposits as ad")
+                .withSchema(this.BTOB_SCHEMA)
+                .count("ad.id as total")
+                .where((qb) => {
+                if (params.from_date && params.to_date) {
+                    qb.andWhereBetween("ad.date", [params.from_date, params.to_date]);
+                }
+            });
             return { data, total: (_a = total[0]) === null || _a === void 0 ? void 0 : _a.total };
         });
     }

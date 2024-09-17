@@ -20,6 +20,7 @@ import TravelerModel from "./userModel/travelerModel";
 import UserModel from "./userModel/userModel";
 import { VisaModel } from "./visaModel/visaModel";
 import { BtocBookingRequestModel } from "./bookingModel/bookingRequestModel";
+import { AdminAuditTrailModel } from "./auditTrailModel/adminAuditTrailModel";
 
 class Models {
   //booking request models
@@ -99,6 +100,10 @@ class Models {
     return new BtoBBookingServiceModel(trx || db);
   }
 
+  //Admin audit model
+  public adminAuditTrailModel(trx?: Knex.Transaction) {
+    return new AdminAuditTrailModel(trx || db);
+  }
   //B2B Ticket issue model
   public auditTrailModel(trx?: Knex.Transaction) {
     return new AuditTrailModel(trx || db);

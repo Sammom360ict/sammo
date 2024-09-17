@@ -23,6 +23,7 @@ const travelerModel_1 = __importDefault(require("./userModel/travelerModel"));
 const userModel_1 = __importDefault(require("./userModel/userModel"));
 const visaModel_1 = require("./visaModel/visaModel");
 const bookingRequestModel_1 = require("./bookingModel/bookingRequestModel");
+const adminAuditTrailModel_1 = require("./auditTrailModel/adminAuditTrailModel");
 class Models {
     //booking request models
     btocBookingRequestModel(trx) {
@@ -95,6 +96,10 @@ class Models {
     //B2B booking support model
     btobBookingSupportModel(trx) {
         return new BtoBBookingServiceModel_1.BtoBBookingServiceModel(trx || database_1.db);
+    }
+    //Admin audit model
+    adminAuditTrailModel(trx) {
+        return new adminAuditTrailModel_1.AdminAuditTrailModel(trx || database_1.db);
     }
     //B2B Ticket issue model
     auditTrailModel(trx) {

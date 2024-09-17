@@ -54,10 +54,17 @@ export class BookingPaymentServices extends AbstractServices {
 
   //get transaction
   public async getTransaction(req: Request) {
-    const { id } = req.user;
-    const model = this.Model.paymentModel();
-    const { limit, skip, booking_id } = req.query;
-    const data = await model.getTransactions(id, limit, skip, booking_id);
+    const { agency_id } = req.agency;
+    const model = this.Model.agencyModel();
+    const { limit, skip, from_date, to_date, type } = req.query;
+    const data = await model.getAgencyTransactions({
+      agency_id,
+      start_date: from_date as string,
+      end_date: to_date as string,
+      limit: parseInt(limit as string),
+      skip: parseInt(skip as string),
+      type: type as string,
+    });
     return {
       success: true,
       code: this.StatusCode.HTTP_OK,

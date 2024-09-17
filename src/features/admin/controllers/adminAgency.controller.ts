@@ -45,7 +45,17 @@ export class AdminAgencyController extends AbstractController {
   );
 
   // get transaction controller
-  public getTransaction = this.asyncWrapper.wrap(
+  public getAllTransaction = this.asyncWrapper.wrap(
+    null,
+    async (req: Request, res: Response) => {
+      const { code, ...rest } = await this.services.getAllTransaction(req);
+
+      res.status(code).json(rest);
+    }
+  );
+
+  // get transaction controller
+  public getSingleAgencyTransaction = this.asyncWrapper.wrap(
     { paramSchema: this.commonValidator.singleParamValidator },
     async (req: Request, res: Response) => {
       const { code, ...rest } = await this.services.getTransaction(req);

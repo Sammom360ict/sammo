@@ -7,7 +7,7 @@ import flightBookingRouter from "./routers/flightBooking.router";
 import ticketIssueRouter from "./routers/ticketIssue.router";
 import { BookingPaymentRouter } from "./routers/bookingPayment.router";
 import { BookingVisaRouter } from "./routers/bookingVisa.router";
-import BookingRequestRouter from "./routers/bookingRequest.router";
+import BookingRequestRouter from "./routers/btocBookingRequest.router";
 
 class B2CRootRouter {
   public Router = Router();

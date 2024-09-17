@@ -12,7 +12,7 @@ const flightBooking_router_1 = __importDefault(require("./routers/flightBooking.
 const ticketIssue_router_1 = __importDefault(require("./routers/ticketIssue.router"));
 const bookingPayment_router_1 = require("./routers/bookingPayment.router");
 const bookingVisa_router_1 = require("./routers/bookingVisa.router");
-const bookingRequest_router_1 = __importDefault(require("./routers/bookingRequest.router"));
+const btocBookingRequest_router_1 = __importDefault(require("./routers/btocBookingRequest.router"));
 class B2CRootRouter {
     constructor() {
         this.Router = (0, express_1.Router)();
@@ -35,7 +35,7 @@ class B2CRootRouter {
         //payment router
         this.Router.use("/payment", this.authChecker.userAuthChecker, this.PaymentRouter.router);
         //flight booking request router
-        this.Router.use("/flight-booking-request", this.authChecker.userAuthChecker, new bookingRequest_router_1.default().router);
+        this.Router.use("/flight-booking-request", this.authChecker.userAuthChecker, new btocBookingRequest_router_1.default().router);
         //flight booking router
         this.Router.use("/flight-booking", this.authChecker.userAuthChecker, new flightBooking_router_1.default().router);
         //ticket router

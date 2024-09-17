@@ -39,6 +39,24 @@ class AdministrationRouter extends abstract_router_1.default {
             .patch(this.uploader.cloudUploadRaw(this.fileFolders.ADMIN_FILES), this.AdministrationController.updateAdmin);
         //create city
         this.router.route("/city").post(this.AdministrationController.createCity);
+        // insert visa type
+        this.router
+            .route("/visa-type")
+            .post(this.AdministrationController.insertVisaType)
+            .get(this.AdministrationController.getAllVisaType);
+        // delete visa type
+        this.router
+            .route("/visa-type/:id")
+            .delete(this.AdministrationController.deleteVisaType);
+        // insert visa mode
+        this.router
+            .route("/visa-mode")
+            .post(this.AdministrationController.insertVisaMode)
+            .get(this.AdministrationController.getAllVisaMode);
+        // delete visa type
+        this.router
+            .route("/visa-mode/:id")
+            .delete(this.AdministrationController.deleteVisaMode);
     }
 }
 exports.default = AdministrationRouter;

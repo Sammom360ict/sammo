@@ -353,5 +353,56 @@ class VisaModel extends schema_1.default {
                 .orderBy("id", "asc");
         });
     }
+    //----B2B application----//
+    // create visa type
+    insertVisaType(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db("visa_type")
+                .insert(payload)
+                .withSchema(this.SERVICE_SCHEMA);
+        });
+    }
+    // get all visa type
+    getAllVisaType() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db("visa_type")
+                .withSchema(this.SERVICE_SCHEMA)
+                .select("id", "name");
+        });
+    }
+    // delete  visa type
+    deleteVisaType(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db("visa_type")
+                .withSchema(this.SERVICE_SCHEMA)
+                .del()
+                .where({ id });
+        });
+    }
+    // create visa mode
+    insertVisaMode(payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db("visa_mode")
+                .insert(payload)
+                .withSchema(this.SERVICE_SCHEMA);
+        });
+    }
+    // get all visa mode
+    getAllVisaMode() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db("visa_mode")
+                .withSchema(this.SERVICE_SCHEMA)
+                .select("id", "name");
+        });
+    }
+    // delete  visa mode
+    deleteVisaMode(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db("visa_mode")
+                .withSchema(this.SERVICE_SCHEMA)
+                .del()
+                .where({ id });
+        });
+    }
 }
 exports.VisaModel = VisaModel;

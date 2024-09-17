@@ -22,13 +22,35 @@ class AdminAgencyService extends abstract_service_1.default {
     //deposit to agency
     depositToAgency(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.admin;
+            const { id: admin_id } = req.admin;
             const body = req.body;
-            body.created_by = id;
-            body.type = "credit";
+            body.created_by = admin_id;
             const model = this.Model.agencyModel();
+            const checkAgency = yield model.getSingleAgency(req.body.agency_id);
+            if (!checkAgency.length) {
+                return {
+                    success: false,
+                    code: this.StatusCode.HTTP_NOT_FOUND,
+                    message: "Agency not found",
+                };
+            }
             const res = yield model.insertAgencyDeposit(body);
             if (res) {
+                const auditTrailModel = this.Model.adminAuditTrailModel();
+                if (body.type === "credit") {
+                    yield auditTrailModel.createAudit({
+                        created_by: admin_id,
+                        type: "create",
+                        details: `successfully credited ${body.amount} taka to agency id ${body.agency_id}`,
+                    });
+                }
+                else if (body.type === "debit") {
+                    yield auditTrailModel.createAudit({
+                        created_by: admin_id,
+                        type: "create",
+                        details: `successfully debited ${body.amount} taka from agency id ${body.agency_id}`,
+                    });
+                }
                 return {
                     success: true,
                     code: this.StatusCode.HTTP_SUCCESSFUL,
@@ -101,6 +123,25 @@ class AdminAgencyService extends abstract_service_1.default {
                 success: true,
                 code: this.StatusCode.HTTP_OK,
                 message: "Updated Succesfully",
+            };
+        });
+    }
+    //get all transaction list
+    getAllTransaction(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const model = this.Model.agencyModel();
+            const { limit, skip, from_date, to_date } = req.query;
+            const data = yield model.getAllTransaction({
+                limit,
+                skip,
+                from_date,
+                to_date,
+            });
+            return {
+                success: true,
+                code: this.StatusCode.HTTP_OK,
+                total: data.total,
+                data: data.data,
             };
         });
     }

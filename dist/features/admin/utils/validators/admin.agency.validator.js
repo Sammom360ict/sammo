@@ -44,6 +44,7 @@ class AdminAgencyValidator {
         //deposit to agency schema
         this.depositToAgencySchema = joi_1.default.object({
             agency_id: joi_1.default.number().required(),
+            type: joi_1.default.string().valid("credit", "debit").required(),
             amount: joi_1.default.number().required(),
             details: joi_1.default.string().optional(),
         });

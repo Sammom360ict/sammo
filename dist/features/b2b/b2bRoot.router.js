@@ -14,6 +14,7 @@ const btobTraveler_router_1 = __importDefault(require("./routers/btobTraveler.ro
 const dashboard_router_1 = require("./routers/dashboard.router");
 const subAgency_router_1 = require("./routers/subAgency.router");
 const ticketIssue_router_1 = __importDefault(require("./routers/ticketIssue.router"));
+const bookingPayment_router_1 = require("./routers/bookingPayment.router");
 class B2BRootRouter {
     constructor() {
         this.Router = (0, express_1.Router)();
@@ -31,7 +32,7 @@ class B2BRootRouter {
         //profile
         this.Router.use("/profile", this.ProfileRouter.router);
         //payment router
-        // this.Router.use("/payment", new BookingPaymentRouter().router);
+        this.Router.use("/payment", new bookingPayment_router_1.BookingPaymentRouter().router);
         //flight booking router
         this.Router.use("/flight-booking", new btobFlightBooking_router_1.default().router);
         //ticket router
@@ -45,7 +46,7 @@ class B2BRootRouter {
         //booking service
         this.Router.use("/booking-service", new bookingService_router_1.default().router);
         // b2b deposit request
-        this.Router.use("/deposit-request", new btob_router_1.BtobRouter().router);
+        this.Router.use("/", new btob_router_1.BtobRouter().router);
     }
 }
 exports.default = B2BRootRouter;

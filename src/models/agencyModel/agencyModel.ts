@@ -37,17 +37,28 @@ export class AgencyModel extends Schema {
     skip?: number;
     ref_id?: number;
   }) {
-    const data = await this.db("agency_info")
+    const data = await this.db("agency_info  as ai")
       .withSchema(this.BTOB_SCHEMA)
       .select(
-        "id",
-        "agency_logo",
-        "agency_name",
-        "email",
-        "phone",
-        "status",
-        "created_at"
+        "ai.id",
+        "ai.agency_logo",
+        "ai.agency_name",
+        "ai.email",
+        "ai.phone",
+        "ai.status",
+        "ai.created_at",
+        this.db.raw(`
+(
+  SELECT 
+    COALESCE(SUM(CASE WHEN ad.type = 'credit' THEN amount ELSE 0 END), 0) - 
+    COALESCE(SUM(CASE WHEN ad.type = 'debit' THEN amount ELSE 0 END), 0) 
+  AS balance 
+  FROM b2b.agency_deposits as ad
+  WHERE ai.id = ad.agency_id
+) AS balance
+`)
       )
+
       .where((qb) => {
         if (payload.name) {
           qb.andWhere("agency_name", payload.name);
@@ -318,6 +329,50 @@ export class AgencyModel extends Schema {
         });
     }
 
+    return { data, total: total[0]?.total };
+  }
+
+  //get all transactions
+  public async getAllTransaction(params: {
+    limit?: number;
+    skip?: number;
+    from_date?: string;
+    to_date?: string;
+  }) {
+    const data = await this.db("agency_deposits as ad")
+      .withSchema(this.BTOB_SCHEMA)
+      .select(
+        "ad.id",
+        "ad.type",
+        "ai.agency_name",
+        "ad.amount",
+        "ad.date",
+        "a.first_name as deposited_by",
+        "bu.name as credited_by",
+        "ad.details"
+      )
+      .join("agency_info as ai", "ai.id", "ad.agency_id")
+      .joinRaw(
+        `left join ${this.ADMIN_SCHEMA}.user_admin as a on ad.created_by = a.id`
+      )
+      .leftJoin("btob_user AS bu", "ad.agency_id", "bu.agency_id")
+      .where((qb) => {
+        if (params.from_date && params.to_date) {
+          qb.andWhereBetween("ad.date", [params.from_date, params.to_date]);
+        }
+      })
+      .limit(params.limit || 100)
+      .offset(params.skip || 0)
+      .orderBy("ad.id", "desc");
+
+    const total = await this.db("agency_deposits as ad")
+      .withSchema(this.BTOB_SCHEMA)
+      .count("ad.id as total")
+      .where((qb) => {
+        if (params.from_date && params.to_date) {
+          qb.andWhereBetween("ad.date", [params.from_date, params.to_date]);
+        }
+      });
     return { data, total: total[0]?.total };
   }
 

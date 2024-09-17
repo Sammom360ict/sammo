@@ -53,8 +53,13 @@ class AdminAgencyController extends abstract_controller_1.default {
             res.status(code).json(data);
         }));
         // get transaction controller
-        this.getTransaction = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _d = yield this.services.getTransaction(req), { code } = _d, rest = __rest(_d, ["code"]);
+        this.getAllTransaction = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _d = yield this.services.getAllTransaction(req), { code } = _d, rest = __rest(_d, ["code"]);
+            res.status(code).json(rest);
+        }));
+        // get transaction controller
+        this.getSingleAgencyTransaction = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _e = yield this.services.getTransaction(req), { code } = _e, rest = __rest(_e, ["code"]);
             if (rest.success) {
                 res.status(code).json(rest);
             }
@@ -64,7 +69,7 @@ class AdminAgencyController extends abstract_controller_1.default {
         }));
         // create controller
         this.create = this.asyncWrapper.wrap({ bodySchema: this.validator.createAgencySchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _e = yield this.services.create(req), { code } = _e, rest = __rest(_e, ["code"]);
+            const _f = yield this.services.create(req), { code } = _f, rest = __rest(_f, ["code"]);
             if (rest.success) {
                 res.status(code).json(rest);
             }
@@ -74,12 +79,12 @@ class AdminAgencyController extends abstract_controller_1.default {
         }));
         // get controller
         this.get = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _f = yield this.services.get(req), { code } = _f, rest = __rest(_f, ["code"]);
+            const _g = yield this.services.get(req), { code } = _g, rest = __rest(_g, ["code"]);
             res.status(code).json(rest);
         }));
         // get single controller
         this.getSingle = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _g = yield this.services.getSingle(req), { code } = _g, rest = __rest(_g, ["code"]);
+            const _h = yield this.services.getSingle(req), { code } = _h, rest = __rest(_h, ["code"]);
             res.status(code).json(rest);
         }));
         // update controller
@@ -87,7 +92,7 @@ class AdminAgencyController extends abstract_controller_1.default {
             paramSchema: this.commonValidator.singleParamValidator,
             bodySchema: this.validator.updateAgencySchema,
         }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _h = yield this.services.update(req), { code } = _h, rest = __rest(_h, ["code"]);
+            const _j = yield this.services.update(req), { code } = _j, rest = __rest(_j, ["code"]);
             if (rest.success) {
                 res.status(code).json(rest);
             }
@@ -97,7 +102,7 @@ class AdminAgencyController extends abstract_controller_1.default {
         }));
         // create agency user controller
         this.createUser = this.asyncWrapper.wrap({ bodySchema: this.validator.createAgencyUserSchema }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _j = yield this.services.createUser(req), { code } = _j, rest = __rest(_j, ["code"]);
+            const _k = yield this.services.createUser(req), { code } = _k, rest = __rest(_k, ["code"]);
             if (rest.success) {
                 res.status(code).json(rest);
             }
@@ -110,7 +115,7 @@ class AdminAgencyController extends abstract_controller_1.default {
             paramSchema: this.commonValidator.singleParamValidator,
             bodySchema: this.validator.updateAgencyUserSchema,
         }, (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const _k = yield this.services.updateUser(req), { code } = _k, rest = __rest(_k, ["code"]);
+            const _l = yield this.services.updateUser(req), { code } = _l, rest = __rest(_l, ["code"]);
             if (rest.success) {
                 res.status(code).json(rest);
             }

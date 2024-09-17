@@ -11,7 +11,7 @@ export class BtobRouter extends AbstractRouter {
   private callRouter() {
     //insert deposit request, list
     this.router
-      .route("/")
+      .route("/deposit-request")
       .post(
         this.uploader.cloudUploadRaw(this.fileFolders.AGENCY_USER),
         this.controller.insertDeposit
@@ -19,6 +19,8 @@ export class BtobRouter extends AbstractRouter {
       .get(this.controller.getAllDepositRequestList);
 
     //single application
-    this.router.route("/:id").get(this.controller.getSingleApplication);
+    this.router
+      .route("/deposit-request/:id")
+      .get(this.controller.getSingleApplication);
   }
 }

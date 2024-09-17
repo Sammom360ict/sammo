@@ -42,6 +42,7 @@ export class AdminAgencyValidator {
   //deposit to agency schema
   public depositToAgencySchema = Joi.object({
     agency_id: Joi.number().required(),
+    type: Joi.string().valid("credit", "debit").required(),
     amount: Joi.number().required(),
     details: Joi.string().optional(),
   });

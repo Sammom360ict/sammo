@@ -1,5 +1,5 @@
 import AbstractRouter from "../../../abstract/abstract.router";
-import BookingRequestController from "../controllers/bookingRequest.controller";
+import BookingRequestController from "../controllers/btocBookingRequest.controller";
 
 class BookingRequestRouter extends AbstractRouter {
   private controller = new BookingRequestController();

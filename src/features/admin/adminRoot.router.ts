@@ -8,12 +8,14 @@ import { AirlineCommissionRouter } from "./routers/airlineCommision.router";
 import { AirportRouter } from "./routers/airport.router";
 import AdminArticleRouter from "./routers/article.router";
 import AdminB2BFlightBookingRouter from "./routers/b2bFlightBooking.router";
-import { BookingRequestRouter } from "./routers/bookingRequest.router";
 import AdminDashboardRouter from "./routers/dashboard.router";
 import adminFlightBookingRouter from "./routers/flightBooking.router";
 import AdminProfileRouter from "./routers/profile.router";
 import { AdminVisaRouter } from "./routers/visa.router";
 import { AdminPromotionalRouter } from "./routers/adminPromotional.router";
+import BookingRequestRouter from "../b2c/routers/btocBookingRequest.router";
+import { PaymentRouter } from "./routers/adminPayment.router";
+
 class AdminRootRouter {
   public Router = Router();
   private ProfileRouter = new AdminProfileRouter();
@@ -49,8 +51,8 @@ class AdminRootRouter {
     //airport router
     this.Router.use("/airport", new AirportRouter().router);
 
-    //booking request router
-    this.Router.use("/booking-request", new BookingRequestRouter().router);
+    //payment router
+    this.Router.use("/payment", new PaymentRouter().router);
 
     //visa router
     this.Router.use("/visa", this.VisaRouter.router);

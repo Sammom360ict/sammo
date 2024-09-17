@@ -91,6 +91,36 @@ class AdministrationController extends abstract_controller_1.default {
             const _l = yield this.AdministrationService.createCity(req), { code } = _l, data = __rest(_l, ["code"]);
             res.status(code).json(data);
         }));
+        //insert visa type
+        this.insertVisaType = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _m = yield this.AdministrationService.insertVisaType(req), { code } = _m, data = __rest(_m, ["code"]);
+            res.status(code).json(data);
+        }));
+        //get all visa type
+        this.getAllVisaType = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _o = yield this.AdministrationService.getAllVisaType(req), { code } = _o, data = __rest(_o, ["code"]);
+            res.status(code).json(data);
+        }));
+        //delete visa type
+        this.deleteVisaType = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _p = yield this.AdministrationService.deleteVisaType(req), { code } = _p, data = __rest(_p, ["code"]);
+            res.status(code).json(data);
+        }));
+        //insert visa mode
+        this.insertVisaMode = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _q = yield this.AdministrationService.insertVisaMode(req), { code } = _q, data = __rest(_q, ["code"]);
+            res.status(code).json(data);
+        }));
+        //get all visa mode
+        this.getAllVisaMode = this.asyncWrapper.wrap(null, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _r = yield this.AdministrationService.getAllVisaMode(req), { code } = _r, data = __rest(_r, ["code"]);
+            res.status(code).json(data);
+        }));
+        //delete visa mode
+        this.deleteVisaMode = this.asyncWrapper.wrap({ paramSchema: this.commonValidator.singleParamValidator }, (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const _s = yield this.AdministrationService.deleteVisaMode(req), { code } = _s, data = __rest(_s, ["code"]);
+            res.status(code).json(data);
+        }));
     }
 }
 exports.default = AdministrationController;
