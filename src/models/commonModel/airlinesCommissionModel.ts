@@ -3,7 +3,7 @@ import {
   IGetAirlinesCommissionQuery,
   IInsertAirlinesCommissionPayload,
   IUpdateAirlinesCommissionPayload,
-} from '../../utils/interfaces/common/airlinesCommissionModel.interface';
+} from '../../utils/interfaces/common/commissionAirlinesRoutesInterface';
 import Schema from '../../utils/miscellaneous/schema';
 
 export class AirlineCommissionModel extends Schema {
@@ -43,10 +43,10 @@ export class AirlineCommissionModel extends Schema {
       .leftJoin('admin.user_admin AS a', 'ac.updated_by', 'a.id')
       .where((qb) => {
         if (query.code) {
-          qb.andWhere('ac.airline_code', 'ilike', `${query.code}`)
+          qb.andWhere('ac.airline_code', 'ilike', `${query.code}`);
         }
         if (query.name) {
-          qb.orWhere('oa.name', 'ilike', `%${query.name}%`)
+          qb.orWhere('oa.name', 'ilike', `%${query.name}%`);
         }
         if (query.last_update) {
           qb.andWhere('ac.last_updated', query.last_update);
@@ -69,12 +69,12 @@ export class AirlineCommissionModel extends Schema {
         .where((qb) => {
           if (query.code) {
             qb.andWhere((qbc) => {
-              qbc.andWhere('ac.airline_code', 'ilike', `${query.code}`)
-              qbc.orWhere('oa.name', 'ilike', `%${query.code}%`)
-            })
+              qbc.andWhere('ac.airline_code', 'ilike', `${query.code}`);
+              qbc.orWhere('oa.name', 'ilike', `%${query.code}%`);
+            });
           }
           if (query.name) {
-            qb.orWhere('oa.name', 'ilike', `%${query.name}%`)
+            qb.orWhere('oa.name', 'ilike', `%${query.name}%`);
           }
           if (query.last_update) {
             qb.andWhere('ac.last_updated', query.last_update);
@@ -106,18 +106,18 @@ export class AirlineCommissionModel extends Schema {
 
   //delete
   public async delete(code: string) {
-    return await this.db("airlines_commission")
+    return await this.db('airlines_commission')
       .withSchema(this.DBO_SCHEMA)
       .delete()
-      .where("airline_code", code);
+      .where('airline_code', code);
   }
 
   //get all airline with capping
-  public async getAllAirline(){
-    const data = await this.db("airlines_commission")
-    .withSchema(this.DBO_SCHEMA)
-    .select("airline_code as Code")
-    .where("capping",1);
+  public async getAllAirline() {
+    const data = await this.db('airlines_commission')
+      .withSchema(this.DBO_SCHEMA)
+      .select('airline_code as Code')
+      .where('capping', 1);
     return data;
   }
 }
