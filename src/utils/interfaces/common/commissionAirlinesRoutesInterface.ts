@@ -78,9 +78,6 @@ export interface IUpdateRoutesCommissionPayload {
 export interface IGetRoutesCommissionParams {
   departure?: string;
   arrival?: string;
-  commission?: number;
-  com_type?: 'PER' | 'FLAT';
-  com_mode?: 'INCREASE' | 'DECREASE';
   one_way?: boolean;
   round_trip?: boolean;
   status?: boolean;

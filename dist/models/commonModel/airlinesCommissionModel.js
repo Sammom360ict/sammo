@@ -100,19 +100,19 @@ class AirlineCommissionModel extends schema_1.default {
     //delete
     delete(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.db("airlines_commission")
+            return yield this.db('airlines_commission')
                 .withSchema(this.DBO_SCHEMA)
                 .delete()
-                .where("airline_code", code);
+                .where('airline_code', code);
         });
     }
     //get all airline with capping
     getAllAirline() {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.db("airlines_commission")
+            const data = yield this.db('airlines_commission')
                 .withSchema(this.DBO_SCHEMA)
-                .select("airline_code as Code")
-                .where("capping", 1);
+                .select('airline_code as Code')
+                .where('capping', 1);
             return data;
         });
     }
